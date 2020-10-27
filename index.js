@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
 client.commands = new Discord.Collection();
-const commandFiles = fs.readdirSync('./node_modules/commands').filter(file=>file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
 
 
@@ -18,7 +18,7 @@ client.once('ready', () => {
 
 
 for(const file of commandFiles){
-  const command = require(`./node_modules/commands/${file}`);
+  const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
 
