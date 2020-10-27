@@ -1,0 +1,27 @@
+{
+  "name": "necroatomicbot",
+  "version": "1.0.0",
+  "description": "A Discord Bot",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "Hello"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Siris2314/NecroAtomicBot.git"
+  },
+  "keywords": [
+    "NecroBot",
+    "JSGeo"
+  ],
+  "author": "Arihant Tripathi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Siris2314/NecroAtomicBot/issues"
+  },
+  "homepage": "https://github.com/Siris2314/NecroAtomicBot#readme"
+}
