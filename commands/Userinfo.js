@@ -1,55 +1,43 @@
-const {MessageEmbed} = require('discord.js')
-const Commando = require('discord.js-commando')
-module.exports = class UserInfoCommand extends Commando.Command{
+module.exports = {
+      name: 'userinfo',
+      description: 'Displays info for a user',
+      execute(message, args){
+          // console.log(message.author);
 
-      constructor(client){
-        super(client, {
-          name: 'userinfo',
-          group: 'misc',
-          memberName: 'userinfo',
-          description: 'Displays info for a user'
+          const user = message.author;
+          const member = message.guild.member(user);
+          // console.log(member);
 
-        })
-
-
-      }
-
-      execute = async (message) => {
-        const {guild, channel} = message
-
-        const user = message.mentions.users.first() || message.member.user
-        const member = guild.members.cache.get(user.id)
-
-
-        const embed = new MessageEmbed().setAuthor(`User info for ${user.username}`, user.displayAvatarURL()).addFields({
-             name: 'User tag',
-             value: user.tag,
-        },
-        {
-             name:'Is bot',
-             value: user.bot,
-        },
-        {
-             name: 'Nickname',
-             value:member.nickname || 'None',
-        },
-        {
-             name: 'Joined Server',
-             value: new Date(member.joinedTimestamp).toLocaleDateString(),
-        },
-        {
-              name: 'Joined Discord',
-              value: new Date(user.createdTimestamp).toLocaleDateString(),
-        },
-        {
-              name: 'Role Count',
-              value: member.roles.cache.size - 1
+          const m = {
+              title: "User Info",
+              color: 3973927,
+              image: {
+                  url: user.avatarURL(),
+              },
+              fields: [
+                  {
+                      name: "User tag",
+                      value: `${user.username}#${user.discriminator}`,
+                  },
+                  {
+                      name: "Is bot",
+                      value: user.bot,
+                  },
+                  {
+                      name: "Joined Discord",
+                      value: new Date(user.createdAt),
+                  },
+                  {
+                      name: "Joined Server",
+                      value: new Date(member.joinedTimestamp),
+                  },
+                  {
+                      name: "Roles",
+                      value: member._roles.length,
+                  },
+              ],
+              timestamp: new Date(),
+          };
+          message.channel.send({ embed: m });
         }
-      )
-
-        channel.send(embed)
-
-      }
-
-
 }
