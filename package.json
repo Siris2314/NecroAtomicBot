@@ -4,6 +4,7 @@
   "description": "A Discord Bot",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.21.0",
     "discord.js": "^12.4.0",
     "discord.js-commando": "^0.10.0"
   },
