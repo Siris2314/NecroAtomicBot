@@ -6,7 +6,8 @@
   "dependencies": {
     "axios": "^0.21.0",
     "discord.js": "^12.4.0",
-    "discord.js-commando": "^0.10.0"
+    "discord.js-commando": "^0.10.0",
+    "random-puppy": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
