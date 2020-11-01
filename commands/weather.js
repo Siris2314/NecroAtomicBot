@@ -21,12 +21,12 @@ module.exports = {
       var current = result[0].current;
       var location = result[0].location;
 
-      const weatherinfo = new Discord.MessageEmbed()
+      const weatherinfo = new Discord.RichEmbed()
         .setDescription(`${current.skytext}`)
         .setAuthor(`Weather forecast for ${current.observationpoint}`)
         .setThumbnail(current.imageUrl)
         .addField('Timezone', `UTC${location.timezone}`, true)
-        .addField('Degree Type', 'Farenheit', true)
+        .addField('Degree Type', 'Farenheit',location.degreetype ,true)
         .addField('Temperature', `${current.temperature}`, true)
         .addField('Wind', current.winddisplay,true)
         .addField('Feels like ', `${current.feelslike}`, true)
