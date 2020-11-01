@@ -5,11 +5,11 @@ const Discord = require('discord.js');
 module.exports = {
   name: "Joke/Meme",
   description: "Gives a joke or meme",
-  async execute(client,message,args){
+  execute(client,message,args){
     const subReddits = ["dankmeme", "meme", "memes"]
     const random = subReddits[Math.floor(Math.random()) * subReddits.length]
 
-    const img = await randomPuppy(random);
+    const img = randomPuppy(random);
 
     const embed = new Discord.MessageEmbed()
       .setColor("RANDOM")
