@@ -4,7 +4,7 @@ module.exports = {
   name: "Avatar",
   description:"Returns Image of User Avatar",
 
-  async run(message,args){
+  async execute(message,args){
 
     let member = message.mentions.users.first() || message.author
 
@@ -15,6 +15,6 @@ module.exports = {
      .setImage(avatar)
 
     message.channel.send(embed)
-    
+
   }
 }
