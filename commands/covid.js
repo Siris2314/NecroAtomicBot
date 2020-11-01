@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const Discord = require("discord.js");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module.exports = {
 <<<<<<< HEAD
 
@@ -62,6 +63,9 @@ module.exports = {
 }
 }
 =======
+
+>>>>>>> 437db4a3d036a6fc2b4f343559bb9a43e8495d2f
+=======
     name: "covid",
     description: "Tracks Cases WorldWide",
 
@@ -115,6 +119,7 @@ module.exports = {
         }
     },
 };
+<<<<<<< HEAD
 >>>>>>> d84334c228af7b408c91b612de3d07a4390cf1ca
 =======
 
@@ -172,5 +177,8 @@ module.exports = {
         }
     },
 };
+
+>>>>>>> 437db4a3d036a6fc2b4f343559bb9a43e8495d2f
+=======
 
 >>>>>>> 437db4a3d036a6fc2b4f343559bb9a43e8495d2f
