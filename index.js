@@ -14,6 +14,11 @@ client.once('ready', () => {
 
 });
 
+client.once('disconnect', () => {
+
+  console.log('Disconnect');
+});
+
 
 
 
