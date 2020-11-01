@@ -1,8 +1,7 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
 
-
-=======
+module.exports = {
     name: "covid",
     description: "Tracks Cases WorldWide",
 
@@ -56,4 +55,3 @@ const Discord = require("discord.js");
         }
     },
 };
-
