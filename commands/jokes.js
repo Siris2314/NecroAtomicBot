@@ -2,7 +2,7 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-    name: "jokes",
+    name: "joke",
     description: "Get jokes",
     execute(msg, args) {
         fetch("https://official-joke-api.appspot.com/random_joke")
