@@ -4,7 +4,7 @@ function getRandomInt(max) {
 const fetch = require('node-fetch');
 
 module.exports = {
-    name: "get me inspired",
+    name: "inspiration",
     description: "Get some inspiration",
     execute(msg, args) {
         fetch("https://type.fit/api/quotes")
@@ -13,7 +13,7 @@ module.exports = {
             })
             .then(function (data) {
                 const inspiration = {
-                    title: "Kimmary Quotes",
+                    title: "Inspiration",
                     color: 3973927,
                     image: {
                         url: "https://picsum.photos/500/200/?random"
