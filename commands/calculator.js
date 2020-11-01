@@ -5,7 +5,7 @@ module.exports = {
   name:"calculator",
   description:"Calculates Stuff",
 
-  async execute(message,args){
+  execute(message,args){
 
     if(!args[0]){
       return message.channel.send("Enter a Question Please")
