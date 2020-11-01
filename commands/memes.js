@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 module.exports = {
   name: "Joke/Meme",
   description: "Gives a joke or meme",
-  async execute(message,args){
+  async execute(client,message,args){
     const subReddits = ["dankmeme", "meme", "memes"]
     const random = subReddits[Math.floor(Math.random()) * subReddits.length]
 
