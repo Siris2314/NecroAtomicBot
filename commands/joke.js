@@ -5,7 +5,7 @@ const Discord = require('discord.js');
 module.exports = {
   name: "Joke/Meme",
   description: "Gives a joke or meme",
-  async run(message,args){
+  async execute(message,args){
     const subReddits = ["dankmeme", "meme", "memes"]
     const random = subReddits[Math.floor(Math.random()) * subReddits.length]
 
@@ -17,6 +17,6 @@ module.exports = {
       .setTitle(`Your meme....idk how funny it is. Source: r/${random}`)
       .setURL(`https://reddit.com/r/${random}`)
 
-    message.channel.send(embed)
+    message.channel.send(embed);
   }
 }

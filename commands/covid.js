@@ -7,7 +7,7 @@ module.exports = {
   name: "Covid Command",
   description: "Tracks Cases WorldWide",
 
-  async run(message,args){
+  async execute(message,args){
     let countries = args.join(" ");
 
     const noArgs = new Discord.MessageEmbed()
