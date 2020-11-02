@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 module.exports = {
-  name: "Avatar",
+  name: "avatar",
   description:"Returns Image of User Avatar",
 
   execute(message,args){
