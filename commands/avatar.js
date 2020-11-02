@@ -1,25 +1,20 @@
 const Discord = require('discord.js');
 
 module.exports = {
-  name: "Avatar",
+  name: "avatar",
   description:"Returns Image of User Avatar",
 
   execute(message,args){
 
+    let member = message.mentions.users.first() || message.author
 
-    let user = message.mentions.users.first() || message.author
-    let avatar = user.avatarURL({dynamic: true, size: 2048, format: 'png'})
+    let avatar = member.displayAvatarURL({size: 1024})
 
-    let embed = new Discord.messageEmbed()
-      .setTitle(`${user.tag}'s Avatar'`)
-      .setColor("RANDOM")
+    const embed = new Discord.MessageEmbed()
+      .setTitle(`${member.username} avatar`)
       .setImage(avatar)
-      .setFooter(`Request by ${message.author.tag}`)
-      .setTimestamp()
 
+    message.channel.send(embed)
 
-
-
-     message.channel.send(embed)
-}
+  }
 }
