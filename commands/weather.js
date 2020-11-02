@@ -19,7 +19,7 @@ module.exports = {
         return message.channel.send('Location not found....')
       }
       var current = result[0].current;
-      var location = result[0].location;
+      var location =esult[0].location;
 
       const weatherinfo = new Discord.RichEmbed()
         .setDescription(`${current.skytext}`)
@@ -32,7 +32,7 @@ module.exports = {
         .addField('Feels like ', `${current.feelslike}`, true)
         .addField('Humidity', `${current.humidity}`, true)
 
-        message.channel.send(weatherinfo)
+       return message.channel.send(weatherinfo)
 
 
 
