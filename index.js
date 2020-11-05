@@ -31,20 +31,13 @@ for(const file of commandFiles){
 
 
 
-client.on('message', message => {
+client.on ('message', async message => {
 
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
   }
 
-  let profile = leveling.Fetch(message.author.id);
 
-  leveling.AddXp(message.author.id, 20);
-  if(profile.xp + 20 > 150){
-    leveling.AddLevel(message.author.id, 1)
-    leveling.SetXp(message.author.id, 0)
-    message.channel.send(`Good Job ${message.author.username}, you just advanced to level ${profile.level + 1}`);
-  }
 
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
