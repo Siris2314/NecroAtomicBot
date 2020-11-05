@@ -4,43 +4,44 @@ const { google } = require('../botconfig.json');
 
 module.exports = {
 
-    name: "google",
-    descriptions: "searches on google",
+  name:"google",
+  descriptions:"searches on google",
 
-    async execute(message, args) {
+  async execute(message,args){
 
-        let googleKey = google;
-        let csx = "e07debb6d8725ce79";
-        let query = args.join(" ");
-        let result;
-        if (!query) {
-            return message.channel.send("Please Enter a Query");
+  let googleKey = google;
+  let csx = "e07debb6d8725ce79";
+  let query = args.join(" ");
+  let result;
 
-        }
-        href = await search(query);
+  if(!query){
+    return message.channel.send("Please Enter a Query");
 
-        if (!href) {
-            return message.channel.send("Cannot Find Query");
-        }
+  }
+  href = await search(query);
 
-        const embed = new Discord.MessageEmbed()
-            .setTitle(href.title)
-            .setDescription(href.snippet)
-            .setImage(href.pagemap ? href.pagemap.cse_thumbnail[0].src : null)
-            .setURL(href.link)
-            .setFooter("Powered by Google")
+  if(!href){
+    return message.channel.send("Cannot Find Query");
+  }
 
-        return message.channel.send(embed);
+  const embed = new Discord.MessageEmbed()
+    .setTitle(href.title)
+    .setDescription(href.snippet)
+    .setImage(href.pagemap ? href.pagemap.cse_thumbnail[0].src : null)
+    .setURL(href.link)
+    .setFooter("Powered by Google")
 
-        async function search(query) {
-            const { body } = await request.get("https://www.googleapis.com/customsearch/v1").query({
-                key: googleKey, cx: csx, safe: "off", q: query
-            });
-            if (!body.items) {
-                return null
-            }
-            return body.items[0];
-        }
+  return message.channel.send(embed);
 
+  async function search(query){
+    const { body } = await request.get("https://www.googleapis.com/customsearch/v1").query({
+      key: googleKey, cx: csx, safe:"off", q:query
+    });
+    if(!body.items){
+      return null
     }
+    return body.items[0];
+  }
+
+}
 }
