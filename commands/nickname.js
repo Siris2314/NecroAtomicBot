@@ -8,10 +8,8 @@ module.exports ={
 
   execute(message,args){
 
-    if(!message.member.hasPermission(["MANAGE_GUILD", "ADMINISTRATOR"])){
-      return message.channel.send({embed:{color: "GREEN", description: "Missing Perms to use Command"}});
-    }
     
+
 
     let user = message.mentions.users.first();
     if(!user){
