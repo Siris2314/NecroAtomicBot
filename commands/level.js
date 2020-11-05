@@ -1,4 +1,4 @@
-const leveling = require('discord-leveling');
+const expfile = ('../expfile.json');
 const discord = require('discord.js')
 
 module.exports = {
@@ -10,9 +10,16 @@ module.exports = {
 
     let user = message.mentions.users.first() || message.guild.members.cache.get(args[0]) || message.author;
 
-    let output = leveling.Fetch(user.id);
+    let embed = new Discord.MessageEmbed()
+      .setTitle("Level Card")
+      .setColor("RED")
+      .addField("Level: ", expfile[user.id].level)
+      .addField("XP: ", expfile[user.id].xp+"/"+expfile[user.id].reqxp)
+    message.channel.send(embed)
 
-    message.channel.send(`${user.username } is currently at level ${output.level} with ${output.xp} xp`)
-    console.log(user);
+
+
+
+
   }
 }
