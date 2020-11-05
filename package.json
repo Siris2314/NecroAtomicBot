@@ -10,6 +10,7 @@
     "math": "0.0.3",
     "mathjs": "^7.5.1",
     "node-fetch": "^2.6.1",
+    "node-superfetch": "^0.1.10",
     "random-puppy": "^1.1.0",
     "weather-js": "^2.0.0",
     "weather.js": "^0.1.0"
