@@ -3,8 +3,13 @@ const thanksSchema = ('@schemas/thanks-schemas')
 
 module.exports = {
 
-  name: "thanks",
-  description:"User Thanking System",
+
+     name: "thanks",
+     description:"User Thanking System",
+
+
+
+
 
   async execute(message,args){
 
