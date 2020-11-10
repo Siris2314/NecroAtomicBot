@@ -4,6 +4,7 @@ const client = new Discord.Client();
 const fs = require('fs');
 const leveling = require('discord-leveling');
 
+const mongoose = require("mongoose");
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
@@ -14,6 +15,8 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 client.once('ready', () => {
   console.log(bot_info.name);
   console.log(bot_info.version);
+
+
 
 });
 
