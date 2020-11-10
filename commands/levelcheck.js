@@ -3,7 +3,7 @@ const discord = require('discord.js')
 
 module.exports = {
 
-  name:"level",
+  name:"levelcheck",
   description:"returns level of a user",
 
   execute(message,args){
