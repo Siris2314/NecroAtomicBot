@@ -31,3 +31,5 @@ Before I go any further, I would like to shoutout my co-contributor Gabe for add
     - Youtube Command: Searches on Youtube with a given input
     - Binary Command: Converts words into binary and vice versa
     
+UPDATE 1.3 Set for the Middle to Late December.......see y'all there
+    
