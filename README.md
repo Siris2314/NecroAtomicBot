@@ -8,14 +8,15 @@ Update 1.1:
 Release of Bot
 
 
-
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 UPDATE 1.2 IS HERE:
 
 Welcome to NecroAtomic Bot Version 1.2,
 
-    Before I go any further, I would like to shoutout my co-contributor Gabe for adding some of the commands, and for formatting and editing some of my messy code.
+
+Before I go any further, I would like to shoutout my co-contributor Gabe for adding some of the commands, and for formatting and editing some of my messy code.
     
     
  Here are the new features in Update 1.2:
