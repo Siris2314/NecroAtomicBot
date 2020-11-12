@@ -2,7 +2,6 @@ const {prefix, token, bot_info} = require('./botconfig.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
-const leveling = require('discord-leveling');
 const expfile = require('./expfile.json');
 
 client.commands = new Discord.Collection();
