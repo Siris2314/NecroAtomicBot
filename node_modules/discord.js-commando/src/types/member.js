@@ -7,11 +7,11 @@ class MemberArgumentType extends ArgumentType {
 		super(client, 'member');
 	}
 
-	async validate(val, msg, arg) {
-		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
+	async validate(value, msg, arg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
-				const member = await msg.guild.members.fetch(await msg.client.users.fetch(matches[1]));
+				const member = await msg.guild.fetchMember(await msg.client.fetchUser(matches[1]));
 				if(!member) return false;
 				if(arg.oneOf && !arg.oneOf.includes(member.id)) return false;
 				return true;
@@ -19,35 +19,35 @@ class MemberArgumentType extends ArgumentType {
 				return false;
 			}
 		}
-		const search = val.toLowerCase();
-		let members = msg.guild.members.cache.filter(memberFilterInexact(search));
-		if(members.size === 0) return false;
-		if(members.size === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(members.first().id)) return false;
+		const search = value.toLowerCase();
+		let members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return false;
+		if(members.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(members[0].id)) return false;
 			return true;
 		}
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.size === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(exactMembers.first().id)) return false;
+		if(exactMembers.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactMembers[0].id)) return false;
 			return true;
 		}
-		if(exactMembers.size > 0) members = exactMembers;
-		return members.size <= 15 ?
+		if(exactMembers.length > 0) members = exactMembers;
+		return members.length <= 15 ?
 			`${disambiguation(
 				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'members', null
 			)}\n` :
 			'Multiple members found. Please be more specific.';
 	}
 
-	parse(val, msg) {
-		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
+	parse(value, msg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.guild.member(matches[1]) || null;
-		const search = val.toLowerCase();
-		const members = msg.guild.members.cache.filter(memberFilterInexact(search));
-		if(members.size === 0) return null;
-		if(members.size === 1) return members.first();
+		const search = value.toLowerCase();
+		const members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return null;
+		if(members.length === 1) return members[0];
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.size === 1) return exactMembers.first();
+		if(exactMembers.length === 1) return exactMembers[0];
 		return null;
 	}
 }
