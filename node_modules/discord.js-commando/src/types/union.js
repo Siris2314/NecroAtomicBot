@@ -21,8 +21,8 @@ class ArgumentUnionType extends ArgumentType {
 		}
 	}
 
-	async validate(val, msg, arg) {
-		let results = this.types.map(type => !type.isEmpty(val, msg, arg) && type.validate(val, msg, arg));
+	async validate(value, msg, arg) {
+		let results = this.types.map(type => !type.isEmpty(value, msg, arg) ? type.validate(value, msg, arg) : false);
 		results = await Promise.all(results);
 		if(results.some(valid => valid && typeof valid !== 'string')) return true;
 		const errors = results.filter(valid => typeof valid === 'string');
@@ -30,17 +30,17 @@ class ArgumentUnionType extends ArgumentType {
 		return false;
 	}
 
-	async parse(val, msg, arg) {
-		let results = this.types.map(type => !type.isEmpty(val, msg, arg) && type.validate(val, msg, arg));
+	async parse(value, msg, arg) {
+		let results = this.types.map(type => !type.isEmpty(value, msg, arg) ? type.validate(value, msg, arg) : false);
 		results = await Promise.all(results);
 		for(let i = 0; i < results.length; i++) {
-			if(results[i] && typeof results[i] !== 'string') return this.types[i].parse(val, msg, arg);
+			if(results[i] && typeof results[i] !== 'string') return this.types[i].parse(value, msg, arg);
 		}
-		throw new Error(`Couldn't parse value "${val}" with union type ${this.id}.`);
+		throw new Error(`Couldn't parse value "${value}" with union type ${this.id}.`);
 	}
 
-	isEmpty(val, msg, arg) {
-		return !this.types.some(type => !type.isEmpty(val, msg, arg));
+	isEmpty(value, msg, arg) {
+		return !this.types.some(type => !type.isEmpty(value, msg, arg));
 	}
 }
 

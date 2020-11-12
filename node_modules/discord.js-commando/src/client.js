@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const CommandoRegistry = require('./registry');
+const CommandRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
 
@@ -11,9 +11,11 @@ class CommandoClient extends discord.Client {
 	/**
 	 * Options for a CommandoClient
 	 * @typedef {ClientOptions} CommandoClientOptions
+	 * @property {boolean} [selfbot=false] - Whether the command dispatcher should be in selfbot mode
 	 * @property {string} [commandPrefix=!] - Default command prefix
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
+	 * @property {boolean} [unknownCommandResponse=true] - Whether the bot should respond to an unknown command
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
@@ -22,17 +24,19 @@ class CommandoClient extends discord.Client {
 	 * @param {CommandoClientOptions} [options] - Options for the client
 	 */
 	constructor(options = {}) {
+		if(typeof options.selfbot === 'undefined') options.selfbot = false;
 		if(typeof options.commandPrefix === 'undefined') options.commandPrefix = '!';
 		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
+		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
 		super(options);
 
 		/**
 		 * The client's command registry
-		 * @type {CommandoRegistry}
+		 * @type {CommandRegistry}
 		 */
-		this.registry = new CommandoRegistry(this);
+		this.registry = new CommandRegistry(this);
 
 		/**
 		 * The client's command dispatcher
@@ -71,13 +75,13 @@ class CommandoClient extends discord.Client {
 			this.once('ready', () => {
 				if(options.owner instanceof Array || options.owner instanceof Set) {
 					for(const owner of options.owner) {
-						this.users.fetch(owner).catch(err => {
+						this.fetchUser(owner).catch(err => {
 							this.emit('warn', `Unable to fetch owner ${owner}.`);
 							this.emit('error', err);
 						});
 					}
 				} else {
-					this.users.fetch(options.owner).catch(err => {
+					this.fetchUser(options.owner).catch(err => {
 						this.emit('warn', `Unable to fetch owner ${options.owner}.`);
 						this.emit('error', err);
 					});
@@ -111,9 +115,9 @@ class CommandoClient extends discord.Client {
 	 */
 	get owners() {
 		if(!this.options.owner) return null;
-		if(typeof this.options.owner === 'string') return [this.users.cache.get(this.options.owner)];
+		if(typeof this.options.owner === 'string') return [this.users.get(this.options.owner)];
 		const owners = [];
-		for(const owner of this.options.owner) owners.push(this.users.cache.get(owner));
+		for(const owner of this.options.owner) owners.push(this.users.get(owner));
 		return owners;
 	}
 
@@ -124,7 +128,7 @@ class CommandoClient extends discord.Client {
 	 */
 	isOwner(user) {
 		if(!this.options.owner) return false;
-		user = this.users.resolve(user);
+		user = this.resolver.resolveUser(user);
 		if(!user) throw new RangeError('Unable to resolve user.');
 		if(typeof this.options.owner === 'string') return user.id === this.options.owner;
 		if(this.options.owner instanceof Array) return this.options.owner.includes(user.id);
@@ -138,28 +142,28 @@ class CommandoClient extends discord.Client {
 	 * @return {Promise<void>}
 	 */
 	async setProvider(provider) {
-		const newProvider = await provider;
-		this.provider = newProvider;
+		provider = await provider;
+		this.provider = provider;
 
 		if(this.readyTimestamp) {
-			this.emit('debug', `Provider set to ${newProvider.constructor.name} - initialising...`);
-			await newProvider.init(this);
+			this.emit('debug', `Provider set to ${provider.constructor.name} - initialising...`);
+			await provider.init(this);
 			this.emit('debug', 'Provider finished initialisation.');
 			return undefined;
 		}
 
-		this.emit('debug', `Provider set to ${newProvider.constructor.name} - will initialise once ready.`);
+		this.emit('debug', `Provider set to ${provider.constructor.name} - will initialise once ready.`);
 		await new Promise(resolve => {
 			this.once('ready', () => {
 				this.emit('debug', `Initialising provider...`);
-				resolve(newProvider.init(this));
+				resolve(provider.init(this));
 			});
 		});
 
 		/**
-		 * Emitted upon the client's provider finishing initialisation
+		 * Emitted upon the client's {@link SettingsProvider} finishing initialisation
 		 * @event CommandoClient#providerReady
-		 * @param {SettingProvider} provider - Provider that was initialised
+		 * @param {SettingsProvider} provider - Provider that was initialised
 		 */
 		this.emit('providerReady', provider);
 		this.emit('debug', 'Provider finished initialisation.');

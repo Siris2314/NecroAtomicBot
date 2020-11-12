@@ -1,13 +1,15 @@
 /// <reference path='index.d.ts' />
 
 import { Message } from 'discord.js';
-import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
-const client = new CommandoClient();
+const client = new CommandoClient({
+	unknownCommandResponse: true
+});
 
 client.on('message', (message: Message) => {
 	if (message.content === 'hello') {
-		message.channel.send('o/');
+		message.channel.sendMessage('o/');
 	}
 });
 
@@ -21,11 +23,11 @@ class TestCommand extends Command {
 		});
 	}
 
-	public hasPermission(message: CommandoMessage): boolean {
+	public hasPermission(message: CommandMessage): boolean {
 		return true;
 	}
 
-	public async run(message: CommandoMessage, args: {} | string | string[]): Promise<Message | Message[]> {
+	public async run(message: CommandMessage, args: {} | string | string[]): Promise<Message | Message[]> {
 		return message.say('test');
 	}
 }

@@ -5,13 +5,13 @@ class MessageArgumentType extends ArgumentType {
 		super(client, 'message');
 	}
 
-	async validate(val, msg) {
-		if(!/^[0-9]+$/.test(val)) return false;
-		return Boolean(await msg.channel.messages.fetch(val).catch(() => null));
+	async validate(value, msg) {
+		if(!/^[0-9]+$/.test(value)) return false;
+		return Boolean(await msg.channel.fetchMessage(value).catch(() => null));
 	}
 
-	parse(val, msg) {
-		return msg.channel.messages.cache.get(val);
+	parse(value, msg) {
+		return msg.channel.messages.get(value);
 	}
 }
 

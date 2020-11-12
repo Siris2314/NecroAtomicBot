@@ -5,12 +5,10 @@ class IntegerArgumentType extends ArgumentType {
 		super(client, 'integer');
 	}
 
-	validate(val, msg, arg) {
-		const int = Number.parseInt(val);
+	validate(value, msg, arg) {
+		const int = Number.parseInt(value);
 		if(Number.isNaN(int)) return false;
-		if(arg.oneOf && !arg.oneOf.includes(int)) {
-			return `Please enter one of the following options: ${arg.oneOf.map(opt => `\`${opt}\``).join(', ')}`;
-		}
+		if(arg.oneOf && !arg.oneOf.includes(int)) return false;
 		if(arg.min !== null && typeof arg.min !== 'undefined' && int < arg.min) {
 			return `Please enter a number above or exactly ${arg.min}.`;
 		}
@@ -20,8 +18,8 @@ class IntegerArgumentType extends ArgumentType {
 		return true;
 	}
 
-	parse(val) {
-		return Number.parseInt(val);
+	parse(value) {
+		return Number.parseInt(value);
 	}
 }
 

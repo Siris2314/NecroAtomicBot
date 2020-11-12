@@ -1,11 +1,11 @@
+const discord = require('discord.js');
+
 module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
-	CommandoRegistry: require('./registry'),
-	CommandoGuild: require('./extensions/guild'),
-	CommandoMessage: require('./extensions/message'),
 	Command: require('./commands/base'),
 	CommandGroup: require('./commands/group'),
+	CommandMessage: require('./commands/message'),
 	ArgumentCollector: require('./commands/collector'),
 	Argument: require('./commands/argument'),
 	ArgumentType: require('./types/base'),
@@ -18,11 +18,10 @@ module.exports = {
 	SettingProvider: require('./providers/base'),
 	get SQLiteProvider() {
 		return require('./providers/sqlite');
-	},
-	get SyncSQLiteProvider() {
-		return require('./providers/sqlite-sync');
 	}
 };
+
+require('./extensions/guild').applyToClass(discord.Guild);
 
 /**
  * @external Channel
@@ -43,6 +42,10 @@ module.exports = {
 /**
  * @external DMChannel
  * @see {@link https://discord.js.org/#/docs/main/master/class/DMChannel}
+ */
+/**
+ * @external GroupDMChannel
+ * @see {@link https://discord.js.org/#/docs/main/master/class/GroupDMChannel}
  */
 /**
  * @external Guild
@@ -77,10 +80,6 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/typedef/MessageOptions}
  */
 /**
- * @external PermissionResolvable
- * @see {@link https://discord.js.org/#/docs/main/master/typedef/PermissionResolvable}
- */
-/**
  * @external Role
  * @see {@link https://discord.js.org/#/docs/main/master/class/Role}
  */
@@ -113,8 +112,8 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/class/Webhook}
  */
 /**
- * @external MessageEmbed
- * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed}
+ * @external RichEmbed
+ * @see {@link https://discord.js.org/#/docs/main/master/class/RichEmbed}
  */
 /**
  * @external ShardingManager

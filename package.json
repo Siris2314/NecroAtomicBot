@@ -1,0 +1,39 @@
+{
+  "name": "necroatomicbot",
+  "version": "1.0.0",
+  "description": "A Discord Bot",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "canvas": "^2.6.1",
+    "discord.js": "^12.4.0",
+    "discord.js-commando": "^0.10.0",
+    "math": "0.0.3",
+    "mathjs": "^7.5.1",
+    "node-fetch": "^2.6.1",
+    "node-superfetch": "^0.1.10",
+    "random-puppy": "^1.1.0",
+    "request-promise-native": "^1.0.9",
+    "weather-js": "^2.0.0",
+    "weather.js": "^0.1.0",
+    "ytsr": "^1.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "Hello"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Siris2314/NecroAtomicBot.git"
+  },
+  "keywords": [
+    "NecroBot",
+    "JSGeo"
+  ],
+  "author": "Arihant Tripathi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Siris2314/NecroAtomicBot/issues"
+  },
+  "homepage": "https://github.com/Siris2314/NecroAtomicBot#readme"
+}

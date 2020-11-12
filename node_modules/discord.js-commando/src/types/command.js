@@ -7,8 +7,8 @@ class CommandArgumentType extends ArgumentType {
 		super(client, 'command');
 	}
 
-	validate(val) {
-		const commands = this.client.registry.findCommands(val);
+	validate(value) {
+		const commands = this.client.registry.findCommands(value);
 		if(commands.length === 1) return true;
 		if(commands.length === 0) return false;
 		return commands.length <= 15 ?
@@ -16,8 +16,8 @@ class CommandArgumentType extends ArgumentType {
 			'Multiple commands found. Please be more specific.';
 	}
 
-	parse(val) {
-		return this.client.registry.findCommands(val)[0];
+	parse(value) {
+		return this.client.registry.findCommands(value)[0];
 	}
 }
 

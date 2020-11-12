@@ -7,36 +7,36 @@ class RoleArgumentType extends ArgumentType {
 		super(client, 'role');
 	}
 
-	validate(val, msg, arg) {
-		const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
-		if(matches) return msg.guild.roles.cache.has(matches[1]);
-		const search = val.toLowerCase();
-		let roles = msg.guild.roles.cache.filter(nameFilterInexact(search));
-		if(roles.size === 0) return false;
-		if(roles.size === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(roles.first().id)) return false;
+	validate(value, msg, arg) {
+		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.has(matches[1]);
+		const search = value.toLowerCase();
+		let roles = msg.guild.roles.filterArray(nameFilterInexact(search));
+		if(roles.length === 0) return false;
+		if(roles.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(roles[0].id)) return false;
 			return true;
 		}
 		const exactRoles = roles.filter(nameFilterExact(search));
-		if(exactRoles.size === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(exactRoles.first().id)) return false;
+		if(exactRoles.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactRoles[0].id)) return false;
 			return true;
 		}
-		if(exactRoles.size > 0) roles = exactRoles;
-		return roles.size <= 15 ?
+		if(exactRoles.length > 0) roles = exactRoles;
+		return roles.length <= 15 ?
 			`${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n` :
 			'Multiple roles found. Please be more specific.';
 	}
 
-	parse(val, msg) {
-		const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
-		if(matches) return msg.guild.roles.cache.get(matches[1]) || null;
-		const search = val.toLowerCase();
-		const roles = msg.guild.roles.cache.filter(nameFilterInexact(search));
-		if(roles.size === 0) return null;
-		if(roles.size === 1) return roles.first();
+	parse(value, msg) {
+		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.get(matches[1]) || null;
+		const search = value.toLowerCase();
+		const roles = msg.guild.roles.filterArray(nameFilterInexact(search));
+		if(roles.length === 0) return null;
+		if(roles.length === 1) return roles[0];
 		const exactRoles = roles.filter(nameFilterExact(search));
-		if(exactRoles.size === 1) return exactRoles.first();
+		if(exactRoles.length === 1) return exactRoles[0];
 		return null;
 	}
 }
