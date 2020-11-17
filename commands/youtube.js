@@ -1,32 +1,47 @@
-const ytsr = require('ytsr')
+const ytdl = require('ytdl-core');
 const Discord = require('discord.js')
+const YouTube = require('simple-youtube-api')
 
 
 module.exports = {
-  name:"youtube",
-  description: "Returns Youtube Link",
+
+  name: "youtube",
+  description: "searchs on yt",
+
 
   async execute(message,args){
 
-    const query = args.join(" ");
 
-    if(!query){
-      return message.channel.send("Provide a search please")
-    }
 
-    const res = await ytsr(query).catch(e => {
-      return message.channel.send("No results found!");
-    });
 
-    const video = res.items.filter(i => i.type === "video")[0];
-    if(!video){
-      return message.channel.send("No results");
-    }
+    const youtube = new YouTube('AIzaSyDj2B2QhOqiRBOtw73THhklOsJRvYtLlOY')
+    const searchString = args.slice(1).join(' ')
+    const url = args[1] ? args[1].replace(/<(._)>/g, '$1') : ''
 
-    const embed = new Discord.MessageEmbed()
-      .setTitle(video.title)
-      .setImage(video.thumbnail)
+    try {
+      var video = await youtube.getVideoByID(url)
 
-    message.channel.send(embed)
+    } catch(error){
+      try {
+        var videos = await youtube.searchVideos(searchString, 1)
+        var video  = await youtube.getVideosByID(videos[0].id)
+      } catch(error){
+        return message.channel.send("Could not find result")
+      }
+
   }
-};
+
+    const song = {
+      id: video.id,
+      title: video.title,
+      url: `https://www.youtube.com/watch?v=${video.id}`
+    }
+
+   const embed  = new Discord.MessageEmbed()
+    .setTitle(`Youtube Vid: ${video}`)
+    .setDescription('')
+
+   message.channel.send(embed)
+
+}
+}
