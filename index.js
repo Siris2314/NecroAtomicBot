@@ -53,14 +53,6 @@ client.on ('message', async message => {
     return;
   }
 
-
-
-
-
-
-
-
-
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
@@ -68,7 +60,7 @@ client.on ('message', async message => {
     return;
   }
   try{
-    client.commands.get(command).execute(message, args);
+    client.commands.get(command).execute(message, args, client);
   }catch(error){
     console.error(error);
     message.reply("Issue loading command");

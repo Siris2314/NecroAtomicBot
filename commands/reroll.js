@@ -7,9 +7,9 @@ module.exports = {
   name: "reroll",
   description: "rerolls giveaway",
 
-  async execute(message,args){
+  async execute(message,args, client){
 
-    if(!message.member.hasPermission("MANAGE_MESSAGE")){
+    if (!message.member._roles.find(role => role == 768487202156970034)){
       return message.channel.send("You do not have perms to reroll giveaway")
     }
 

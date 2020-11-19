@@ -5,9 +5,8 @@ module.exports = {
   name: "giveaway",
   description: "Starts a giveaway",
 
-  async execute(client, message, args){
-
-    if(!message.member.hasPermission("MANAGE_MESSAGES")){
+  async execute( message, args, client){
+    if (!message.member._roles.find(role => role == 768487202156970034)){
       return message.channel.send("You do not have perms to start giveaway")
     }
 
@@ -39,10 +38,10 @@ module.exports = {
       time: ms(giveawayDuration),
       prize: giveawayPrize,
       winnerCount: giveawayWinners,
-      hostedBy: client.config.hostedBy ? message.author: null,
+      hostedBy: message.author,
       messages: {
-      giveaway: (client.config.everyoneMention ? "@everyone\n\n" : "") + "GIVEAWAY",
-      giveawayEnded: (client.config.everyoneMention ? "@everyone\n\n" : "") + "GIVEAWAY ENDED",
+      giveaway: "@everyone\n\n" + "GIVEAWAY",
+      giveawayEnded: "@everyone\n\n" + "GIVEAWAY ENDED",
       timeRemaining: "Time remaining: **{duration}**",
       inviteToParticipate: "Reach with 🎁 to enter",
       winMessage: "Congrats {winners}, you won **{prize}**",
@@ -56,11 +55,8 @@ module.exports = {
         minutes: "minutes",
         hours: "hours",
         days: "days"
-
-
       }
-
-      }
+    }
 
     })
 
