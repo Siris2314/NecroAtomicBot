@@ -14,7 +14,7 @@ client.giveawaysManager = new GiveawaysManager(client, {
     exemptPermission: ["MANAGE_MESSAGES", "ADMINSTRATOR"],
     embedColor: "RANDOM",
     reaction: "🎁"
- 
+
 
   }
 })
@@ -65,7 +65,22 @@ client.on ('message', async message => {
     console.error(error);
     message.reply("Issue loading command");
   }
+  let counter = 0;
 
+  if(message.content === "fuck ari"){
+    counter = counter + 1;
+  }
+
+
+ if(message.content === "!ari"){
+  const embed = new Discord.MessageEmbed()
+    .setTitle("Fuck Ari Command")
+    .setDescription('')
+    .addField(counter)
+
+
+  return message.channel.send(embed);
+}
 
 
 
