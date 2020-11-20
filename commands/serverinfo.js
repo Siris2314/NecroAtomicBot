@@ -8,32 +8,26 @@ module.exports = {
 
   execute(message,args){
 
-  const roles = message.guild.roles.cache;
-  const members = message.guild.members.cache;
-  const channels = message.guild.channels.cache;
-  const emojis = message.guild.emojis.cache;
-
-  const embed = new Discord.MessageEmbed()
-    .setDescription(`**Guild Information for __${message.guild.name}__**`)
-    .setColor("RANDOM")
-    .setThumbnail(message.guild.iconURL({dynamic: true}))
-    .addField('General', [
-      `**> Name: **${message.guild.name}`,
-      `**> ID: **${message.guild.ID}`,
-      `**> Owner: **${message.guild.owner.user.tag}`,
-      `**> Region: **${message.guild.region}`,
-      `**> Boost Tier: **${message.guild.premiumTier}`,
-      `**> Time Created: **${message.guild.createdTimestamp}`,
-      ])
-      .addField('Stats', [
-        `**> Role Count: **${roles.length}`,
-        `**> Emoji Count: **${emojis.size}`,
-        `**> Member Count: **${message.guild.memberCount}`,
-        `**> Humans: **${members.filter(member => !member.user.bot).size}`
-        `**> Bots: **${members.filter(member => member.user.bot).size}`
-      ])
-
+    const roles = message.guild.roles.cache;
+    const emojis = message.guild.emojis.cache;
+    const embed = new Discord.MessageEmbed()
+        .setDescription(`**Guild Information for __${message.guild.name}__**`)
+        .setColor("#0020ff")
+        .setThumbnail(message.guild.iconURL({ dynamic: true }))
+        .addField("General", [
+            `**> Name: **${message.guild.name}`,
+            `**> ID: **${message.guild.id}`,
+            `**> Owner: **<@${message.guild.ownerID}>`,
+            `**> Region: **${message.guild.region}`,
+            `**> Boost Tier: **${message.guild.premiumTier}`,
+            `**> Time Created: **${new Date(message.guild.createdTimestamp)}`,
+        ])
+        .addField("Stats", [
+            `**> Role Count: **${roles.array().length}`,
+            `**> Emoji Count: **${emojis.size}`,
+            `**> Member Count: **${message.guild.memberCount}`,
+        ]);
     return message.channel.send(embed);
 
- }
+  }
 }
