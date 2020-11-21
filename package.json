@@ -17,6 +17,7 @@
     "node-superfetch": "^0.1.10",
     "querystring": "^0.2.0",
     "random-puppy": "^1.1.0",
+    "reconlx": "^1.0.42",
     "relevant-urban": "^2.0.0",
     "request-promise-native": "^1.0.9",
     "simple-youtube-api": "^5.2.1",
