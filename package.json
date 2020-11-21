@@ -21,6 +21,7 @@
     "relevant-urban": "^2.0.0",
     "request-promise-native": "^1.0.9",
     "simple-youtube-api": "^5.2.1",
+    "translate": "^1.1.2",
     "twemoji-parser": "^13.0.0",
     "weather-js": "^2.0.0",
     "weather.js": "^0.1.0",
