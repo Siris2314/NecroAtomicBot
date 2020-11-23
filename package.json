@@ -5,7 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "axios": "^0.21.0",
+    "canvacord": "^5.0.8",
     "canvas": "^2.6.1",
+    "chartjs-node-canvas": "^3.0.6",
     "discord-giveaways": "^4.2.1",
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
@@ -21,6 +23,7 @@
     "relevant-urban": "^2.0.0",
     "request-promise-native": "^1.0.9",
     "simple-youtube-api": "^5.2.1",
+    "sqlite3": "^5.0.0",
     "translate": "^1.1.2",
     "twemoji-parser": "^13.0.0",
     "weather-js": "^2.0.0",

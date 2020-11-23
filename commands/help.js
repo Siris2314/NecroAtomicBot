@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
-const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
+const commandFile = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
 
 module.exports = {
@@ -16,8 +16,8 @@ module.exports = {
       .setThumbnail(this.client.user.displayAvatarURL({dynamic: true}))
       .setTimestamp();
 
-      if(commandFiles){
-        const cmd = this.client.commandFiles.get(commandFiles)  || this.client.commandFiles.get(this.aliases.get(commandFiles));
+      if(commandFile){
+        const cmd = this.client.commandFile.get(commandFiles)  || this.client.commandFile.get(this.aliases.get(commandFile));
 
       }
 
