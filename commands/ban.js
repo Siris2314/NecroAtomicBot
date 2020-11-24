@@ -40,12 +40,12 @@ module.exports = {
     })
 
     const banembed = new Discord.MessageEmbed()
-     .setTitle('Member Kicked')
+     .setTitle('Member Banned')
      .setThumbnail(member.user.displayAvatarURL())
-     .addFiled('User Kicked', member)
-     .addField('Kicked by', message.author)
+     .addField('User Banned', member)
+     .addField('Banned by', message.author)
      .addField('Reason', reason)
-     .setFooter('Time Kicked', client.user.displayAvatarURL())
+     .setFooter('Time Banned', client.user.displayAvatarURL())
      .setTimestamp()
 
      return message.channel.send(banembed);
