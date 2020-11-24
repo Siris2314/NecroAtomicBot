@@ -1,12 +1,28 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
+const {CanvasRenderService} = require('chartjs-node-canvas')
 
 module.exports = {
     name: "covid",
     description: "Tracks Cases WorldWide",
 
-    execute(message, args) {
+    async execute(message, args) {
         let countries = args.join(" ");
+
+        const width = 800
+        const height = 600
+
+        const chartCallback = (ChartJS) => {
+          ChartJS.plugins.register({
+            beforeDraw: (chartInstance) => {
+              const {chart} = chartInstance
+              const {ctx} = chart
+              ctx.fillStyle = 'white'
+              ctx.fillRect(0,0, chart.width, chart.height)
+            }
+          })
+
+        }
 
         const noArgs = new Discord.MessageEmbed()
             .setTitle("Missing Arguments")
@@ -53,5 +69,26 @@ module.exports = {
                     return message.channel.send("Invalid country provided");
                 });
         }
+        const canvas = new CanvasRenderService(width, height, chartCallback)
+        const configuration = {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+            {
+            label: 'Cases',
+              data: confirmed,
+              color: 'RANDOM',
+              backgroundColor: 'RANDOM',
+              borderColor: 'RANDOM',
+              fill: false
+            }
+            ]
+          }
+        }
+        const image = await canvas.renderToBuffer(configuration)
+        const attachment = new Discord.MessageAttachment(image)
+
+        message.channel.send(attachment)
     },
 };

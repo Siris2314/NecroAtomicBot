@@ -42,7 +42,7 @@ module.exports = {
     const kickembed = new Discord.MessageEmbed()
      .setTitle('Member Kicked')
      .setThumbnail(member.user.displayAvatarURL())
-     .addFiled('User Kicked', member)
+     .addField('User Kicked', member)
      .addField('Kicked by', message.author)
      .addField('Reason', reason)
      .setFooter('Time Kicked', client.user.displayAvatarURL())
