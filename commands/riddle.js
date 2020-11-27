@@ -24,6 +24,7 @@ module.exports = {
       .addField(data.question)
       .setDescription('')
       .addField('||' + data.answer + '||')
+      .setDescription('')
       .setColor("RANDOM")
 
     message.channel.send(embed)

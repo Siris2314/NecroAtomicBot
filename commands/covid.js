@@ -73,10 +73,10 @@ module.exports = {
         const configuration = {
           type: 'line',
           data: {
-            labels,
+          
             datasets: [
             {
-            label: 'Cases',
+             label: 'Cases',
               data: confirmed,
               color: 'RANDOM',
               backgroundColor: 'RANDOM',
