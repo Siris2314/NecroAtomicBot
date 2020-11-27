@@ -4,6 +4,7 @@
   "description": "A Discord Bot",
   "main": "index.js",
   "dependencies": {
+    "anime-scraper": "^3.1.2",
     "axios": "^0.21.0",
     "canvacord": "^5.0.8",
     "canvas": "^2.6.1",
@@ -14,6 +15,7 @@
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
     "imdb-api": "^4.4.1",
+    "kitsu.js": "^2.0.0",
     "math": "0.0.3",
     "mathjs": "^7.5.1",
     "ms": "^2.1.2",
