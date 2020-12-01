@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
 const {GiveawaysManager} = require('discord-giveaways')
+const mongo = require('./mongo.js')
+const levels = require('./levels.js')
 
 
 client.commands = new Discord.Collection();
@@ -23,9 +25,19 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log(bot_info.name);
   console.log(bot_info.version);
+
+  await mongo().then(mongoose => {
+    try {
+      console.log('Connected to mongo')
+    } finally {
+      mongoose.connection.close()
+    }
+  })
+
+  levels(client);
 
 
 

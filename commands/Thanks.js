@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const thanksSchema = ('@schemas/thanks-schemas')
+const thanksSchema = ('../schemas/thanks-schemas.js')
 
 module.exports = {
 

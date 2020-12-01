@@ -1,37 +1,44 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const commandFile = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
-
+const {prefix, token, bot_info} = require('../botconfig.json');
 
 module.exports = {
 
-  name: "help",
-  description: "Helper command for bot",
+  name:'help',
+  description: 'Shows a list of commands and returns information about them',
 
   async execute(message, args, client){
 
-    const embed = new Discord.MessageEmbed()
-      .setColor("RANDOM")
-      .setAuthor(`${message.guild.name} Help Center`, message.guild.iconURL({dynamic: true}))
-      .setThumbnail(this.client.user.displayAvatarURL({dynamic: true}))
-      .setTimestamp();
+    const data = [];
+    const {commands} = message.client;
 
-      if(commandFile){
-        const cmd = this.client.commandFile.get(commandFiles)  || this.client.commandFile.get(this.aliases.get(commandFile));
+    if(!args.length){
+      data.push("List of Commands: x")
+      data.push(`${prefix}` + commands.map(c => c.name).join(`\n${prefix}`))
+      data.push(`\nYou can use ${prefix}help [command name] to return info about a specific command`)
 
-      }
+    }
 
-      if(!cmd){
-        return message.channel.send("Invalid Command")
-      }
+    const name = args[0]
 
-       embed.setAuthor(`Command Helper`, this.client.user.displayAvatarURL())
-       embed.setDescription([
-         `**> Description:** ${cmd.description}`
-       ])
+    const cmd = commands.get(name)
 
-    return message.channel.send(embed);
+    if(!cmd){
+      message.reply(`${name} is not a valid command`)
+    }else {
+
+        data.push(`Name: ${cmd.name}`)
+
+    }
 
 
+
+    if(cmd.description){
+
+      data.push(`Description: ${cmd.description}`)
+
+    }
+    else{
+      data.push(`Command has no description`)
+    }
+    message.channel.send(data)
   }
 }
