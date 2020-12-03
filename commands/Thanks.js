@@ -1,3 +1,4 @@
+const mongo = require('../mongo.js')
 const Discord = require('discord.js')
 const thanksSchema = ('../schemas/thanks-schemas.js')
 
