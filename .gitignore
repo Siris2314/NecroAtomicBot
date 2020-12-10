@@ -1,3 +1,5 @@
 botconfig.json
 /node_modules
 eval.js
+commands-enable.js
+command-disable.js

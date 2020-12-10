@@ -17,4 +17,4 @@ const thanksSchema = mongoose.Schema({
 
 })
 
-module.exports = mongoose.model('thanks-data', thanksSchema, 'thanks-data')
+module.exports = thanksSchema =mongoose.model('thanks', thanksSchema)
