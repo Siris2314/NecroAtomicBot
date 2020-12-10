@@ -1,6 +1,8 @@
 const mongo = require('../mongo.js')
 const Discord = require('discord.js')
 const thanksSchema = ('../schemas/thanks-schemas.js')
+const mongoose = require('mongoose')
+
 
 module.exports = {
 
@@ -18,7 +20,7 @@ module.exports = {
 
     if(!target){
       message.channel.send('Please Tell Me Who to Thank')
-      return
+
     }
 
     const {guild} = message

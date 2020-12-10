@@ -28,6 +28,12 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 client.once('ready', async () => {
   console.log(bot_info.name);
   console.log(bot_info.version);
+  function randomStatus() {
+    let status = ['Working', 'Trying to Stay Up', 'Sniping Courses','Helping Homies']
+    let rstatus = Math.floor(Math.random() * status.length)
+    client.user.setActivity(status[rstatus], {type: "TASK: "})
+
+  }
 
   await mongo().then(mongoose => {
     try {
@@ -77,23 +83,6 @@ client.on ('message', async message => {
     console.error(error);
     message.reply("Issue loading command");
   }
-  let counter = 0;
-
-  if(message.content === "fuck ari"){
-    counter = counter + 1;
-  }
-
-
- if(message.content === "!ari"){
-  const embed = new Discord.MessageEmbed()
-    .setTitle("Fuck Ari Command")
-    .setDescription('')
-    .addField(counter)
-
-
-  return message.channel.send(embed);
-}
-
 
 
 
