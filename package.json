@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@discordjs/opus": "github:discordjs/opus",
+    "alexa-bot-api": "^0.1.4",
     "anime-scraper": "^3.1.2",
     "axios": "^0.21.0",
     "canvacord": "^5.0.8",
