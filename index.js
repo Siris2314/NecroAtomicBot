@@ -5,6 +5,9 @@ const fs = require('fs');
 const {GiveawaysManager} = require('discord-giveaways')
 const mongo = require('./mongo.js')
 const levels = require('./levels.js')
+const alexa = require("alexa-bot-api");
+var chatbot = new alexa("aw2plm");
+
 
 
 client.commands = new Discord.Collection();
@@ -70,6 +73,11 @@ client.on ('message', async message => {
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
   }
+
+    let content = message.content;
+      if(!content) return;
+          chatbot.getReply(content).then(r => message.channel.send(r));
+          
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
