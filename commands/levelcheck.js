@@ -1,5 +1,4 @@
-const levels = require('../levels.js');
-
+const profileSchema = require('../schemas/profile-schema')
 module.exports = {
   name: 'level',
   description: 'returns user level',
@@ -11,6 +10,17 @@ module.exports = {
     const guildId = message.guild.id
     const userId = target.id
 
-  
+    const result = await profileSchema.findOne({
+      guildId,
+      userId
+
+    }).then(result => {
+      console.log(result)
+      message.reply(`Your current level is **${result}**`)
+    })
+
+
+
+
   }
 }

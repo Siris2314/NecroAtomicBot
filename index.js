@@ -1,4 +1,4 @@
-const {prefix, token, bot_info} = require('./botconfig.json');
+const {prefix, token, bot_info, youtube} = require('./botconfig.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
@@ -7,7 +7,16 @@ const mongo = require('./mongo.js')
 const levels = require('./levels.js')
 const alexa = require("alexa-bot-api");
 var chatbot = new alexa("aw2plm");
+const schema = require('./schemas/custom-commands.js')
+const memberCount = require('./member-count.js')
+const search = require('youtube-search')
 
+
+const opts = {
+  maxResults: 25,
+  key: youtube,
+  type: 'video'
+}
 
 
 client.commands = new Discord.Collection();
@@ -36,6 +45,9 @@ client.once('ready', async () => {
     let rstatus = Math.floor(Math.random() * status.length)
     client.user.setActivity(status[rstatus], {type: "TASK: "})
 
+
+
+
   }
 
   await mongo().then(mongoose => {
@@ -47,6 +59,7 @@ client.once('ready', async () => {
   })
 
   levels(client);
+  memberCount(client);
 
 
 
@@ -74,13 +87,68 @@ client.on ('message', async message => {
     return;
   }
 
+  if(message.content.toLowerCase() == '!search'){
+    let embed = new Discord.MessageEmbed()
+    .setColor('RANDOM')
+    .setDescription("Please enter a search query. Please narrow your search")
+    .setTitle("Youtube Search API")
+
+    let embedMsg = await message.channel.send(embed);
+    let filter = m => m.author.id === message.author.id;
+    let query = await message.channel.awaitMessages(filter, {max: 1});
+    console.log(query)
+    let results = await search(query.first().content, opts).catch(err => console.log(err));
+    if(results){
+      let youtubeResults = results.results;
+      let i = 0;
+      let titles = youtubeResults.map(result => {
+        i++;
+        return i + ") " + result.title;
+      });
+
+      console.log(titles);
+      message.channel.send({
+        embed: {
+          title:'Select which video you want by typing the number',
+          description: titles.join("\n")
+        }
+      }).catch(err => console.log(err));
+
+      filter = m => (m.author.id === message.author.id) && m.content >= 1 && m.content <= youtubeResults.length
+      let collected = await message.channel.awaitMessages(filter, {max: 1});
+      let selected = youtubeResults[collected.first().content - 1]
+
+      embed = new Discord.MessageEmbed()
+        .setTitle(`${selected.title}`)
+        .setURL(`${selected.link}`)
+        .setDescription(`${selected.description}`)
+        .setThumbnail(`${selected.thumbnails.default.url}`)
+
+        message.channel.send(embed);
+
+    }
+  }
+
+
+
+
+
+
     let content = message.content;
       if(!content) return;
           chatbot.getReply(content).then(r => message.channel.send(r));
-          
+
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
+
+  const data = await schema.findOne({Guild: message.guild.id, Command: command})
+
+  if(data){
+    message.channel.send(data.Response)
+  }
+
+
 
   if(!client.commands.has(command)){
     return;
@@ -97,6 +165,9 @@ client.on ('message', async message => {
 
 
 });
+
+
+
 
 
 
