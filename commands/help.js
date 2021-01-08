@@ -3,7 +3,7 @@ const { readdirSync } = require("fs");
 const {prefix, token, bot_info} = require('../botconfig.json');
 
 module.exports = {
-  name: "help",
+  name: "menu",
   aliases : ['h'],
   description: "Shows all available bot commands.",
    async execute (message, args, client) {
