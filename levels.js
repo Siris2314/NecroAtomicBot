@@ -1,5 +1,5 @@
-const mongo = require('./mongo')
-const profileSchema = require('./schemas/profile-schema')
+const mongo = require('./mongo.js')
+const profileSchema = require('./schemas/profile-schema.js')
 
 module.exports = (client) => {
   client.on('message', message => {
@@ -9,7 +9,7 @@ module.exports = (client) => {
 
   })
 }
-const getNeededXP = level => level * 1000;
+const getNeededXP = (level) => level * level * 100;
 
 const addXP = async (guildId, userId, xpToAdd, message) => {
   await mongo().then(async mongoose => {
