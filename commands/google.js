@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const request = require('node-superfetch');
-const { google } = require('../botconfig.json');
+require('dotenv').config();
+const google = process.env.google;
 
 module.exports = {
 

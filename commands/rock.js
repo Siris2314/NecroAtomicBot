@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
-const {prefix, token, bot_info} = require('../botconfig.json');
-
+require('dotenv').config();
+const token = process.env.token;
+const prefix = process.env.prefix;
 module.exports = {
 
   name:"rock",

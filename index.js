@@ -1,4 +1,8 @@
-const {prefix, token, bot_info, youtube} = require('./botconfig.json');
+require('dotenv').config();
+const token = process.env.token;
+const prefix = process.env.prefix;
+const youtube = process.env.youtube;
+const botname = process.env.botname;
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');

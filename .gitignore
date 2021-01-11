@@ -3,3 +3,4 @@ botconfig.json
 eval.js
 commands-enable.js
 command-disable.js
+.env
