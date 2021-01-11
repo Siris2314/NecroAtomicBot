@@ -1,8 +1,9 @@
 const {reconDB} = require('reconlx')
+const { mongoPath } = require('./botconfig.json')
 
 
 const db = new reconDB({
-  uri: "mongodb://localhost:27017"
+  uri: mongoPath
 })
 
 module.exports = db;
