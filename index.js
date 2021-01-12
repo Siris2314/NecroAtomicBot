@@ -117,9 +117,6 @@ for(const file of commandFiles){
 
 client.on ('message', async message => {
 
-  if( message.guild.id != "768278413667991554"){
-    levels(client);
-  }
 
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
