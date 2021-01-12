@@ -91,7 +91,7 @@ client.once('ready', async () => {
   })
 
 
-  if(!message.guild.id === '768278413667991554'){
+  if(!client.guild.id === '768278413667991554'){
   (levels(client));
 }
 
