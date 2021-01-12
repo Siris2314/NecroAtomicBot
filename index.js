@@ -90,7 +90,11 @@ client.once('ready', async () => {
     }
   })
 
-  levels(client);
+
+  if(!message.guild.id === '768278413667991554'){
+  (levels(client));
+}
+
   memberCount(client);
 
 
