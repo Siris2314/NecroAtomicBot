@@ -20,6 +20,7 @@
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
     "distube": "^2.8.8",
+    "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
     "imdb-api": "^4.4.1",
     "kitsu.js": "^2.0.0",

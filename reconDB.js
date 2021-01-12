@@ -1,5 +1,6 @@
 const {reconDB} = require('reconlx')
-const { mongoPath } = require('./botconfig.json')
+require('dotenv').config();
+const mongoPath = process.env.mongoPath;
 
 
 const db = new reconDB({

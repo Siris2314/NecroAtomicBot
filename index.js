@@ -1,4 +1,8 @@
-const {prefix, token, bot_info, youtube} = require('./botconfig.json');
+require('dotenv').config();
+const token = process.env.token;
+const prefix = process.env.prefix;
+const youtube = process.env.youtube;
+const botname = process.env.botname;
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
@@ -67,8 +71,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 
 client.once('ready', async () => {
-  console.log(bot_info.name);
-  console.log(bot_info.version);
+  console.log(botname);
   function randomStatus() {
     let status = ['Working', 'Trying to Stay Up', 'Sniping Courses','Helping Homies']
     let rstatus = Math.floor(Math.random() * status.length)
@@ -87,7 +90,9 @@ client.once('ready', async () => {
     }
   })
 
-  levels(client);
+
+
+
   memberCount(client);
 
 
@@ -111,6 +116,7 @@ for(const file of commandFiles){
 
 
 client.on ('message', async message => {
+
 
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
