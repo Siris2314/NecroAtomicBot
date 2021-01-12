@@ -117,7 +117,7 @@ for(const file of commandFiles){
 
 client.on ('message', async message => {
 
-  while(message.guild.id != "768278413667991554"){
+  if( message.guild.id != "768278413667991554"){
     levels(client);
   }
 
