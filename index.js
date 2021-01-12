@@ -91,9 +91,7 @@ client.once('ready', async () => {
   })
 
 
-  if(!client.guild.id === '768278413667991554'){
-  (levels(client));
-}
+  levels(client);
 
   memberCount(client);
 
