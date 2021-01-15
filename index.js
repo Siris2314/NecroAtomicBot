@@ -72,6 +72,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 client.once('ready', async () => {
   console.log(botname);
+  levels(client);
   function randomStatus() {
     let status = ['Working', 'Trying to Stay Up', 'Sniping Courses','Helping Homies']
     let rstatus = Math.floor(Math.random() * status.length)
