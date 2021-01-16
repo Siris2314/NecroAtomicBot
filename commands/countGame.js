@@ -21,7 +21,7 @@ module.exports = {
       }
 
       await countGame.add(message.author.id);
-      return message.channel.send(`**${message.member.user.tag}** has started a game! Current count is at **${countGame.size}**`)
+      return message.channel.send(`**${message.member.user.tag}** has started a game! Current count is at **${countGame.size +1}**`)
     } else if(num !== countGame.size + 1){
       countGame.clear();
       return message.channel.send(`:frowning: **${message.author.user.tag}** has ended the game by entering **${num}**`)
