@@ -16,6 +16,7 @@
     "chartjs": "^0.3.24",
     "chartjs-node-canvas": "^3.0.6",
     "discord-giveaways": "^4.2.1",
+    "discord-xp": "^1.1.7",
     "discord-ytdl-core": "^5.0.0",
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",

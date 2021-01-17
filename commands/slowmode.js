@@ -11,8 +11,7 @@ module.exports = {
     message.channel.send(`Slowmode is now: ${args[0]}`)
 
     if(!args){
-      message.channel.send('Turning off slow mode');
-      message.channel.setRateLimitPerUser(0);
+      message.channel.send('Please provide a number to slow the channel down by')
     }
   }
 }
