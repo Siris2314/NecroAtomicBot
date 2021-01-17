@@ -119,6 +119,20 @@ for(const file of commandFiles){
 client.on ('message', async message => {
 
 
+  if(command){
+    const channel = client.channels.cache.get('800421170301501470')
+
+    channel.send(
+
+      `**${message.author.tag}** has used ${command.name} command in **${message.guild.name}**`
+    )
+
+
+  }
+
+
+
+
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
   }
