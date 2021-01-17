@@ -119,16 +119,6 @@ for(const file of commandFiles){
 client.on ('message', async message => {
 
 
-  if(command){
-    const channel = client.channels.cache.get('800421170301501470')
-
-    channel.send(
-
-      `**${message.author.tag}** has used ${command.name} command in **${message.guild.name}**`
-    )
-
-
-  }
 
 
 
@@ -209,6 +199,18 @@ client.on ('message', async message => {
     console.error(error);
     message.reply("Issue loading command");
   }
+
+  if(command){
+    const channel = client.channels.cache.get('800421170301501470')
+
+    channel.send(
+
+      `**${message.author.tag}** has used ${command.name} command in **${message.guild.name}**`
+    )
+
+
+  }
+
 
 
 
