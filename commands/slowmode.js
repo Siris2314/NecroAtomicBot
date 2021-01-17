@@ -2,7 +2,7 @@ module.exports = {
   name: 'slowmode',
   description: 'enables slowmode in a channel',
 
-  async execute(message, args, client){
+  async execute(message, client){
 
     const messageArray = message.content.split(' ');
     const args = messageArray.slice(1);
