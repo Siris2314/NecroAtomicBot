@@ -17,6 +17,7 @@ const memberCount = require('./member-count.js')
 const search = require('youtube-search')
 const DisTube = require('distube')
 const translate = require('@k3rn31p4nic/google-translate-api')
+client.snipes = new Map();
 
 
 const opts = {
@@ -71,17 +72,25 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 
 client.once('ready', async () => {
+
   console.log(botname);
   levels(client);
-  function randomStatus() {
-    let status = ['Working', 'Trying to Stay Up', 'Sniping Courses','Helping Homies']
-    let rstatus = Math.floor(Math.random() * status.length)
-    client.user.setActivity(status[rstatus], {type: "TASK: "})
+
+  let serverNum = await client.guilds.cache.size;
+
+  client.user.setPresence({
+    activity: {
+      name: `Currently infiltrating in ${serverNum} servers`,
+      type:'WATCHING'
+    },
+    status: 'active'
+  })
 
 
 
 
-  }
+
+
 
   await mongo().then(mongoose => {
     try {
@@ -205,7 +214,7 @@ client.on ('message', async message => {
 
     channel.send(
 
-      `**${message.author.tag}** has used ${command.name} command in **${message.guild.name}**`
+      `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
     )
 
 
@@ -217,6 +226,16 @@ client.on ('message', async message => {
 
 
 });
+
+
+client.on('messageDelete', async message => {
+  client.snipes.set(message.channel.id, {
+    content: message.content,
+    author: message.author,
+  })
+});
+
+
 
 client.translate = async(text, message) => {
   const lang  = await db.has(`lang-${message.guild.id}`) ? await db.get(`lang-${message.guild.id}`) : 'en';
