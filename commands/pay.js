@@ -36,12 +36,6 @@ module.exports = {
       coinsToGive
     )
 
-    const embed = new Discord.MessageEmbed()
-      .setTitle(`**Payment Complete**`)
-      .setDescription(`You have given <@${target.id}> ${coinsToGive} coins. They now have ${nBalance}, and you now have ${remain} coins`);
-      .setColor('RANDOM')
-
-
-    message.channel.send(embed);
+    message.reply(`You have given <@${target.id}> ${coinsToGive} coins. They now have ${nBalance}, and you now have ${remain} coins`)
   }
 }
