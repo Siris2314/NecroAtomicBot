@@ -13,6 +13,7 @@ module.exports = {
         if(!name) return message.channel.send('Please specify a command name');
         if(!response) return message.channel.send('Please specify a response');
 
+      try{
         const data = await schema.findOne({ Guild: message.guild.id, Command: name });
         if(data) return message.channel.send('This custom commands exists already!');
         const newData =  new schema({
@@ -22,5 +23,9 @@ module.exports = {
         })
         await newData.save();
         message.channel.send(`Saved **${name}** as a custom command!`);
+      } finally{
+
+        mongoose.connection.close();
+      }
     }
 }
