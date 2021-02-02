@@ -16,6 +16,9 @@ module.exports = {
       .setTitle('Music Queue')
       .setDescription(queue)
 
+
+    message.channel.send(embed)
+
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 

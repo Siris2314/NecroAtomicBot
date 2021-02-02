@@ -53,7 +53,7 @@
     "yahoo-stock-api": "^1.0.6",
     "youtube-search": "^1.1.4",
     "youtube-sr": "^2.0.5",
-    "ytdl-core": "^4.2.0",
+    "ytdl-core": "^4.4.5",
     "ytsr": "^1.0.4"
   },
   "devDependencies": {},
