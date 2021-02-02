@@ -2,6 +2,7 @@ require('dotenv').config();
 const token = process.env.token;
 const prefix = process.env.prefix;
 const youtube = process.env.youtube;
+const WOKCommands = require('wokcommands')
 const botname = process.env.botname;
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -72,6 +73,8 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 
 client.once('ready', async () => {
+
+  new WOKCommands(client)
 
   console.log(botname);
   levels(client);
