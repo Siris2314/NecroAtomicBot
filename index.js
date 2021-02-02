@@ -26,7 +26,7 @@ const opts = {
   type: 'video'
 }
 
-client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true });
+client.distube = new DisTube(client, { searchSongs: true, emitNewSongOnly: true });
 client.distube
     .on("playSong", (message, queue, song) => message.channel.send(
         `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
