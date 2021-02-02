@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 module.exports = {
   name:'skip',
   description: 'skip music',
@@ -11,9 +12,10 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-    client.distube.getQueue(message)
+    const embed = new Discord.MessageEmbed()
+      .setTitle('Music Queue')
+      .setDescription(queue)
 
-    
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 
