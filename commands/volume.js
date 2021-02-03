@@ -8,12 +8,13 @@ module.exports = {
       return message.channel.send('Must be in a vc to use this command')
     }
 
-    let args[1] =  message.content.slice(config.prefix.length).trim().split(/ +/g);
+    args[1] =  message.content.slice(config.prefix.length).trim().split(/ +/g);
+    const cmd = args.shift();
 
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-    client.distube.setVolume(message, args[1])
+    client.distube.setVolume(message, cmd)
 
     message.channel.send(`Volume changed to ${args[1]}`)
   } else if(!queue){
