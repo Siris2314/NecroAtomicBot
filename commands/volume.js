@@ -2,7 +2,7 @@ module.exports = {
   name:'volume',
   description: 'sets volume of music',
 
-  async execute(message, args,, client){
+  async execute(message, args, client){
 
     if(!message.member.voice.channel){
       return message.channel.send('Must be in a vc to use this command')
