@@ -80,7 +80,7 @@ client.once('ready', async () => {
 
   client.user.setPresence({
     activity: {
-      name: `Currently infiltrating in ${serverNum} servers`,
+      name: `Infiltrating in ${serverNum} servers`,
       type:'WATCHING'
     },
     status: 'active'
@@ -195,6 +195,12 @@ client.on ('message', async message => {
 
   if(data){
     message.channel.send(data.Response)
+  }
+  if (command == "queue") {
+      let queue = distube.getQueue(message);
+      message.channel.send('Current queue:\n' + queue.songs.map((song, id) =>
+          `**${id+1}**. [${song.name}](${song.url}) - \`${song.formattedDuration}\``
+      ).join("\n"));
   }
 
 

@@ -8,8 +8,8 @@ module.exports = {
       return message.channel.send('Must be in a vc to use this command')
     }
 
-    args =  message.content.slice(client.prefix.length).trim().split(/ +/g);
-    const cmd = args.shift();
+
+    const cmd = args[1].shift(' ');
 
     let queue = await client.distube.getQueue(message);
 
