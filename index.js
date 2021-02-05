@@ -4,7 +4,7 @@ const prefix = process.env.prefix;
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({partial: ['MESSAGE']});
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
@@ -239,6 +239,23 @@ client.on('messageDelete', async message => {
     content: message.content,
     author: message.author,
   })
+
+  if(!message.partial){
+    const channel = client.channels.cache.get('807398780160573501');
+
+    if(channel){
+      const embed = new Discord.MessageEmbed()
+        .setTitle('Deleted Message')
+        .addField('Author', `${message.author.tag} (${message.author.id})`)
+        .addField('Channel', `${message.channel.name} (${message.channel.id})`)
+        .setDescription(message.content)
+        .setTimestamp();
+      channel.send(embed);
+    }
+  }
+
+
+
 });
 
 
