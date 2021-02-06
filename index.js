@@ -130,7 +130,7 @@ client.on ('message', async message => {
     return;
   }
 
-  if(message.content.toLowerCase().startsWith('!pokemon')) {
+  if(message.content.toLowerCase().startsWith('!necro pokemon')) {
         const pokemon = message.content.toLowerCase().split(" ")[1];
         try {
             const pokeData = await getPokemon(pokemon);
@@ -159,7 +159,7 @@ client.on ('message', async message => {
         }
     }
 
-  if(message.content.toLowerCase() == '!search'){
+  if(message.content.toLowerCase() == '!necro search'){
     let embed = new Discord.MessageEmbed()
     .setColor('RANDOM')
     .setDescription("Please enter a search query. Please narrow your search")
