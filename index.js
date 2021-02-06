@@ -205,10 +205,11 @@ client.on ('message', async message => {
 
 
 
-
+  if(message.content.toLowerCase() == '!necrochat'){
     let content = message.content;
       if(!content) return;
           chatbot.getReply(content).then(r => message.channel.send(r));
+    }
 
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -219,7 +220,7 @@ client.on ('message', async message => {
   if(data){
     message.channel.send(data.Response)
   }
-  if (command === "queue") {
+  if (message.content.toLowerCase() == '!necroqueue') {
       let queue = distube.getQueue(message);
       message.channel.send('Current queue:\n' + queue.songs.map((song, id) =>
           `**${id+1}**. [${song.name}](${song.url}) - \`${song.formattedDuration}\``
