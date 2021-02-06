@@ -144,7 +144,7 @@ client.on ('message', async message => {
                 abilities,
                 types
             } = pokeData;
-            const embed = new MessageEmbed();
+            const embed = new Discord.MessageEmbed()
             embed.setTitle(`${name} #${id}`)
             embed.setThumbnail(`${sprites.front_default}`);
             stats.forEach(stat => embed.addField(stat.stat.name, stat.base_stat, true));
