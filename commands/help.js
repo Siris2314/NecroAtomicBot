@@ -5,10 +5,9 @@ const token = process.env.token;
 const prefix = process.env.prefix;
 
 module.exports = {
-  name: "menu",
-  aliases : ['h'],
+  name: "help",
   description: "Shows all available bot commands.",
-   async execute (message, args, client) {
+  async execute(message,args,client) => {
 
 
     const roleColor =
@@ -67,7 +66,7 @@ module.exports = {
       if (!command) {
         const embed = new MessageEmbed()
           .setTitle(`Invalid command! Use \`${prefix}help\` for all of my commands!`)
-          .setColor("RANDOM");
+          .setColor("FF0000");
         return message.channel.send(embed);
       }
 

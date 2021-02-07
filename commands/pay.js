@@ -1,4 +1,5 @@
 const economy = require('../economy.js')
+const Discord = require('discord.js')
 module.exports = {
   name: "pay",
   description: "pays another user",
@@ -34,6 +35,7 @@ module.exports = {
       target.id,
       coinsToGive
     )
+
     message.reply(`You have given <@${target.id}> ${coinsToGive} coins. They now have ${nBalance}, and you now have ${remain} coins`)
   }
 }

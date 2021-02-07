@@ -1,4 +1,4 @@
-const schema = require('../schemas/custom-commands.js');
+const schema = require('../schemas/custom-commands');
 const Discord = require('discord.js');
 
 

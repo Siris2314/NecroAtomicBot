@@ -4,7 +4,7 @@ const prefix = process.env.prefix;
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({partial: ['MESSAGE']});
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
@@ -16,7 +16,9 @@ const schema = require('./schemas/custom-commands.js')
 const memberCount = require('./member-count.js')
 const search = require('youtube-search')
 const DisTube = require('distube')
+const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
+client.snipes = new Map();
 
 
 const opts = {
@@ -39,13 +41,6 @@ client.distube
     .on("addList", (message, queue, playlist) => message.channel.send(
         `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
     ))
-    // DisTubeOptions.searchSongs = true
-    .on("searchResult", (message, result) => {
-        let i = 0;
-        message.channel.send(`**Choose an option from below**\n${result.map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``).join("\n")}\n*Enter anything else or wait 60 seconds to cancel*`);
-    })
-    // DisTubeOptions.searchSongs = true
-    .on("searchCancel", (message) => message.channel.send(`Searching canceled`))
     .on("error", (message, e) => {
         console.error(e)
         message.channel.send("An error encountered: " + e);
@@ -71,16 +66,25 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 
 
 client.once('ready', async () => {
+
   console.log(botname);
-  function randomStatus() {
-    let status = ['Working', 'Trying to Stay Up', 'Sniping Courses','Helping Homies']
-    let rstatus = Math.floor(Math.random() * status.length)
-    client.user.setActivity(status[rstatus], {type: "TASK: "})
+  levels(client);
+
+  let serverNum = await client.guilds.cache.size;
+
+  client.user.setPresence({
+    activity: {
+      name: `Infiltrating in ${serverNum} servers`,
+      type:'WATCHING'
+    },
+    status: 'active'
+  })
 
 
 
 
-  }
+
+
 
   await mongo().then(mongoose => {
     try {
@@ -118,11 +122,44 @@ for(const file of commandFiles){
 client.on ('message', async message => {
 
 
+
+
+
+
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
   }
 
-  if(message.content.toLowerCase() == '!search'){
+  if(message.content.toLowerCase().startsWith('!necropokemon')) {
+        const pokemon = message.content.toLowerCase().split(" ")[1];
+        try {
+            const pokeData = await getPokemon(pokemon);
+            const {
+                sprites,
+                stats,
+                weight,
+                name,
+                id,
+                base_experience,
+                abilities,
+                types
+            } = pokeData;
+            const embed = new Discord.MessageEmbed()
+            embed.setTitle(`${name} #${id}`)
+            embed.setThumbnail(`${sprites.front_default}`);
+            stats.forEach(stat => embed.addField(stat.stat.name, stat.base_stat, true));
+            types.forEach(type => embed.addField('Type', type.type.name, true));
+            embed.addField('Weight', weight);
+            embed.addField('Base Experience', base_experience);
+            message.channel.send(embed);
+        }
+        catch(err) {
+            console.log(err);
+            message.channel.send(`Pokemon ${pokemon} does not exist.`);
+        }
+    }
+
+  if(message.content.toLowerCase() == '!necrosearch'){
     let embed = new Discord.MessageEmbed()
     .setColor('RANDOM')
     .setDescription("Please enter a search query. Please narrow your search")
@@ -168,10 +205,11 @@ client.on ('message', async message => {
 
 
 
-
+  if(message.content.toLowerCase() == '!necrochat'){
     let content = message.content;
       if(!content) return;
           chatbot.getReply(content).then(r => message.channel.send(r));
+    }
 
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -181,6 +219,12 @@ client.on ('message', async message => {
 
   if(data){
     message.channel.send(data.Response)
+  }
+  if (message.content.toLowerCase() == '!necroqueue') {
+      let queue = distube.getQueue(message);
+      message.channel.send('Current queue:\n' + queue.songs.map((song, id) =>
+          `**${id+1}**. [${song.name}](${song.url}) - \`${song.formattedDuration}\``
+      ).join("\n"));
   }
 
 
@@ -195,11 +239,50 @@ client.on ('message', async message => {
     message.reply("Issue loading command");
   }
 
+  if(command){
+    const channel = client.channels.cache.get('800421170301501470')
+
+    channel.send(
+
+      `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
+    )
+
+
+  }
+
+
 
 
 
 
 });
+
+
+client.on('messageDelete', async message => {
+  client.snipes.set(message.channel.id, {
+    content: message.content,
+    author: message.author,
+  })
+
+  if(!message.partial){
+    const channel = client.channels.cache.get('807398780160573501');
+
+    if(channel){
+      const embed = new Discord.MessageEmbed()
+        .setTitle('Deleted Message')
+        .addField('Author', `${message.author.tag} (${message.author.id})`)
+        .addField('Channel', `${message.channel.name} (${message.channel.id})`)
+        .setDescription(message.content)
+        .setTimestamp();
+      channel.send(embed);
+    }
+  }
+
+
+
+});
+
+
 
 client.translate = async(text, message) => {
   const lang  = await db.has(`lang-${message.guild.id}`) ? await db.get(`lang-${message.guild.id}`) : 'en';
