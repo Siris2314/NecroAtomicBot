@@ -36,7 +36,7 @@ module.exports = {
        data.push(`Description: ${cmd.description}`)
      }
 
-     message.channel.send data;
+     message.channel.send(data);
 
 
 
