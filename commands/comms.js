@@ -10,7 +10,7 @@ module.exports = {
     async execute(message, args) {
         console.log("comms");
 
-        fetch("https://rutgers.instructure.com/api/v1/courses/107517/assignments", {
+        fetch("https://rutgers.instructure.com/api/v1/courses/107517/assignments?bucket=upcoming", {
             method: "GET",
             headers: {
                 Authorization:
@@ -19,12 +19,14 @@ module.exports = {
             },
         }).then((s) => {
             s.json().then((res) => {
-                href = res[0];
+                for (let i = 0; i < res.length; i++) {
+                    const d = new Date(res[i].due_at);
+                    const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+                    const mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
+                    const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
 
-                const embed = new Discord.MessageEmbed()
-                    .setTitle(href.id)
-                    .setFooter("Powered by Canvas");
-                return message.channel.send(embed);
+                    message.channel.send(res[i].name + " due by " + `${mo}-${da}-${ye}`);
+                }
             });
         });
     },
