@@ -7,7 +7,7 @@ const prefix = process.env.prefix;
 module.exports = {
   name: "help",
   description: "Shows all available bot commands.",
-  async execute(message,args,client) => {
+  async execute(message,args,client){
 
 
     const roleColor =
