@@ -11,7 +11,37 @@ module.exports = {
     async execute(message, args) {
         console.log("comms");
 
-        fetch("https://rutgers.instructure.com/api/v1/courses/107517/assignments?bucket=upcoming", {
+
+        const embed = new Discord.MessageEmbed()
+          .setTitle('Course Assignment Picker')
+          .setField('1.)Calc 2')
+          .setField('2.)Intro to Comms')
+          .setField('3.)Intro to Media')
+
+
+
+      message.channel.send({
+
+        embed: {
+            title:'Select which course you want by typing the number',
+          }
+
+        })
+
+        const url = " ";
+
+        if(args[1] == 1){
+          url = "https://rutgers.instructure.com/api/v1/courses/106380/assignments?bucket=upcoming"
+        }
+        else if(args[1] == 2){
+          url = "https://rutgers.instructure.com/api/v1/courses/107517/assignments?bucket=upcoming"
+        }
+        else if(args[1] == 3){
+          url = "https://rutgers.instructure.com/api/v1/courses/107527/assignments?bucket=upcoming"
+        }
+
+
+        fetch(url, {
             method: "GET",
             headers: {
                 Authorization:
