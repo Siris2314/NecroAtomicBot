@@ -11,7 +11,7 @@ module.exports = {
       return message.channel.send(`Please specify a suggestion to give`)
     }
 
-    const embed = new MessageEmbed()
+    const embed = new Discord.MessageEmbed()
       .setAuthor(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
       .setDescription(`**Suggestion**: ${suggestionQuery}`)
       .setColor('RANDOM')
