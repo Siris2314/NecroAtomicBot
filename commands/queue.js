@@ -1,6 +1,6 @@
 module.exports = {
-  name:'pause',
-  description: 'pauses music',
+  name:'queue',
+  description: 'shows queue of music',
 
   async execute(message, args, client){
 
@@ -11,9 +11,10 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-    client.distube.pause(message)
-
-    message.channel.send('Music has been paused')
+     let curqueue = queue.songs.map((song, id) =>
+       `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
+       ).join("\n");
+      message.channel.send(curqueue);
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 

@@ -27,7 +27,7 @@ const opts = {
   type: 'video'
 }
 
-const distube = new DisTube(client, {searchSongs: true, emitNewSongOnly: true, highWaterMark: 1<<25})
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true });
 client.distube
     .on("playSong", (message, queue, song) => message.channel.send(
         `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
@@ -63,26 +63,12 @@ client.giveawaysManager = new GiveawaysManager(client, {
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
 
-function embedbuilder(client, message, color, title. description){
-  let embed = new Discord.MessageEmbed()
-    .setColor(color)
-    .setFooter(client.user.username, client.user.displayAvatarURL());
-    if(title){
-      embed.setTitle(title)
-    }
-    if(description){
-      embed.setDescription(description);
-    }
-    return message.channel.send(embed)
-}
-
-
 
 
 client.once('ready', async () => {
 
   console.log(botname);
-  levels(client);
+
 
   let serverNum = await client.guilds.cache.size;
 
@@ -225,60 +211,6 @@ client.on ('message', async message => {
           chatbot.getReply(content).then(r => message.channel.send(r));
     }
 
-    if(command === "!necroplay" || command === "p"){
-        embedbuilder(client, message, "YELLOW", "Searching!", args.join(" "))
-        return distube.play(message, args.join(" "));
-    }
-    if(command === "!necroskip" || command === "s"){
-        embedbuilder(client, message, "YELLOW", "SKIPPED!", `Skipped the song`)
-        return distube.skip(message);
-    }
-    if(command === "!necrostop" || command === "leave"){
-        embedbuilder(client, message, "RED", "STOPPED!", `Leaved the channel`)
-        return distube.stop(message);
-    }
-    if(command === "!necroseek"){
-        embedbuilder(client, message, "GREEN", "Seeked!", `seeked the song for \`${args[0]} seconds\``)
-        return distube.seek(message, Number(args[0]*1000));
-    }
-    if(filters.includes(command)) {
-        let filter = distube.setFilter(message, command);
-        return embedbuilder(client, message, "YELLOW", "Adding filter!", filter)
-    }
-    if(command === "!necrovolume" || command === "vol"){
-
-        embedbuilder(client, message, "GREEN", "VOLUME!", `changed volume to \`${args[0]} %\``)
-        return distube.setVolume(message, args[0]);
-    }
-    if (command === "!necroqueue" || command === "qu"){
-        let queue = distube.getQueue(message);
-        let curqueue = queue.songs.map((song, id) =>
-        `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
-        ).join("\n");
-        return  embedbuilder(client, message, "GREEN", "Current Queue!", curqueue)
-    }
-    if (command === "!necroloop" || command === "repeat"){
-        if(0 <= Number(args[0]) && Number(args[0]) <= 2){
-            distube.setRepeatMode(message,parseInt(args[0]))
-            embedbuilder(client, message, "GREEN", "Repeat mode set to:!", `${args[0].replace("0", "OFF").replace("1", "Repeat song").replace("2", "Repeat Queue")}`)
-        }
-        else{
-            embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **2**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`)
-        }
-    }
-    if ( command === "!necrojump"){
-        let queue = distube.getQueue(message);
-        if(0 <= Number(args[0]) && Number(args[0]) <= queue.songs.length){
-            embedbuilder(client, message, "RED", "ERROR", `Jumped ${parseInt(args[0])} songs!`)
-            return distube.jump(message, parseInt(args[0]))
-            .catch(err => message.channel.send("Invalid song number."));
-        }
-        else{
-            embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **${DisTube.getQueue(message).length}**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`)
-        }
-
-
-    }
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
