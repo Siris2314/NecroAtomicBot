@@ -68,7 +68,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.j
 client.once('ready', async () => {
 
   console.log(botname);
-
+  levels(client);
 
   let serverNum = await client.guilds.cache.size;
 
