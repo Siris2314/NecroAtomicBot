@@ -12,12 +12,12 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-     let curqueue = queue.songs.map((song, id) =>
-       `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
-       ).join("\n");
+     if(0 <= Number(args[0]) && Number(args[0]) <= queue.songs.length){
+         embedbuilder(client, message, "RED", "ERROR", `Jumped ${parseInt(args[0])} songs!`)
+      return distube.jump(message, parseInt(args[0]))
+       .catch(err => message.channel.send("Invalid song number."));
+    }
 
-
-      return embedbuilder(client, message, "RANDOM", "Queue", curqueue)
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 
