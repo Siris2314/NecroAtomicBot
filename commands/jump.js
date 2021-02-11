@@ -12,12 +12,12 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
     if(0 <= Number(args[0]) && Number(args[0]) <= queue.songs.length){
-         embedbuilder(client, message, "RANDOM", "Jumper"", `Jumped ${parseInt(args[0])} songs!`)
+        embedbuilder(client, message, "RANDOM", "Jumper", `Jumped ${parseInt(args[0])} songs!`)
          return distube.jump(message, parseInt(args[0]))
-         .catch(err => message.channel.send("Invalid song number."));
-     }
+
+     } .catch(err => message.channel.send("Invalid song number."));
      else{
-         embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **${client.distube.getQueue(message).length}**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`)
+         embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **${client.distube.getQueue(message).length}** `)
      }
 
   }
