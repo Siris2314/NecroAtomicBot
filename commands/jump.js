@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 module.exports = {
-  name:'queue',
-  description: 'shows queue of music',
+  name:'jump',
+  description: 'jumps to another song',
 
   async execute(message, args, client){
 
