@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 module.exports = {
   name:'queue',
   description: 'shows queue of music',
@@ -14,10 +15,26 @@ module.exports = {
      let curqueue = queue.songs.map((song, id) =>
        `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
        ).join("\n");
-      message.channel.send(curqueue);
+
+
+      return embedbuilder(client, message, "GREEN", "Current Queue!", curqueue)
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 
   }
   }
+}
+
+
+function embedbuilder(client, message, color, title, description){
+    let embed = new Discord.MessageEmbed()
+    .setColor(color)
+    .setFooter(client.user.username, client.user.displayAvatarURL());
+    if(title){
+      embed.setTitle(title);
+    }
+    if(description){
+      embed.setDescription(description);
+    }
+    return message.channel.send(embed);
 }
