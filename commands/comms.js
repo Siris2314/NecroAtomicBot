@@ -20,13 +20,7 @@ module.exports = {
 
 
 
-      message.channel.send({
-
-        embed: {
-            title:'Select which course you want by typing the number',
-          }
-
-        })
+      message.channel.send(embed);
 
         const url = " ";
 
