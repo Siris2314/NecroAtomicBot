@@ -4,7 +4,7 @@ module.exports = {
     name: "help",
     desc: "Shows a list of cmds or info about a specific command.",
     aliases: ['halp', 'welp', 'cmds'],
-    async execute(bot, msg, args) {
+    async execute(msg, args, client) {
         const data = [];
         const { commands } = msg.client;
 
@@ -33,4 +33,4 @@ module.exports = {
 
         msg.channel.send(data);
     },
-} // !help test
+} 
