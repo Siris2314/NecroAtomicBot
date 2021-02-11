@@ -15,7 +15,9 @@ module.exports = {
         embedbuilder(client, message, "RANDOM", "Jumper", `Jumped ${parseInt(args[0])} songs!`)
          return distube.jump(message, parseInt(args[0]))
 
-     } .catch(err => message.channel.send("Invalid song number."));
+        .catch(err => message.channel.send("Invalid song number."));
+
+     }
      else{
          embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **${client.distube.getQueue(message).length}** `)
      }
