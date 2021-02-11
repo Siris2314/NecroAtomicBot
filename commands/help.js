@@ -18,7 +18,7 @@ module.exports = {
     if (!args[0]) {
       let categories = [];
 
-      readdirSync("./commands/").forEach((dir) => {
+      readdirSync("../commands/").forEach((dir) => {
         const commands = readdirSync(`./commands/${dir}/`).filter((file) =>
           file.endsWith(".js")
         );
