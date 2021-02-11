@@ -16,7 +16,7 @@ module.exports = {
             hmu[i].setTitle(fff[i]);
             hmu[i].setColor("RANDOM")
             const iii = i;
-            fs.readdir(`./src/commands/${fff[i]}/`, (err1, files1) => {
+            fs.readdir(`./commands/${fff[i]}/`, (err1, files1) => {
                 files1.forEach((f2, i2) => {
                     const cmd = f2.replace('.js', '');
                   hmu[iii].addField(cmd, "testing");
