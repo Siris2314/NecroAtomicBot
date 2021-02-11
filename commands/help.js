@@ -1,4 +1,6 @@
 require('dotenv').config();
+const prefix = process.env.prefix;
+
 
 module.exports = {
     name: "help",
@@ -18,7 +20,7 @@ module.exports = {
         }
 
         const name = args[0];
-        const cmd = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+        const cmd = commands.get(name));
 
         if(!cmd){
             msg.reply(`${name} is not a valid command.`);
@@ -33,4 +35,4 @@ module.exports = {
 
         msg.channel.send(data);
     },
-} 
+}
