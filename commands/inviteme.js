@@ -8,9 +8,9 @@ module.exports = {
   async execute(message,args,client){
 
     const embed = new Discord.MessageEmbed()
-      .addTitle('Invite Me')
+      .setTitle('Invite Me')
       .setDescription('https://discord.com/api/oauth2/authorize?client_id=769028291611983882&permissions=0&scope=bot');
 
-    message.channel.send(embed);
+    return message.channel.send(embed);
   }
 }
