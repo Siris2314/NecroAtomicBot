@@ -4,12 +4,16 @@ require("dotenv").config();
 const canvas = process.env.canvas;
 
 module.exports = {
+
     name: "lindo",
     description: "returns due dates for intro to comms",
     aliases: ['co','lindo'],
 
+
+
     async execute(message, args) {
         console.log("comms");
+
 
 
       //   const embed = new Discord.MessageEmbed()
@@ -35,6 +39,8 @@ module.exports = {
       //   }
 
 
+
+
         fetch("https://rutgers.instructure.com/api/v1/courses/107517/assignments?bucket=upcoming", {
             method: "GET",
             headers: {
@@ -50,7 +56,10 @@ module.exports = {
                     const mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
                     const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
 
+
                     message.channel.send(`**${res[i].name}**` + " due by " + `**${mo}**-**${da}**-**${ye}**`);
+
+              
                 }
             });
         });
