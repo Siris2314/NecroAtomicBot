@@ -22,9 +22,7 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
       .setTitle('Random Riddle: ')
       .addField(data.question)
-      .setDescription('')
       .addField('||' + data.answer + '||')
-      .setDescription('')
       .setColor("RANDOM")
 
     message.channel.send(embed)
