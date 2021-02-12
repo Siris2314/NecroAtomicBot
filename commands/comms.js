@@ -25,7 +25,7 @@ module.exports = {
                     const mo = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
                     const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
 
-                    message.channel.send(res[i].name + " due by " + `${mo}-${da}-${ye}`);
+                    message.channel.send(res[i].name + " due by " + `**${mo}**-**${da}**-**${ye}**`);
                 }
             });
         });
