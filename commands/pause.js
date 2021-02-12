@@ -11,9 +11,9 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-    client.distube.stop(message)
+    client.distube.pause(message)
 
-    message.channel.send('Music has stopped playing')
+    message.channel.send('Music has been paused')
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 

@@ -4,35 +4,25 @@ module.exports = {
   name:"suggestion",
   description:"Suggestion Command",
 
-  execute(message,args){
+  async execute(message,args,client){
+    const suggestionQuery = args.join(" ");
 
-    if(!args.length){
-      return message.channel.send("Please give a suggestion")
+    if(!suggestionQuery){
+      return message.channel.send(`Please specify a suggestion to give`)
     }
 
-    let channel = message.guild.channel.cache.find((x) =>
+    const embed = new Discord.MessageEmbed()
+      .setAuthor(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+      .setDescription(`**Suggestion**: ${suggestionQuery}`)
+      .setColor('RANDOM')
+      .setTimestamp()
+      .addField("Status", "PENDING")
 
-     (x.name == "suggestion" || x.name == "suggestions"))
-
-    if(!channel){
-      return message.channel.send("There is no channel for suggestions")
-    }
-
-    let embed = new Discord.MessageEmbed()
-     .setAuthor("SUGGESTION: " + message.author.tag, message.author.avatarURL())
-     .setThumbnail(message.author.avatarURL())
-     .setColor("RANDOM")
-     .setDescription(args.join(" "))
+    message.channel.send('Submitted Suggestion')
+    message.guild.channels.cache.get('808788381407641641').send(embed)
 
 
 
-    message.channel.send(embed).then(m => {
-      m.react("✅")
-      m.react("❎")
-    })
 
-    message.channel.send("Send your suggestion to " +  channel)
-  }
-
-
+}
 }
