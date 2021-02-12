@@ -18,3 +18,5 @@ command-disable.js
 /commands/create.js
 /commands/pay.js
 /commands/poke.js
+/commands/rank.js
+/commands/set-lang.js

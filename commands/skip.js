@@ -13,7 +13,7 @@ module.exports = {
    if(queue){
     client.distube.skip(message)
 
-    message.channel.send(`Skipped to next song, `)
+    message.channel.send(`Skipped to next song`)
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 

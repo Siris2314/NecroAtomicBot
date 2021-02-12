@@ -9,14 +9,14 @@ module.exports = {
     }
 
 
-    const cmd = args[1].shift(' ');
+
 
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-    client.distube.setVolume(message, cmd)
+      distube.setVolume(message, args[0]);
 
-    message.channel.send(`Volume changed to ${cmd}`)
+    message.channel.send(`Volume changed to ${args[0]}`)
   } else if(!queue){
     return message.channel.send("No Music Is Playing")
 
