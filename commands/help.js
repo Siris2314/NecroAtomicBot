@@ -20,7 +20,7 @@ module.exports = {
         }
 
         const name = args[0];
-        const cmd = commands.get(name));
+        const cmd = commands.get(name);
 
         if(!cmd){
             msg.reply(`${name} is not a valid command.`);
