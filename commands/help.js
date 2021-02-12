@@ -1,6 +1,5 @@
 require('dotenv').config();
 const prefix = process.env.prefix;
-const Discord = require('discord.js')
 
 
 module.exports = {
@@ -34,14 +33,6 @@ module.exports = {
         if(cmd.desc) data.push(`Description: ${cmd.desc}`);
         if(cmd.aliases) data.push(`Aliases: ${cmd.aliases.join(', ')}`);
 
-        const embed = new Discord.MessageEmbed()
-          .setTitle('Help')
-          .setDescription(data)
-          .setTimestamp();
-
-
-      return message.channel.send(embed)
-
-
+        msg.channel.send(data)
     },
 }
