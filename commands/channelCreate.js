@@ -14,13 +14,13 @@ module.exports = {
   async execute(message, args,client){
 
     if(!message.member.permissons.has('MANAGE_CHANNELS')){
-      return message.reply('Perms Denied')
+      return message.channel.send('Perms Denied')
     }
 
     const channelNameQuery = args.join(" ");
 
     if(!channelNameQuery){
-      return message.reply('Please specify a channel name')
+      return message.channel.send('Please specify a channel name')
     }
 
   message.guild.channels.create(channelNameQuery).then((ch) => {
