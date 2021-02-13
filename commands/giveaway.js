@@ -6,7 +6,7 @@ module.exports = {
   description: "Starts a giveaway",
 
   async execute( message, args, client){
-    if (!message.member._roles.find(role => role == 768487202156970034)){
+    if (!message.member.hasPermission('ADMINSTRATOR')){
       return message.channel.send("You do not have perms to start giveaway")
     }
 
