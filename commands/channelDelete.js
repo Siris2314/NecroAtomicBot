@@ -2,17 +2,13 @@ const {Client, Message} = require('discord.js')
 
 module.exports = {
 
-  name:'channelDelete',
+  name:'channeldelete',
   description: 'Deletes a new channel',
-  /**
-   * @param {Client} client
-   * @param {Message} message
-   * @param {String[]} args
-   */
+
 
   async execute(message, args,client){
 
-    if(!message.member.permissons.has('MANAGE_CHANNELS')){
+    if(!message.member.hasPermission('MANAGE_CHANNELS')){
       return message.reply('Perms Denied')
     }
 
