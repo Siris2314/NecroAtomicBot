@@ -4,11 +4,6 @@ module.exports = {
 
   name:"create",
   description: 'creates a new channel',
-  /**
-   * @param {Client} client
-   * @param {Message} message
-   * @param {String[]} args
-   */
 
 
   async execute(message, args,client){
