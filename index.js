@@ -41,9 +41,7 @@ client.distube
 
     ))
     .on("addList", (message, queue, playlist) => message.channel.send(
-      embedbuilder(client, message, "GREEN", "Added a Playling!", `Playlist: \`${playlist.title}\`  -  \`${playlist.total_items} songs\` \n\nRequested by: ${song.user}`)
-   })
-
+        `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
     ))
 
 
