@@ -17,11 +17,9 @@ module.exports = {
       return message.reply('Please specify a channel name')
     }
 
-    channelTarget.delete();
-      .then(ch => {
-
-        message.author.send(`Channel has been delete`)
-      });
+    channelTarget.delete().then((ch) => {
+        message.author.send(`Channel has been deleted`)
+    });
 
 
 
