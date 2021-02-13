@@ -2,7 +2,7 @@ const {Client, Message} = require('discord.js')
 
 module.exports = {
 
-  name:'channelCreate',
+  name:'createchannel',
   description: 'creates a new channel',
   /**
    * @param {Client} client
