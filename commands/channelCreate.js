@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 
 module.exports = {
 
+  name:'channelCreate',
+  description: 'creates a new channel',
 
   async execute(message, args,client){
 
