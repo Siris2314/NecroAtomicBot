@@ -9,6 +9,11 @@ module.exports = {
     let clearAmt;
 
 
+    if(!message.member.hasPermission('ADMINSTRATOR')){
+      return message.channel.send('Missing Perms')
+    }
+
+
 
     if(isNaN(args[0]) || parseInt(args[0]) <= 0){
       message.channel.send('Please put in numbers');
