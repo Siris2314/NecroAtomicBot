@@ -12,7 +12,7 @@ module.exports = {
 
 
     if(0 <= Number(args[0]) && Number(args[0]) <= 2){
-                distube.setRepeatMode(message,parseInt(args[0]))
+                client.distube.setRepeatMode(message,parseInt(args[0]))
                 embedbuilder(client, message, "GREEN", "Repeat mode set")
             }
             else{
