@@ -31,16 +31,19 @@ const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filte
 client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true });
 client.distube
     .on("playSong", (message, queue, song) => message.channel.send(
-        `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
+        embedbuilder(client, message, "GREEN", "Playing new Song!", `Song: \`${song.name}\`  -  \`${song.formattedDuration}\` \n\nRequested by: ${song.user}\n${status(queue)}`)
     ))
     .on("addSong", (message, queue, song) => message.channel.send(
-        `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}`
+          embedbuilder(client, message, "GREEN", "Added a Song!", `Song: \`${song.name}\`  -  \`${song.formattedDuration}\` \n\nRequested by: ${song.user}`)
     ))
     .on("playList", (message, queue, playlist, song) => message.channel.send(
-        `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
+      embedbuilder(client, message, "GREEN", "Playling playlist", `Playlist: \`${playlist.title}\`  -  \`${playlist.total_items} songs\` \n\nRequested by: ${song.user}\n\nstarting playing Song: \`${song.name}\`  -  \`${song.formattedDuration}\`\n${status(queue)}`)
+
     ))
     .on("addList", (message, queue, playlist) => message.channel.send(
-        `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
+      embedbuilder(client, message, "GREEN", "Added a Playling!", `Playlist: \`${playlist.title}\`  -  \`${playlist.total_items} songs\` \n\nRequested by: ${song.user}`)
+   })
+
     ))
 
 
@@ -59,6 +62,14 @@ client.giveawaysManager = new GiveawaysManager(client, {
 })
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
+function embedbuilder(client, message, color, title, description){
+    let embed = new Discord.MessageEmbed()
+    .setColor(color)
+    .setFooter(client.user.username, client.user.displayAvatarURL());
+    if(title) embed.setTitle(title);
+    if(description) embed.setDescription(description);
+    return message.channel.send(embed);
+}
 
 
 
