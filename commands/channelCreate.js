@@ -23,7 +23,7 @@ module.exports = {
       return message.reply('Please specify a channel name')
     }
 
-    message.guilds.channels.create(channelNameQuery).then((ch) => {
+  client.message.guilds.channels.create(channelNameQuery).then((ch) => {
         message.channel.send(`Click ${ch} to access the newly created channel`)
     });
   },
