@@ -1,9 +1,15 @@
-const Discord = require('discord.js')
+const {Client, message} = require('discord.js')
 
 module.exports = {
 
   name:'channelCreate',
   description: 'creates a new channel',
+  /**
+   * @param {Client} client
+   * @param {Message} message
+   * @param {String[]} args
+   */
+
 
   async execute(message, args,client){
 
