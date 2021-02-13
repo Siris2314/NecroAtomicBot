@@ -8,7 +8,7 @@ module.exports = {
 
   async execute(message, args,client){
 
-    if(!message.member.permissons.has('MANAGE_CHANNELS')){
+    if(!message.member.hasPermission('MANAGE_CHANNELS')){
       return message.channel.send('Perms Denied')
     }
 
