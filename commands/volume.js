@@ -14,7 +14,7 @@ module.exports = {
     let queue = await client.distube.getQueue(message);
 
    if(queue){
-      distube.setVolume(message, args[0]);
+      client.distube.setVolume(message, args[1]);
 
     message.channel.send(`Volume changed to ${args[0]}`)
   } else if(!queue){
