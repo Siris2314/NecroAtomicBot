@@ -69,8 +69,11 @@ function embedbuilder(client, message, color, title, description){
 
 
 
-client.once('ready', async () => {
+client.once('ready', async (client) => {
 
+
+
+  memberCount(client);
   console.log(botname);
 
   let serverNum = await client.guilds.cache.size;
@@ -100,7 +103,7 @@ client.once('ready', async () => {
 
 
 
-  memberCount(client);
+
 
 
 
