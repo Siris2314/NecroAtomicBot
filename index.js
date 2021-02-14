@@ -27,6 +27,7 @@ const opts = {
   type: 'video'
 }
 
+const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true });
 client.distube
     .on("playSong", (message, queue, song) => message.channel.send(
@@ -58,6 +59,14 @@ client.giveawaysManager = new GiveawaysManager(client, {
 })
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
+function embedbuilder(client, message, color, title, description){
+    let embed = new Discord.MessageEmbed()
+    .setColor(color)
+    .setFooter(client.user.username, client.user.displayAvatarURL());
+    if(title) embed.setTitle(title);
+    if(description) embed.setDescription(description);
+    return message.channel.send(embed);
+}
 
 
 
