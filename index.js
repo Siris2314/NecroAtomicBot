@@ -9,7 +9,6 @@ const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
 const mongo = require('./mongo.js')
-const levels = require('./levels.js')
 const alexa = require("alexa-bot-api");
 var chatbot = new alexa("aw2plm");
 const schema = require('./schemas/custom-commands.js')
@@ -73,7 +72,6 @@ function embedbuilder(client, message, color, title, description){
 client.once('ready', async () => {
 
   console.log(botname);
-  levels(client);
 
   let serverNum = await client.guilds.cache.size;
 
