@@ -73,7 +73,7 @@ client.once('ready', async (client) => {
 
 
 
-  memberCount(client);
+
   console.log(botname);
 
   let serverNum = await client.guilds.cache.size;
@@ -92,6 +92,9 @@ client.once('ready', async (client) => {
 
 
 
+
+
+
   await mongo().then(mongoose => {
     try {
       console.log('Connected to mongo')
@@ -99,6 +102,10 @@ client.once('ready', async (client) => {
       mongoose.connection.close()
     }
   })
+
+
+
+  memberCount(client);
 
 
 
