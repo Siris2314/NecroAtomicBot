@@ -76,7 +76,7 @@ client.once('ready', async (client) => {
 
   console.log(botname);
 
-  let serverNum = await client.guilds.cache.size;
+  let serverNum = await client.guild.cache.size;
 
   client.user.setPresence({
     activity: {
