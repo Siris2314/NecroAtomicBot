@@ -9,6 +9,6 @@ module.exports = client => {
   client.on('guildMemberadd', (member) => updateMembers(member.guild))
   client.on('guildMemberRemove', (member) => updateMembers(member.guild))
 
-  const guild = client.guilds.cache.get('768278413667991554')
+  const guild = client.guild.cache.get('768278413667991554')
   updateMembers(guild)
 }
