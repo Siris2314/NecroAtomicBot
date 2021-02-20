@@ -1,35 +1,25 @@
-const Discord = require('discord.js')
 module.exports = {
-  name:'loop',
-  description: 'loop music',
-
-  async execute(message, args, client){
-
-    if(!message.member.voice.channel){
-      return message.channel.send('Must be in a vc to use this command')
+    name: "loop",
+    description:'loops music',
+    aliases: ["repeat", "rp"],
+    inVoiceChannel: true,
+    async execute(message, args,client) => {
+        const queue = client.distube.getQueue(message)
+        if (!queue) return message.channel.send(`${client.emotes.error} | There is nothing playing!`)
+        let mode = null
+        switch (args[0]) {
+            case "off":
+                mode = 0
+                break
+            case "song":
+                mode = 1
+                break
+            case "queue":
+                mode = 2
+                break
+        }
+        mode = client.distube.setRepeatMode(message, mode)
+        mode = mode ? mode === 2 ? "Repeat queue" : "Repeat song" : "Off"
+        message.channel.send(`${client.emotes.repeat} | Set repeat mode to \`${mode}\``)
     }
-
-
-
-    if(0 <= Number(args[0]) && Number(args[0]) <= 2){
-                client.distube.setRepeatMode(message,parseInt(args[0]))
-                embedbuilder(client, message, "GREEN", "Repeat mode set")
-            }
-            else{
-                embedbuilder(client, message, "RED", "ERROR", `Please use a number between **0** and **2**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`)
-            }
-  }
-}
-
-function embedbuilder(client, message, color, title, description){
-    let embed = new Discord.MessageEmbed()
-    .setColor(color)
-    .setFooter(client.user.username, client.user.displayAvatarURL());
-    if(title){
-      embed.setTitle(title);
-    }
-    if(description){
-      embed.setDescription(description);
-    }
-    return message.channel.send(embed);
 }
