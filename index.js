@@ -44,6 +44,7 @@ client.distube
     .on("addList", (message, queue, playlist) => message.channel.send(
         message.channel.send(`${client.emotes.success} | Added \`${playlist.title}\` playlist (${playlist.total_items} songs) to queue\n${status(queue)}`)
     ))
+    .on("empty", message => message.channel.send("Channel is empty. Leaving the channel"))
     .on("error", (message, err) => message.channel.send(`${client.emotes.error} | An error encountered: ${err}`))
 
 client.commands = new Discord.Collection();
