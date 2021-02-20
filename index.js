@@ -18,6 +18,8 @@ const DisTube = require('distube')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
+const prefixSchema = require('./schemas/prefix')
+
 
 
 const opts = {
@@ -56,6 +58,19 @@ client.giveawaysManager = new GiveawaysManager(client, {
 
   }
 })
+
+client.prefix = async function(message){
+  let custom;
+  const data = await prefixSchema.findOne({Guild: message.guild.id})
+    .catch(err=> console.log(err))
+
+  if(data){
+    custom = data.Prefix;
+  } else{
+    custom = prefix;
+  }
+  return custom;
+}
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
 function embedbuilder(client, message, color, title, description){
@@ -218,6 +233,7 @@ client.on ('message', async message => {
 
 
 
+
   if(message.content.toLowerCase() == '!necrochat'){
     let content = message.content;
       if(!content) return;
@@ -296,6 +312,8 @@ client.translate = async(text, message) => {
   const translated = await translate(text, {from: 'en', to: lang})
   return translated.text;
 }
+
+
 
 
 client.on('guildMemberAdd', async (member) => {
