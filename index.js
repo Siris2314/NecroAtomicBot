@@ -3,6 +3,7 @@ const token = process.env.token;
 const prefix = process.env.prefix;
 const youtube = process.env.youtube;
 const botname = process.env.botname;
+const key1 = process.env.key1;
 const Discord = require('discord.js');
 const client = new Discord.Client({partial: ['MESSAGE']});
 const fs = require('fs');
@@ -29,7 +30,7 @@ const opts = {
 }
 
 // const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false});
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1});
 const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube
     .on("playSong", (message, queue, song) => message.channel.send(
