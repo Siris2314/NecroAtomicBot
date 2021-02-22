@@ -1,8 +1,10 @@
-const mongo = require('mongooe')
+const mongoose = require('mongoose')
 
-module.exports = mongo.model('Guild', new mongo.Schema({
+const guildSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    guildID: String,
+    guildName: String,
+    prefix: String
+});
 
-  id: String,
-  Current: Number,
-  channel: String
-}))
+module.exports = mongoose.model('Guild', guildSchema, 'guilds')

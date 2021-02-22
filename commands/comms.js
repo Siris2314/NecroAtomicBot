@@ -11,6 +11,11 @@ module.exports = {
     async execute(message, args) {
         console.log("comms");
 
+
+        if(message.guild.id != '768278413667991554'){
+          return message.channel.send('Command not valid for this guild');
+        }
+
         //   const embed = new Discord.MessageEmbed()
         //     .setTitle('Course Assignment Picker')
         //     .setField('1.)Calc 2')
