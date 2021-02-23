@@ -7,7 +7,7 @@ const google = new img({
 })
 
 module.exports = {
-    name : 'imagesearch',
+    name : 'googleimages',
     description:'Searches Images on Google',
     async execute(message, args,client){
         const query = args.join(" ")
