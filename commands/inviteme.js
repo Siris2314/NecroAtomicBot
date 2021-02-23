@@ -9,6 +9,7 @@ module.exports = {
 
     const embed = new Discord.MessageEmbed()
       .setTitle('Invite Me')
+      .setField('Click this link to invite me:')
       .setDescription('https://discord.com/api/oauth2/authorize?client_id=769028291611983882&permissions=0&scope=bot');
 
     return message.channel.send(embed);
