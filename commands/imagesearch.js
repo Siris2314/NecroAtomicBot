@@ -1,10 +1,6 @@
 const img = require('images-scraper')
 
-const google = new img({
-    puppeteer : {
-        headless : true,
-    }
-})
+const google = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
 
 module.exports = {
     name : 'imagesgoogle',
