@@ -26,6 +26,7 @@
     "distube": "^2.8.8",
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
+    "images-scraper": "^6.0.1",
     "imdb-api": "^4.4.1",
     "kitsu.js": "^2.0.0",
     "math": "0.0.3",
