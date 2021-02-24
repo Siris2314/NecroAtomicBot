@@ -6,6 +6,6 @@ module.exports = {
         const queue = client.distube.getQueue(message)
         if (!queue) return message.channel.send(`${client.emotes.error} | There is nothing in the queue right now!`)
         client.distube.toggleAutoplay(message)
-        message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
+        return message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
     }
 }
