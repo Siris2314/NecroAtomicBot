@@ -1,16 +1,25 @@
-const img = require('images-scraper')
+var Scraper = require('images-scraper');
+
+
+const google = new Scraper({
+
+  puppeteer: {
+    headless: true
+  }
+})
 
 
 module.exports = {
-    name : 'imagesgoogle',
-    description:'Searches Images on Google',
-    async execute(message, args,client){
+  name:'images',
+  description:'Sends images from google',
 
-        const google = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        const query = args.join(" ")
-        if(!query) return message.channel.send('Please enter a search query')
+  async execute(message, args,client){
+    const image_query = args.join(' ');
+    if(!image_query){
+      return message.channel.send('Please enter an image name')
+  }
 
-        const results = await google.scrape(query, 1)
-        message.channel.send(results[0].url);
-    }
+  const image_results = await google.scrape(image_query, 1);
+  message.channel.send((image_results[0]).url);
+}
 }
