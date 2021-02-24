@@ -7,4 +7,4 @@ const guildSchema = mongoose.Schema({
     prefix: String
 });
 
-module.exports = mongoose.model('Guild', guildSchema, 'guilds')
+module.exports = mongoose.model('Guild', guildSchema, 'guild')
