@@ -1,5 +1,6 @@
-const util = require('minecraft-server-util')
-const Discord = require('discord.js')
+const util = require('minecraft-server-util');
+const Discord = require('discord.js');
+process.env.config;
 
 module.exports = {
   name:'mcserver',
