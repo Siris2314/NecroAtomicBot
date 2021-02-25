@@ -20,6 +20,6 @@ module.exports = {
   }
 
   const image_results = await google.scrape(image_query, 1);
-  message.channel.send((image_results[0]).url);
+  message.channel.send(image_results[0].url);
 }
 }
