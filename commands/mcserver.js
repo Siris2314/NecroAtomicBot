@@ -1,7 +1,7 @@
 const util = require('minecraft-server-util');
 
 module.exports = {
-    name: 'mcserver',
+    name: 'mcserverstuff',
     description: 'get information about a minecraft server',
     async execute(client, message, args, Discord){
         if(!args[0]) return message.channel.send('Please enter a minecraft server ip');
