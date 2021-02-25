@@ -1,5 +1,5 @@
-const Jumble = require("jumble-words")
-const jumble = new Jumble()
+const Jumble = require("jumble-words");
+const jumble = new Jumble();
 
 module.exports = {
   name:'jumble',
