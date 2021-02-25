@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const mongoose = require('mongoose');
-const Guild = require('../schemas/guild');
+const Guild = require('../schemas/Guild');
 
 module.exports = {
     name: 'prefix',
