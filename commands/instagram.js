@@ -1,44 +1,77 @@
-const axios = require('axios')
-const { MessageEmbed } = require('discord.js');
+const Instagram = require('scraper-instagram')
+const {MessageEmbed} = require('discord.js')
+const paginationEmbed = require('discord.js-pagination')
+
+
 module.exports = {
-    name: "instagram",
-    description:'returns instagram of a person',
-    async execute(message,args,client){
-        if (!args[0]) {
-            return message.channel.send(`Please Enter a Channel Name`)
-        }
-        let url, response, account, details;
-        try {
-            url = `https://instagram.com/${args[0]}/?__a=1`;
-            response = await axios.get(url)
-            account = response.data
-            details = account.graphql.user
-        } catch (error) {
-            return message.channel.send(`Not A Account`)
+  name:'insta',
+  description:'Returns Instagram Profile',
+
+  async execute(message,args,client){
+    let Text = args.join(" ")
+    if(!Text) return message.channel.send('Please Enter a username to find')
+    let Replaced = Text.replace(/ +/g, " ")
+
+    const InstaClient = new Instagram();
+    const yourSessionId = '40843558906%3A6GhuPZOV9wZS9D%3A14';
+
+    const emojiList = ["⬅️", "➡️"]
+    const timeout = '300000';
+    const verified_instagram = '✔️';
+
+    const instagram = await InstaClient.authBySessionId(yourSessionId)
+      .catch(err => console.error(err))
+
+    try {
+      const insta = await InstaClient.getProfile(Replaced)
+      console.log(insta)
+      const profileUrl = `https://www.instagram.com/${Replaced}`;
+      const postUrl = 'https://www.instagram.com/p/';
+
+      const embed = new MessageEmbed()
+        .setTitle('\*\*Instagram\*\*')
+        .addField(`\*\*${insta.name} (@${Replaced}) ${insta.verified ? `${verified_instagram}`: ``} ${insta.private ? '🔒' : ''}\*\*`,
+      `${insta.bio} ${profileUrl}`)
+        .setColor('RANDOM')
+        .setThumbnail(insta.pic)
+        .addFields(
+          {name: 'TotalPosts', value: insta.post, inline:true},
+          {name:'Followers', value: insta.followers, inline:true},
+          {name: 'Followings', value:insta.following, inline:true}
+        )
+        .setTimestamp()
+        .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic:true}))
+
+        try{
+          if(!insta.lastPosts[0].caption || insta.lastPosts[0].caption === null){
+            insta.lastPosts[0].caption = '-'
+          }
+          const post  = new MessageEmbed()
+            .setTitle('\*\*Instagram\*\*')
+            .addField(`\*\*${insta.name} (@${Replaced}) ${insta.verified ? `${verified_instagram}`: ``} ${insta.private ? '🔒' : ''}\*\*`,
+          `${postUrl}${insta.lastPosts[0].shortcode}`)
+            .setColor('RANDOM')
+            .addField('Stats',
+`❤️ : \`${insta.lastPosts[0].likes}\` 📋: \`${insta.lastPosts[0].comments}\``)
+          .setThumbnail(insta.lastPosts[0].thumbnail)
+          .setTimestamp()
+
+          pages =[
+            embed,
+            post
+          ];
+          paginationEmbed(message,pages,emojiList,timeout);
+
+        } catch(error){
+            message.channel.send(embed)
         }
 
-        const embed = new MessageEmbed()
-            .setTitle(`${details.is_verified ? `${details.username} <a:verified:727820439497211994>` : ` ${details.username}`} ${details.is_private ? '🔒' : ''} `)
-            .setDescription(details.biography)
-            .setThumbnail(details.profile_pic_url)
-            .addFields(
-                {
-                    name: "Total Posts:",
-                    value: details.edge_owner_to_timeline_media.count.toLocaleString(),
-                    inline: true
-                },
-                {
-                    name: "Followers:",
-                    value: details.edge_followed_by.count.toLocaleString(),
-                    inline: true
-                },
-                {
-                    name: "Following:",
-                    value: details.edge_follow.count.toLocaleString(),
-                    inline: true
-                }
-            )
-        await message.channel.send(embed)
+
+    } catch(error){
+      message.channel.send('Couldnt look into user')
+
+      console.log(error)
 
     }
+  }
 }
