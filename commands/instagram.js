@@ -1,9 +1,9 @@
 const axios = require('axios')
 const { MessageEmbed } = require('discord.js');
 module.exports = {
-    name: "ig",
-    category: "extra",
-    async execute(client, message, args) => {
+    name: "instagram",
+    description:'returns instagram of a person',
+    async execute(client, message, args){
         if (!args[0]) {
             return message.channel.send(`Please Enter a Channel Name`)
         }
