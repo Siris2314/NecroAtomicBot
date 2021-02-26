@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     name: "instagram",
     description:'returns instagram of a person',
-    async execute(client, message, args){
+    async execute(message,args,client){
         if (!args[0]) {
             return message.channel.send(`Please Enter a Channel Name`)
         }
