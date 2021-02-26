@@ -26,4 +26,4 @@
 //         message.channel.send(`❌ | You did not answer in time. The correct word was **${word[0].word}**!`);
 //       })
 //   }
-}
+// }
