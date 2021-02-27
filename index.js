@@ -19,7 +19,7 @@ const DisTube = require('distube')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
-const prefixSchema = require('./schemas/prefix')
+
 
 
 
@@ -30,7 +30,7 @@ const opts = {
 }
 
 // const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1});
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
 const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube
   .on("playSong", (message, queue, song) => message.channel.send(
@@ -67,18 +67,6 @@ client.giveawaysManager = new GiveawaysManager(client, {
   }
 })
 
-client.prefix = async function(message){
-  let custom;
-  const data = await prefixSchema.findOne({Guild: message.guild.id})
-    .catch(err=> console.log(err))
-
-  if(data){
-    custom = data.Prefix;
-  } else{
-    custom = prefix;
-  }
-  return custom;
-}
 const commandFiles = fs.readdirSync('./commands').filter(file=>file.endsWith('.js'));
 
 function embedbuilder(client, message, color, title, description){
