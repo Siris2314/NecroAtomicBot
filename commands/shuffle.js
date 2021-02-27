@@ -1,7 +1,7 @@
 module.exports = {
   name:'shuffle',
   description: 'shuffles music',
-
+  inVoiceChannel: true,
   async execute(message, args, client){
 
     if(!message.member.voice.channel){
