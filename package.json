@@ -4,6 +4,7 @@
   "description": "A Discord Bot",
   "main": "index.js",
   "dependencies": {
+    "@discordjs/node-pre-gyp": "^0.2.0",
     "@discordjs/opus": "github:discordjs/opus",
     "@k3rn31p4nic/google-translate-api": "^1.1.1",
     "alexa-bot-api": "^0.1.4",
