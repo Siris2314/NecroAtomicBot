@@ -5,7 +5,7 @@
   "main": "index.js",
   "engines": {
    "node": "14.x"
- }
+ },
   "dependencies": {
     "@discordjs/node-pre-gyp": "^0.2.0",
     "@discordjs/opus": "github:discordjs/opus",
