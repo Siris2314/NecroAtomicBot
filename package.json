@@ -20,6 +20,7 @@
     "chartjs": "^0.3.24",
     "chartjs-node-canvas": "^3.0.6",
     "cheerio": "^1.0.0-rc.5",
+    "common-tags": "^1.8.0",
     "discord-giveaways": "^4.2.1",
     "discord-xp": "^1.1.7",
     "discord-ytdl-core": "^5.0.0",
