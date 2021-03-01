@@ -22,7 +22,7 @@ module.exports = {
       .setColor('RANDOM')
       .addField('DEFINITION', trim(answer.definition))
       .addField('EXAMPLE', trim(answer.example))
-      addField(
+      .addField(
         "RATINGS",
         `${answer.thumbs_up} 👍 || ${answer.thumbs_down} 👎`
       )
