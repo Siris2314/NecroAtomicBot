@@ -35,9 +35,9 @@ module.exports = {
     .setThumbnail(char2.images.image)
     .setColor("RANDOM")
     .addFields(
-      {name:`Constellation 1: ${char.c4.name}`, value:char.c4.effect, inline:true},
-      {name:`Constellation 2: ${char.c5.name}`, value:char.c5.effect, inline:false},
-      {name:`Constellation 3: ${char.c6.name}`, value:char.c6.effect, inline:false},
+      {name:`Constellation 4: ${char.c4.name}`, value:char.c4.effect, inline:true},
+      {name:`Constellation 5: ${char.c5.name}`, value:char.c5.effect, inline:false},
+      {name:`Constellation 6: ${char.c6.name}`, value:char.c6.effect, inline:false},
     )
 
     .setTimestamp()
