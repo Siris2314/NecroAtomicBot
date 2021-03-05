@@ -1,6 +1,6 @@
 const genshin = require('genshin-db');
 const Discord = require('discord.js');
-
+const paginationEmbed = require('discord.js-pagination');
 
 module.exports = {
   name:'genshinconst',
