@@ -40,6 +40,8 @@ module.exports = {
 
 
       )
+      .setTimestamp()
+      .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
 
 
       pages =[
