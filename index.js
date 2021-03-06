@@ -91,8 +91,6 @@ client.once('ready', async (client) => {
 
   let serverNum = await client.guild.cache.size;
 
-
-
   client.user.setPresence({
     activity: {
       name: `Infiltrating in ${serverNum} servers`,
@@ -100,8 +98,6 @@ client.once('ready', async (client) => {
     },
     status: 'active'
   })
-
-
 
 
 
@@ -257,6 +253,10 @@ client.on ('message', async message => {
       if(!content) return;
           chatbot.getReply(content).then(r => message.channel.send(r));
     }
+
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
 
   const data = await schema.findOne({Guild: message.guild.id, Command: command})
 
