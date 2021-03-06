@@ -1,45 +1,31 @@
-const { MessageEmbed } = require('discord.js');
-const mongoose = require('mongoose');
-const Guild = require('../schemas/Guild');
-
+const prefixSchema = require('../schemas/prefix')
+const { Message } = require('discord.js')
 module.exports = {
-    name: 'prefix',
-    description: 'Sets the prefix for this server.',
-    async execute (message, args, client){
-        message.delete();
-
-        if (!message.member.hasPermission('MANAGE_GUILD')) {
-            return message.channel.send('You do not have permission to use this command!').then(m => m.delete({timeout: 10000}));
-        };
-
-        const settings = await Guild.findOne({
-            guildID: message.guild.id
-        }, (err, guild) => {
-            if (err) console.error(err)
-            if (!guild) {
-                const newGuild = new Guild({
-                    _id: mongoose.Types.ObjectId(),
-                    guildID: message.guild.id,
-                    guildName: message.guild.name,
-                    prefix: process.env.PREFIX
+    name : 'prefix',
+    /**
+     * @param {Message} message
+     */
+    async execute (message,args,client){
+        const res = await args.join(" ")
+        if(!res) return message.channel.send('Please specify a prefix to change to.')
+        prefixSchema.findOne({ Guild : message.guild.id }, async(err, data) => {
+            if(err) throw err;
+            if(data) {
+                prefixSchema.findOneAndDelete({ Guild : message.guild.id })
+                data = new prefixSchema({
+                    Guild : message.guild.id,
+                    Prefix : res
                 })
-
-                newGuild.save()
-                .then(result => console.log(result))
-                .catch(err => console.error(err));
-
-                return message.channel.send('This server was not in our database! We have added it, please retype this command.').then(m => m.delete({timeout: 10000}));
+                data.save()
+                message.channel.send(`Your prefix has been updated to **${res}**`)
+            } else {
+                data = new prefixSchema({
+                    Guild : message.guild.id,
+                    Prefix : res
+                })
+                data.save()
+                message.channel.send(`Custom prefix in this server is now set to **${res}**`)
             }
-        });
-
-        if (args.length < 1) {
-            return message.channel.send(`You must specify a prefix to set for this server! Your current server prefix is \`${settings.prefix}\``).then(m => m.delete({timeout: 10000}));
-        };
-
-        await settings.updateOne({
-            prefix: args[0]
-        });
-
-        return message.channel.send(`Your server prefix has been updated to \`${args[0]}\``);
+        })
     }
 }

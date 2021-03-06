@@ -9,6 +9,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
     "@k3rn31p4nic/google-translate-api": "^1.1.1",
+    "@reconlx/discord.js": "^1.1.101",
     "alexa-bot-api": "^0.1.4",
     "anime-scraper": "^3.1.2",
     "animequote": "^1.1.1",
@@ -40,7 +41,7 @@
     "math": "0.0.3",
     "mathjs": "^7.5.1",
     "merge-options": "^3.0.4",
-    "mongoose": "^5.10.17",
+    "mongoose": "^5.11.19",
     "ms": "^2.1.2",
     "node-fetch": "^2.6.1",
     "node-superfetch": "^0.1.10",
@@ -69,7 +70,6 @@
     "ytdl-core": "^4.5.0",
     "ytsr": "^1.0.4"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "Hello"
   },

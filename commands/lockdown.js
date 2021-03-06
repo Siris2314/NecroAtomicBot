@@ -25,6 +25,7 @@ module.exports = {
     const perms = role.permissions.toArray();
     if(query == "false"){
       perms.push('SEND_MESSAGES')
+      console.log(newPerms)
       await role.edit({permissions:perms});
       message.channel.send("Server is unlocked")
     } else {

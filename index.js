@@ -1,6 +1,6 @@
 require('dotenv').config();
 const token = process.env.token;
-const prefix = process.env.prefix;
+const prefix = process.env.prefix
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
@@ -19,6 +19,8 @@ const DisTube = require('distube')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
+const prefixSchema = require('./schemas/prefix')
+
 
 
 
@@ -139,6 +141,22 @@ for(const file of commandFiles){
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
+
+
+
+client.prefix = async function(message) {
+        let custom;
+
+        const data = await prefixSchema.findOne({ Guild : message.guild.id })
+            .catch(err => console.log(err))
+
+        if(data) {
+            custom = data.Prefix;
+        } else {
+            custom = prefix;
+        }
+        return custom;
+    }
 
 
 
@@ -275,6 +293,15 @@ client.on ('message', async message => {
 
 
 });
+client.on('guildDelete', async (guild) => {
+    prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
+        if (err) throw err;
+        if (data) {
+            prefixSchema.findOneAndDelete({ Guild : guild.id }).then(console.log('deleted data.'))
+        }
+    })
+});
+
 
 
 client.on('messageDelete', async message => {
