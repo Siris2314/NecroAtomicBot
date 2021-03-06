@@ -288,21 +288,6 @@ client.on('guildDelete', async (guild) => {
 
 
 
-client.prefix = async function(message) {
-        let custom;
-
-        const data = await prefixSchema.findOne({ Guild : message.guild.id })
-            .catch(err => console.log(err))
-
-        if(data) {
-            custom = data.Prefix;
-        } else {
-            custom = prefix;
-        }
-        return custom;
-    }
-
-
 client.on('messageDelete', async message => {
   client.snipes.set(message.channel.id, {
     content: message.content,
