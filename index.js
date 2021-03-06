@@ -1,6 +1,6 @@
 require('dotenv').config();
 const token = process.env.token;
-const prefix = process.env.prefix;
+const prefix = process.env.prefix
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
@@ -19,6 +19,8 @@ const DisTube = require('distube')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
+const prefixSchema = require('./schemas/prefix')
+
 
 
 
@@ -139,6 +141,22 @@ for(const file of commandFiles){
   const command = require(`./commands/${file}`);
   client.commands.set(command.name, command);
 }
+
+
+
+client.prefix = async function(message) {
+        let custom;
+
+        const data = await prefixSchema.findOne({ Guild : message.guild.id })
+            .catch(err => console.log(err))
+
+        if(data) {
+            custom = data.Prefix;
+        } else {
+            custom = prefix;
+        }
+        return custom;
+    }
 
 
 
@@ -275,6 +293,15 @@ client.on ('message', async message => {
 
 
 });
+client.on('guildDelete', async (guild) => {
+    prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
+        if (err) throw err;
+        if (data) {
+            prefixSchema.findOneAndDelete({ Guild : guild.id }).then(console.log('deleted data.'))
+        }
+    })
+});
+
 
 
 client.on('messageDelete', async message => {
@@ -308,6 +335,26 @@ client.translate = async(text, message) => {
   const translated = await translate(text, {from: 'en', to: lang})
   return translated.text;
 }
+
+const voiceCollection = new Discord.Collection()
+
+client.on("voiceStateUpdate", async (oldState, newState) => {
+  const user = await client.users.fetch(newState.id)
+  const member = newState.guild.member(user)
+
+  if(!oldState.channel && newState.channel.id === "815461483219517450"){
+    const channel = await newState.guild.channels.create(user.tag, {
+      type: "voice",
+      parent: newState.channel.parent,
+    });
+    member.voice.setChannel(channel);
+    voiceCollection.set(user.id, channel.id)
+  } else if(!newState.channel){
+    if(oldState.channelID === voiceCollection.get(newState.id)){
+      return oldState.channel.delete();
+    }
+  }
+});
 
 
 
@@ -351,6 +398,8 @@ client.on('guildMemberAdd', async (member) => {
             console.log(error)
         }
 })
+
+
 
 
 

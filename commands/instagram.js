@@ -4,7 +4,7 @@ const paginationEmbed = require('discord.js-pagination')
 
 
 module.exports = {
-  name:'insta',
+  name:'instagram',
   description:'Returns Instagram Profile',
 
   async execute(message,args,client){
