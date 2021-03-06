@@ -148,10 +148,6 @@ for(const file of commandFiles){
 client.on ('message', async message => {
 
 
-
-
-
-
   if(!message.content.startsWith(prefix) || message.author.bot){
     return;
   }
@@ -277,6 +273,7 @@ client.on ('message', async message => {
 
 
 });
+
 client.on('guildDelete', async (guild) => {
     prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
         if (err) throw err;
@@ -320,7 +317,7 @@ client.translate = async(text, message) => {
   return translated.text;
 }
 
-const voiceCollection = new Discord.Collection()
+const voiceCollection = new Discord.Collection();
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const user = await client.users.fetch(newState.id)
