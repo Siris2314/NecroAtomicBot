@@ -48,7 +48,7 @@ Here are some of the many featrues since the last update:
 
     - A Help Command, again thanks to Gabe, we were able to add in a dynamic help command
     - NecroAtomic Bot is proud is announce that we have a functioning music bot, be sure to use the music bot associated commands to jam to your favorite tunes
-    - For Admins, I have added a lot of adminstrator features to ease your time in server management. Commands such as nuke, creation and deletion of           t textchannels,adding and removing roles, server lockdown command, and more.
+    - For Admins, I have added a lot of adminstrator features to ease your time in server management. Commands such as nuke, creation and deletion of textchannels, adding and removing roles, server lockdown command, and more.
     - For some michaellaenous fun, I have added in a twitter, instagram, and urban dictionary command that lets you search for any account or term(urban) you like
     - I have added a per server prefix system but it is still currently in the testing phase and we are not too confident at the moment with it. 
    
