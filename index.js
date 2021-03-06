@@ -144,22 +144,6 @@ for(const file of commandFiles){
 
 
 
-client.prefix = async function(message) {
-        let custom;
-
-        const data = await prefixSchema.findOne({ Guild : message.guild.id })
-            .catch(err => console.log(err))
-
-        if(data) {
-            custom = data.Prefix;
-        } else {
-            custom = prefix;
-        }
-        return custom;
-    }
-
-
-
 
 client.on ('message', async message => {
 
@@ -302,6 +286,21 @@ client.on('guildDelete', async (guild) => {
     })
 });
 
+
+
+client.prefix = async function(message) {
+        let custom;
+
+        const data = await prefixSchema.findOne({ Guild : message.guild.id })
+            .catch(err => console.log(err))
+
+        if(data) {
+            custom = data.Prefix;
+        } else {
+            custom = prefix;
+        }
+        return custom;
+    }
 
 
 client.on('messageDelete', async message => {
