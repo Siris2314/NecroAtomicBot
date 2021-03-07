@@ -1,31 +1,20 @@
-const prefixSchema = require('../schemas/prefix')
-const { Message } = require('discord.js')
+const db = require('quick.db')
+
 module.exports = {
-    name : 'prefix',
-    /**
-     * @param {Message} message
-     */
-    async execute (message,args,client){
-        const res = await args.join(" ")
-        if(!res) return message.channel.send('Please specify a prefix to change to.')
-        prefixSchema.findOne({ Guild : message.guild.id }, async(err, data) => {
-            if(err) throw err;
-            if(data) {
-                prefixSchema.findOneAndDelete({ Guild : message.guild.id })
-                data = new prefixSchema({
-                    Guild : message.guild.id,
-                    Prefix : res
-                })
-                data.save()
-                message.channel.send(`Your prefix has been updated to **${res}**`)
-            } else {
-                data = new prefixSchema({
-                    Guild : message.guild.id,
-                    Prefix : res
-                })
-                data.save()
-                message.channel.send(`Custom prefix in this server is now set to **${res}**`)
-            }
-        })
-    }
+  name:"prefix",
+  description:'Custom prefix setter',
+
+  async execute(message,args,client){
+    if(!message.member.hasPermission("ADMINSTRATOR")) return message.channel.send("Admin only command")
+
+
+  if(!args[0]) return message.channel.send("Please provide a new prefix")
+
+  if(args[1]) return message.channel.send("Prefix cannot have two spaces")
+
+
+  db.set(`prefix_${message.guild.id}`, args[0])
+
+  message.channel.send(`Successfully set new prefix to **${args[0]}**`)
+}
 }

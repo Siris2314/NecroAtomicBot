@@ -1,6 +1,6 @@
 require('dotenv').config();
 const token = process.env.token;
-const prefix = process.env.prefix
+var prefix = process.env.prefix;
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
@@ -20,6 +20,7 @@ const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
 const prefixSchema = require('./schemas/prefix')
+const quickdb = require('quick.db')
 
 
 
@@ -146,6 +147,13 @@ for(const file of commandFiles){
 
 
 client.on ('message', async message => {
+
+  var prefixes = await quickdb.fetch(`prefix_${message.guild.id}`);
+  if(prefix === null){
+    prefix = process.env.prefix;
+  } else{
+    prefix = prefixes
+  }
 
 
   if(!message.content.startsWith(prefix) || message.author.bot){
