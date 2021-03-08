@@ -1,6 +1,6 @@
 require('dotenv').config();
 const token = process.env.token;
-var prefix = process.env.prefix;
+const prefix = process.env.prefix
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
@@ -20,7 +20,6 @@ const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
 const prefixSchema = require('./schemas/prefix')
-const quickdb = require('quick.db')
 
 
 
@@ -90,23 +89,6 @@ client.once('ready', async (client) => {
 
   console.log(botname);
 
-  // let serverNum = await client.guild.cache.size;
-  //
-  // client.user.setPresence({
-  //   activity: {
-  //     name: `Infiltrating in ${serverNum} servers`,
-  //     type:'WATCHING'
-  //   },
-  //   status: 'active'
-  // })
-
-
-
-
-
-
-
-
 
 
   await mongo().then(mongoose => {
@@ -145,15 +127,28 @@ for(const file of commandFiles){
 
 
 
+client.prefix = async function(message) {
+        let custom;
+
+        const data = await prefixSchema.findOne({ Guild : message.guild.id })
+            .catch(err => console.log(err))
+
+        if(data) {
+            custom = data.Prefix;
+        } else {
+            custom = prefix;
+        }
+        return custom;
+    }
+
+
+
 
 client.on ('message', async message => {
 
-  var prefixes = await quickdb.fetch(`prefix_${message.guild.id}`);
-  if(prefix === null){
-    prefix = process.env.prefix;
-  } else{
-    prefix = prefixes
-  }
+
+
+
 
 
   if(!message.content.startsWith(prefix) || message.author.bot){
@@ -281,7 +276,6 @@ client.on ('message', async message => {
 
 
 });
-
 client.on('guildDelete', async (guild) => {
     prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
         if (err) throw err;
@@ -325,7 +319,7 @@ client.translate = async(text, message) => {
   return translated.text;
 }
 
-const voiceCollection = new Discord.Collection();
+const voiceCollection = new Discord.Collection()
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
   const user = await client.users.fetch(newState.id)

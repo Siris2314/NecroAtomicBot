@@ -7,7 +7,10 @@
     "node": "14.x"
   },
   "dependencies": {
+
     "@discordjs/opus": "^0.4.0",
+    "@discordjs/node-pre-gyp": "^0.2.0",
+    "@discordjs/opus": "github:discordjs/opus",
     "@k3rn31p4nic/google-translate-api": "^1.1.1",
     "@reconlx/discord.js": "^1.1.101",
     "alexa-bot-api": "^0.1.4",
@@ -43,6 +46,7 @@
     "merge-options": "^3.0.4",
     "mongoose": "^5.11.19",
     "ms": "^2.1.2",
+    "node-addon-api": "^3.1.0",
     "node-fetch": "^2.6.1",
     "node-superfetch": "^0.1.10",
     "numeral": "^2.0.6",
