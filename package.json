@@ -7,7 +7,7 @@
     "node": "14.x"
   },
   "dependencies": {
-
+    "@discordjs/opus": "^0.4.0",
     "@k3rn31p4nic/google-translate-api": "^1.1.1",
     "@reconlx/discord.js": "^1.1.101",
     "alexa-bot-api": "^0.1.4",
@@ -29,7 +29,7 @@
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
     "discord.js-pagination": "^1.0.3",
-    "distube": "^2.8.8",
+    "distube": "^2.8.10",
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.2.7",
     "genshin-db": "^1.12.5",
