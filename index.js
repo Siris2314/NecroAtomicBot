@@ -89,6 +89,23 @@ client.once('ready', async (client) => {
 
   console.log(botname);
 
+  let serverNum = await client.guild.cache.size;
+
+  client.user.setPresence({
+    activity: {
+      name: `Infiltrating in ${serverNum} servers`,
+      type:'WATCHING'
+    },
+    status: 'active'
+  })
+
+
+
+
+
+
+
+
 
 
   await mongo().then(mongoose => {
