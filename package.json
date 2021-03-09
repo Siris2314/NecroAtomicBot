@@ -23,6 +23,7 @@
     "cheerio": "^1.0.0-rc.5",
     "child_process": "^1.0.2",
     "common-tags": "^1.8.0",
+    "discord-canvas": "^1.4.1",
     "discord-giveaways": "^4.2.1",
     "discord-xp": "^1.1.7",
     "discord-ytdl-core": "^5.0.0",
