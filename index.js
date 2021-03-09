@@ -5,7 +5,7 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
-const client = new Discord.Client({partial: ['MESSAGE']});
+const client = new Discord.Client();
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
@@ -16,6 +16,7 @@ const schema = require('./schemas/custom-commands.js')
 const memberCount = require('./member-count.js')
 const search = require('youtube-search')
 const DisTube = require('distube')
+const {MessageAttachment} = require('discord.js')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
@@ -296,6 +297,40 @@ client.on ('message', async message => {
 
 
 });
+client.on('guildMemberAdd', async(member) => {
+  Schema.findOne({Guild: member.guild.id}, async(e, data) => {
+    if(!data) return;
+    const user = member.user;
+    const image = await new canvas.Welcome()
+      .setUsername(user.username)
+      .setDiscriminator(user.discriminator)
+      .setMemberCount(member.guild.memberCount)
+      .setGuildName(member.guild.name)
+      .setAvatar(user.displayAvatarURL({format: "png"}))
+      .setColor("border", "#8015EA")
+      .setColor("username-box", "#8015EA")
+      .setColor("discriminator-box", "#8015EA")
+      .setColor("message-box", "#8015EA")
+      .setColor("title", "#8015EA")
+      .setColor("avatar", "#8015EA")
+      .setBackground("https://site.com/background.jpg")
+      .toAttachment();
+
+    
+    const attachment = new Discord.MessageAttachment(
+      (await image).toBuffer(), 
+      "goodbye-image.png"
+      
+      );
+    
+    console.log(user)
+    const channel = member.guild.channels.cache.get(data.Channel)
+    channel.send(attachment)
+
+  });
+});
+
+
 client.on('guildDelete', async (guild) => {
     prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
         if (err) throw err;
@@ -358,36 +393,6 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     }
   }
 });
-
-client.on("guildMemberAdd", async(member) => {
-  Schema.findOne({Guild: member.guild.id}, async(e, data) => {
-    if(!data) return;
-    const user = member.user;
-    const image = await new canvas.Welcome()
-      .setUsername(user.username)
-      .setDiscriminator(user.discriminator)
-      .setMemberCount(member.guild.memberCount)
-      .setGuildName(member.guild.name)
-      .setAvatar(user.displayAvatarURL({format: "png"}))
-      .setColor("border", "#8015EA")
-      .setColor("username-box", "#8015EA")
-      .setColor("discriminator-box", "#8015EA")
-      .setColor("message-box", "#8015EA")
-      .setColor("title", "#8015EA")
-      .setColor("avatar", "#8015EA")
-      .setBackground("https://site.com/background.jpg")
-      .toAttachment();
-
-    
-    const attachment = new Discord.MessageAttachment((await image).toBuffer(), "goodbye-image.png");
- 
-    
-    const channel = member.guild.channels.cache.get(data.Channel)
-    channel.send(attachment)
-
-  });
-});
-
 
 
 
