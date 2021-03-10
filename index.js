@@ -86,33 +86,28 @@ function embedbuilder(client, message, color, title, description){
 
 
 
-client.once('ready', async (client) => {
-
-
-
+client.on('ready', () => {
 
   console.log(botname);
 
-  let serverNum = await client.guilds.cache.size;
+  const arrayOfStatus = [
+    `${client.guilds.cache.size} servers`,
+    `${client.channels.cache.size} channels`,
+    `${client.users.cache.size} users`,
+    `run !necro`
 
-  client.user.setPresence({
-    activity: {
-      name: `Infiltrating in ${serverNum} servers`,
-      type:'WATCHING'
-    },
-    status: 'active'
-  })
+  ];
 
+  let index = 0;
+  setInterval(() => {
+    if(index == arrayOfStatus.length) index = 0;
+    const status = arrayOfStatus[index];
+    console.log(status);
+    client.user.setActivity(status);
+    index++
+  }, 5000)
 
-
-
-
-
-
-
-
-
-  await mongo().then(mongoose => {
+  mongo().then(mongoose => {
     try {
       console.log('Connected to mongo')
     } finally {
