@@ -313,7 +313,7 @@ client.on('guildMemberAdd', async(member) => {
       .setColor("message-box", "#8015EA")
       .setColor("title", "#8015EA")
       .setColor("avatar", "#8015EA")
-      .setBackground("https://site.com/background.jpg")
+      .setBackground("http://2.bp.blogspot.com/_708_wIdtSh0/S_6CRX-cA4I/AAAAAAAABf4/PgAp07RgaB8/s1600/Colorful+%2845%29.jpg")
       .toAttachment();
 
     
@@ -322,10 +322,11 @@ client.on('guildMemberAdd', async(member) => {
       "goodbye-image.png"
       
       );
-    
+
+    console.log(attachment)
     console.log(user)
     const channel = member.guild.channels.cache.get(data.Channel)
-    channel.send(attachment)
+    await channel.send(attachment)
 
   });
 });
