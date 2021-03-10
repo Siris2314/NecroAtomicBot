@@ -5,7 +5,7 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
-const client = new Discord.Client({partial: ['MESSAGE']});
+const client = new Discord.Client();
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
@@ -16,10 +16,14 @@ const schema = require('./schemas/custom-commands.js')
 const memberCount = require('./member-count.js')
 const search = require('youtube-search')
 const DisTube = require('distube')
+const {MessageAttachment} = require('discord.js')
 const { getPokemon } = require('./commands/pokemon');
 const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
 const prefixSchema = require('./schemas/prefix')
+const canvas = require('discord-canvas')
+const Schema = require('./schemas/welcomeChannel')
+
 
 
 
@@ -32,7 +36,7 @@ const opts = {
 }
 
 // const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
+client.distube = new DisTube(client, { searchSongs: true, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
 const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube
   .on("playSong", (message, queue, song) => message.channel.send(
@@ -293,6 +297,41 @@ client.on ('message', async message => {
 
 
 });
+client.on('guildMemberAdd', async(member) => {
+  Schema.findOne({Guild: member.guild.id}, async(e, data) => {
+    if(!data) return;
+    const user = member.user;
+    const image = await new canvas.Welcome()
+      .setUsername(user.username)
+      .setDiscriminator(user.discriminator)
+      .setMemberCount(member.guild.memberCount)
+      .setGuildName(member.guild.name)
+      .setAvatar(user.displayAvatarURL({format: "png"}))
+      .setColor("border", "#8015EA")
+      .setColor("username-box", "#8015EA")
+      .setColor("discriminator-box", "#8015EA")
+      .setColor("message-box", "#8015EA")
+      .setColor("title", "#8015EA")
+      .setColor("avatar", "#8015EA")
+      .setBackground("http://2.bp.blogspot.com/_708_wIdtSh0/S_6CRX-cA4I/AAAAAAAABf4/PgAp07RgaB8/s1600/Colorful+%2845%29.jpg")
+      .toAttachment();
+
+    
+    const attachment = new Discord.MessageAttachment(
+      (await image).toBuffer(), 
+      "goodbye-image.png"
+      
+      );
+
+    console.log(attachment)
+    console.log(user)
+    const channel = member.guild.channels.cache.get(data.Channel)
+    await channel.send(attachment)
+
+  });
+});
+
+
 client.on('guildDelete', async (guild) => {
     prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
         if (err) throw err;
@@ -355,60 +394,6 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     }
   }
 });
-
-
-
-
-client.on('guildMemberAdd', async (member) => {
-    if(db.has(`captcha-${member.guild.id}`)=== false) return;
-    const url = 'https://api.no-api-key.com/api/v2/captcha';
-        try {
-            fetch(url)
-                .then(res => res.json())
-                .then(async json => {
-                    console.log(json)
-                    const msg = await member.send(
-                        new MessageEmbed()
-                            .setTitle('Please enter the captcha')
-                            .setImage(json.captcha)
-                            .setColor("RANDOM")
-                    )
-                    try {
-                        const filter = (m) => {
-                            if(m.author.bot) return;
-                            if(m.author.id === member.id && m.content === json.captcha_text) return true;
-                            else {
-                                msg.channel.send("You have answered the captcha incorrectly!")
-                            }
-                        };
-                        const response = await msg.channel.awaitMessages(filter, {
-                            max : 1,
-                            time : 10000,
-                            errors : ['time']
-                        })
-                        if(response) {
-                            msg.channel.send('Congrats, you have answered the captcha.')
-                        }
-                    } catch (error) {
-                        msg.channel.send(`You have been kicked from **${member.guild.name}** for not answering the captcha correctly.`)
-                        member.kick()
-                    }
-                })
-        } catch (error) {
-            console.log(error)
-        }
-})
-
-
-
-
-
-
-
-
-
-
-
 
 
 
