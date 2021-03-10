@@ -11,7 +11,7 @@ module.exports = {
 
     const target = message.mentions.members.first()
     if(!target){
-      return message.channel.send("Please sepcify user")
+      return message.channel.send("Please specify user")
     }
     const role = message.mentions.roles.first()
 

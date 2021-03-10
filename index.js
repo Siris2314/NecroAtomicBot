@@ -86,7 +86,7 @@ function embedbuilder(client, message, color, title, description){
 
 
 
-client.on('ready', () => {
+client.on('ready', (client) => {
 
   console.log(botname);
 
