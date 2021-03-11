@@ -13,8 +13,12 @@ module.exports = {
     }
     query = encodeURIComponent(query)
 
-    const {data: {list}} = await axios.get(`https://api.urbandictionary.com/v0/define?term=${query}`);
-    const [answer] = list
+    const {
+      data: {list}
+    } = await axios.get(
+      `https://api.urbandictionary.com/v0/define?term=${query}`
+      );
+    const [answer] = list;
 
     const embed = new MessageEmbed()
       .setTitle(answer.word)

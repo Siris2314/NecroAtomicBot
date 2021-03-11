@@ -4,28 +4,34 @@ module.exports = {
   name:"clear",
   description: "clears messages",
 
-  execute(message,args) {
+  async execute(message,args, client) {
 
-    let clearAmt;
+    const member = message.mentions.members.first()
+    const messages = message.channel.messages.fetch()
 
 
-    if(!message.member.hasPermission('ADMINSTRATOR')){
-      return message.channel.send('Missing Perms')
+    if(member){
+      const userMessages = (await messages).filter(
+        (m) => m.author.id === member.id
+      )
+      await message.channel.bulkDelete(userMessages)
+      message.channel.send(`${member}'s messages has been deleted`)
+    } else{
+      if(!args[0]){
+        return message.channel.send("Please specify number of messages to delete")
+      }
+
+      if(isNaN(args[0])){
+        return message.channel.send("Only numbers are allowed")
+      }
+      if(parseInt(args[0]) > 99){
+        return message.channel.send("Max deletion amount is 99")
+      }
+
+      await message.channel
+          .bulkDelete(parseInt(args[0]) + 1)
+          .catch((err) => console.log(err))
     }
-
-
-
-    if(isNaN(args[0]) || parseInt(args[0]) <= 0){
-      message.channel.send('Please put in numbers');
-
-    }
-    if(parseInt(args[0]) > 100){
-      message.channel.send('Only 100 messages can be deleted each time')
-    }
-    else{
-      clearAmt = parseInt(args[0]);
-    }
-    message.channel.bulkDelete(clearAmt + 1, true);
 
 
   }
