@@ -13,6 +13,8 @@ module.exports = {
     }
     query = encodeURIComponent(query)
 
+    try{
+
     const {
       data: {list}
     } = await axios.get(
@@ -32,7 +34,11 @@ module.exports = {
       )
 
     return message.channel.send(embed);
+  } catch(err){
+    return message.channel.send("Word not found")
   }
+
+}
 }
 
 function trim(input){
