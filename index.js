@@ -310,7 +310,7 @@ client.on('guildMemberAdd', async(member) => {
       .setColor("avatar", "#8015EA")
       .setBackground("http://2.bp.blogspot.com/_708_wIdtSh0/S_6CRX-cA4I/AAAAAAAABf4/PgAp07RgaB8/s1600/Colorful+%2845%29.jpg")
       .toAttachment();
-
+    
     
     const attachment = new Discord.MessageAttachment(
       (await image).toBuffer(), 
