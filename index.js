@@ -5,7 +5,9 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({
+  partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
+});
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
@@ -23,6 +25,7 @@ client.snipes = new Map();
 const prefixSchema = require('./schemas/prefix')
 const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
+const reactionSchema = require('./schemas/reaction-roles')
 
 
 
@@ -389,6 +392,39 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     }
   }
 });
+
+client.on('messageReactionAdd', async(reaction, user) => {
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(reaction.partial) await reaction.fetch()
+  if(user.bot) return;
+
+  reactionSchema.findOne({Message: reaction.message.id}, async(err, data) => {
+    if(!data) return;
+    if(!Object.keys(data.Roles).includes(reaction.emoji.name)) return;
+
+    const [roleid] = data.Roles[reaction.emoji.name]
+    reaction.message.guild.members.cache.get(user.id).roles.add(roleid);
+    user.send('You have acquired this role')
+
+  })
+})
+
+
+client.on('messageReactionRemove', async(reaction, user) => {
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(reaction.partial) await reaction.fetch()
+  if(user.bot) return;
+
+  reactionSchema.findOne({Message: reaction.message.id}, async(err, data) => {
+    if(!data) return;
+    if(!Object.keys(data.Roles).includes(reaction.emoji.name)) return;
+
+    const [roleid] = data.Roles[reaction.emoji.name]
+    reaction.message.guild.members.cache.get(user.id).roles.remove(roleid);
+    user.send('Role has been removed')
+
+  })
+})
 
 
 
