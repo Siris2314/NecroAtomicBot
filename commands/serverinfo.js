@@ -1,33 +1,43 @@
-const Discord = require('discord.js')
+const {Client, Message, MessageEmbed} = require('discord.js')
+const moment = require('moment')
 
 module.exports = {
 
   name:"serverinfo",
   description: "returns info of server",
 
+  async execute(message,args,client){
+    const guild = message.guild;
+    const embed = new MessageEmbed()
+      .setTitle(message.guild.name)
+      .setThumbnail(message.guild.iconURL())
+      .setColor('RANDOM')
+      .addField('General Info', [
+        `ID: ${guild.id}`,
+        `Name: ${guild.name}`,
+        `Owner: ${guild.owner}`
+      ])
+      .addField('Counts',[
+        `Role: ${guild.roles.cache.size} roles`,
+        `Channels: ${guild.channels.cache.size} total 
+            (Text:${guild.channels.cache.filter(
+              (ch)=>ch.type === "text").size
+            }, Voice:${guild.channels.cache.filter(
+              (ch)=>ch.type === "voice").size
+            })`, 
+        `Emojis: ${guild.emojis.cache.size} (Regular: ${guild.emojis.cache.filter((e) => !e.animated).size}, Animated: ${guild.emojis.cache.filter((e) => e.animated).size})`
+      ])
+      .addField("Miscellaneous Information", [
+        `Created:${moment(guild.createdTimestamp).format('LT')}, ${moment(guild.createdTimestamp).format('LL')}, ${moment(guild.createdTimestamp).fromNow()}`, 
+        `Region: ${guild.region}`, 
+        `Boost Tier: ${guild.premiumTier ? `Tier ${guild.premiumTier}` : "None" }`, 
+        `Boost Count: ${guild.premiumSubscriptionCount || "0"}`,
+      ])
 
-  execute(message,args){
-
-    const roles = message.guild.roles.cache;
-    const emojis = message.guild.emojis.cache;
-    const embed = new Discord.MessageEmbed()
-        .setDescription(`**Guild Information for __${message.guild.name}__**`)
-        .setColor("#0020ff")
-        .setThumbnail(message.guild.iconURL({ dynamic: true }))
-        .addField("General", [
-            `**> Name: **${message.guild.name}`,
-            `**> ID: **${message.guild.id}`,
-            `**> Owner: **<@${message.guild.ownerID}>`,
-            `**> Region: **${message.guild.region}`,
-            `**> Boost Tier: **${message.guild.premiumTier}`,
-            `**> Time Created: **${new Date(message.guild.createdTimestamp)}`,
-        ])
-        .addField("Stats", [
-            `**> Role Count: **${roles.array().length}`,
-            `**> Emoji Count: **${emojis.size}`,
-            `**> Member Count: **${message.guild.memberCount}`,
-        ]);
-    return message.channel.send(embed);
-
+    message.channel.send(embed);
+    
   }
+
+
+  
 }
