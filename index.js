@@ -39,7 +39,7 @@ const opts = {
 }
 
 // const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: true, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
 const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube
   .on("playSong", (message, queue, song) => message.channel.send(
