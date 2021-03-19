@@ -27,6 +27,10 @@ const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
 const reactionSchema = require('./schemas/reaction-roles')
 
+const afk = new Discord.Collection()
+
+module.exports = {afk};
+
 
 
 

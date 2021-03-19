@@ -6,7 +6,7 @@ module.exports = {
   name: "ship",
   description: "Relationship Calculator",
 
-  execute: async (message,args) => {
+  execute: async (message,args,client) => {
         let user1 = message.mentions.users.array()[0];
         let user2 = message.mentions.users.array()[1];
         let c = Math.random() * 100 + 1;
@@ -15,8 +15,8 @@ module.exports = {
 	      const ctx = canvas.getContext('2d');
         const background = await Canvas.loadImage("./heart.png"); 
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-	      const avatar1 = await Canvas.loadImage(user1.displayAvatarURL({ format: 'jpg' }));
-	      const avatar2 = await Canvas.loadImage(user2.displayAvatarURL({ format: 'jpg' }));
+	      const avatar1 = await Canvas.loadImage(user1.displayAvatarURL({format: 'jpg' }));
+	      const avatar2 = await Canvas.loadImage(user2.displayAvatarURL({format: 'jpg' }));
         ctx.drawImage(avatar1, 75, 75);
         ctx.drawImage(avatar2, 500,75);
         ctx.font = "40px sans-serif";
