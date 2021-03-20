@@ -14,8 +14,7 @@ const {GiveawaysManager} = require('discord-giveaways')
 const mongo = require('./mongo.js')
 const alexa = require("alexa-bot-api");
 var chatbot = new alexa("aw2plm");
-const schema = require('./schemas/custom-commands.js')
-const memberCount = require('./member-count.js')
+
 const search = require('youtube-search')
 const DisTube = require('distube')
 const {MessageAttachment} = require('discord.js')
@@ -26,10 +25,9 @@ const prefixSchema = require('./schemas/prefix')
 const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
 const reactionSchema = require('./schemas/reaction-roles')
+const ms = require('ms')
+const countSchema = require('./schemas/member-count')
 
-const afk = new Discord.Collection()
-
-module.exports = {afk};
 
 
 
@@ -93,9 +91,28 @@ function embedbuilder(client, message, color, title, description){
 
 
 
-client.on('ready', (client) => {
+client.on('ready', async () => {
 
   console.log(botname);
+
+  setInterval(() =>{
+    countSchema.find().then((data) => {
+      if(!data && !data.length) return;
+      data.forEach((value) => {
+        const guild = client.guilds.cache.get(value.Guild)
+        const memberCount = guild.memberCount;
+        if(value.Member != memberCount){
+          console.log("Member count differs")
+          const channel = guild.channels.cache.get(value.Channel)
+
+          channel.setName(`Members: ${memberCount}`)
+
+          value.Member = memberCount;
+          value.save()
+        }
+      })
+    })
+  }, ms('15 Minutes'))
 
   const arrayOfStatus = [
     `${client.guilds.cache.size} servers`,
@@ -109,12 +126,15 @@ client.on('ready', (client) => {
   setInterval(() => {
     if(index == arrayOfStatus.length) index = 0;
     const status = arrayOfStatus[index];
-    console.log(status);
     client.user.setActivity(status);
     index++
   }, 5000)
 
-  mongo().then(mongoose => {
+ 
+
+
+
+  await mongo().then(mongoose => {
     try {
       console.log('Connected to mongo')
     } finally {
@@ -123,8 +143,6 @@ client.on('ready', (client) => {
   })
 
 
-
-  memberCount(client);
 
 
 
@@ -167,11 +185,7 @@ client.prefix = async function(message) {
 
 
 
-client.on ('message', async message => {
-
-
-
-
+client.on ('message', async (message) => {
 
 
   if(!message.content.startsWith(prefix) || message.author.bot){
@@ -264,13 +278,7 @@ client.on ('message', async message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  const data = await schema.findOne({Guild: message.guild.id, Command: command})
-
-  if(data){
-    message.channel.send(data.Response)
-  }
-
-
+ 
 
   if(!client.commands.has(command)){
     return;
