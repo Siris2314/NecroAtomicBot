@@ -12,6 +12,7 @@ module.exports = {
         const channel = message.mentions.channels.first()
         if(!channel) return message.channel.send("Please mention a channel")
         Schema.findOne({Guild: message.guild.id}, async(err, data) => {
+        try{
             if(data){
                 data.Channel = channel.id;
                 data.save();
@@ -23,7 +24,11 @@ module.exports = {
             }
 
             message.channel.send(`${channel} has been set as the welcome channel`)
+        } catch(err){
+            console.log(err)
+        }
         })
+        
 
 
     }

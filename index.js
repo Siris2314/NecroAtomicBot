@@ -95,6 +95,14 @@ client.on('ready', async () => {
 
   console.log(botname);
 
+
+  await mongo().then(mongoose => {
+    try {
+      console.log('Connected to mongo')
+    } finally {
+      mongoose.connection.close()
+    }
+  })
   setInterval(() =>{
     countSchema.find().then((data) => {
       if(!data && !data.length) return;
@@ -131,18 +139,6 @@ client.on('ready', async () => {
   }, 5000)
 
  
-
-
-
-  await mongo().then(mongoose => {
-    try {
-      console.log('Connected to mongo')
-    } finally {
-      mongoose.connection.close()
-    }
-  })
-
-
 
 
 

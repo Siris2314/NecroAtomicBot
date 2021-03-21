@@ -1,4 +1,5 @@
-const {Client, Message, MessageEmbed} = require('discord.js')
+const {Client, Message, MessageEmbed} = require('discord.js');
+const { codePointAt } = require('ffmpeg-static');
 const Schema = require('../schemas/birthday')
 
 module.exports ={
@@ -40,6 +41,7 @@ module.exports ={
         const convertedMonth = months[month]
         const birthdayString = `${convertedDay} of ${convertedMonth}`
         Schema.findOne({User: message.author.id}, async(err, data) => {
+          try{
             if(data){
                 data.Birthday = birthdayString;
                 data.save();
@@ -49,6 +51,9 @@ module.exports ={
                     Birthday: birthdayString,
                 }).save();
             }
+        } catch(err){
+            console.log(err)
+        }
         });
 
         return message.channel.send(`Saved ${message.author.username}'s birthday to ${birthdayString}`)
