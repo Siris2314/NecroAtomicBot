@@ -9,6 +9,7 @@ module.exports = {
         if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms Denied')
 
         Schema.findOne({Guild : message.guild.id}, async(err, data) => {
+            try{
             if(data) data.delete()
 
             const channel = await message.guild.channels.create(
@@ -32,6 +33,9 @@ module.exports = {
                 Channel:channel.id,
                 Member: message.guild.memberCount
             }).save()
+        } catch(err){
+            console.log(err)
+        }
         })
     }
 

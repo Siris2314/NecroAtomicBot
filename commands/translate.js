@@ -1,14 +1,27 @@
-const translate = require('translate-google')
+const translate = require('@iamtraction/google-translate');
+const {Client, Message, MessageEmbed} = require('discord.js')
 
-module.exports= {
-    name : 'translate',
-    description: 'translates from one language to another',
-    async execute(message,args,client) {
-        translate(args.join(" "), {to : 'zh-tw'}).then(res => {
-            message.channel.send(res)
-        }).catch(err => {
-            message.channel.send('An error has occured')
-            console.log(err)
-        })
+module.exports = {
+    name:'translate',
+    description: 'Translate command',
+    async execute(message,args, client){
+
+    const option = args[0];
+
+  try{
+    if(option){
+        const input = args.shift().shift().join(" ");
+        if(!input) return message.channel.send("Please specify text to translate")
+
+        const translated = await translate(input, {to: option})
+
+        message.channel.send(translated.text)
+
+    }
+} catch(err){
+    console.log(err)
+    message.channel.send("Error")
+
+}
     }
 }
