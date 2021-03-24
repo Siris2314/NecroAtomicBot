@@ -5,15 +5,16 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client({
+  partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
+});
 const fs = require('fs');
 const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
 const mongo = require('./mongo.js')
 const alexa = require("alexa-bot-api");
 var chatbot = new alexa("aw2plm");
-const schema = require('./schemas/custom-commands.js')
-const memberCount = require('./member-count.js')
+
 const search = require('youtube-search')
 const DisTube = require('distube')
 const {MessageAttachment} = require('discord.js')
@@ -23,6 +24,10 @@ client.snipes = new Map();
 const prefixSchema = require('./schemas/prefix')
 const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
+const reactionSchema = require('./schemas/reaction-roles')
+const ms = require('ms')
+const countSchema = require('./schemas/member-count')
+
 
 
 
@@ -36,7 +41,7 @@ const opts = {
 }
 
 // const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: true, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
+client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
 const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
 client.distube
   .on("playSong", (message, queue, song) => message.channel.send(
@@ -86,30 +91,9 @@ function embedbuilder(client, message, color, title, description){
 
 
 
-client.once('ready', async (client) => {
-
-
-
+client.on('ready', async () => {
 
   console.log(botname);
-
-  let serverNum = await client.guilds.cache.size;
-
-  client.user.setPresence({
-    activity: {
-      name: `Infiltrating in ${serverNum} servers`,
-      type:'WATCHING'
-    },
-    status: 'active'
-  })
-
-
-
-
-
-
-
-
 
 
   await mongo().then(mongoose => {
@@ -119,10 +103,42 @@ client.once('ready', async (client) => {
       mongoose.connection.close()
     }
   })
+  setInterval(() =>{
+    countSchema.find().then((data) => {
+      if(!data && !data.length) return;
+      data.forEach((value) => {
+        const guild = client.guilds.cache.get(value.Guild)
+        const memberCount = guild.memberCount;
+        if(value.Member != memberCount){
+          console.log("Member count differs")
+          const channel = guild.channels.cache.get(value.Channel)
 
+          channel.setName(`Members: ${memberCount}`)
 
+          value.Member = memberCount;
+          value.save()
+        }
+      })
+    })
+  }, ms('15 Minutes'))
 
-  memberCount(client);
+  const arrayOfStatus = [
+    `${client.guilds.cache.size} servers`,
+    `${client.channels.cache.size} channels`,
+    `${client.users.cache.size} users`,
+    `run !necro`
+
+  ];
+
+  let index = 0;
+  setInterval(() => {
+    if(index == arrayOfStatus.length) index = 0;
+    const status = arrayOfStatus[index];
+    client.user.setActivity(status);
+    index++
+  }, 5000)
+
+ 
 
 
 
@@ -165,11 +181,7 @@ client.prefix = async function(message) {
 
 
 
-client.on ('message', async message => {
-
-
-
-
+client.on ('message', async (message) => {
 
 
   if(!message.content.startsWith(prefix) || message.author.bot){
@@ -262,13 +274,7 @@ client.on ('message', async message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  const data = await schema.findOne({Guild: message.guild.id, Command: command})
-
-  if(data){
-    message.channel.send(data.Response)
-  }
-
-
+ 
 
   if(!client.commands.has(command)){
     return;
@@ -315,7 +321,7 @@ client.on('guildMemberAdd', async(member) => {
       .setColor("avatar", "#8015EA")
       .setBackground("http://2.bp.blogspot.com/_708_wIdtSh0/S_6CRX-cA4I/AAAAAAAABf4/PgAp07RgaB8/s1600/Colorful+%2845%29.jpg")
       .toAttachment();
-
+    
     
     const attachment = new Discord.MessageAttachment(
       (await image).toBuffer(), 
@@ -394,6 +400,39 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     }
   }
 });
+
+client.on('messageReactionAdd', async(reaction, user) => {
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(reaction.partial) await reaction.fetch()
+  if(user.bot) return;
+
+  reactionSchema.findOne({Message: reaction.message.id}, async(err, data) => {
+    if(!data) return;
+    if(!Object.keys(data.Roles).includes(reaction.emoji.name)) return;
+
+    const [roleid] = data.Roles[reaction.emoji.name]
+    reaction.message.guild.members.cache.get(user.id).roles.add(roleid);
+    user.send('You have acquired this role')
+
+  })
+})
+
+
+client.on('messageReactionRemove', async(reaction, user) => {
+  if(reaction.message.partial) await reaction.message.fetch();
+  if(reaction.partial) await reaction.fetch()
+  if(user.bot) return;
+
+  reactionSchema.findOne({Message: reaction.message.id}, async(err, data) => {
+    if(!data) return;
+    if(!Object.keys(data.Roles).includes(reaction.emoji.name)) return;
+
+    const [roleid] = data.Roles[reaction.emoji.name]
+    reaction.message.guild.members.cache.get(user.id).roles.remove(roleid);
+    user.send('Role has been removed')
+
+  })
+})
 
 
 

@@ -10,7 +10,7 @@ module.exports = {
             font:'',
             horizontalLayout:'default',
             verticalLayout:'default',
-            width: 80,
+            width: 90,
             whitespaceBreak: true,
 
         }, async(err, data) => {

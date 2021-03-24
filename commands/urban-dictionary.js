@@ -13,8 +13,14 @@ module.exports = {
     }
     query = encodeURIComponent(query)
 
-    const {data: {list}} = await axios.get(`https://api.urbandictionary.com/v0/define?term=${query}`);
-    const [answer] = list
+    try{
+
+    const {
+      data: {list}
+    } = await axios.get(
+      `https://api.urbandictionary.com/v0/define?term=${query}`
+      );
+    const [answer] = list;
 
     const embed = new MessageEmbed()
       .setTitle(answer.word)
@@ -28,7 +34,11 @@ module.exports = {
       )
 
     return message.channel.send(embed);
+  } catch(err){
+    return message.channel.send("Word not found")
   }
+
+}
 }
 
 function trim(input){
