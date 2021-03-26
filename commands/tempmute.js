@@ -2,12 +2,14 @@ const {Message, MessageEmbed}= require('discord.js')
 const ms = require('ms')
 
 module.exports = {
-    name : 'mute',
-    description: 'mutes users',
+    name : 'tempmute',
+    description: 'mutes users for a certain duration',
     async execute(message, args, client){
         if(!message.member.hasPermission('MANAGE_MESSAGES')) return message.channel.send('You do not have permissions to use this command')
         const Member = message.mentions.members.first() || message.guild.members.cache.get(args[0])
+        const time = args[1]
         if(!Member) return message.channel.send('Member is not found.')
+        if(!time) return message.channel.send('Please specify a time')
         const role = message.guild.roles.cache.find(role => role.name.toLowerCase() === 'muted')
         if(!role) {
             try {
@@ -33,6 +35,12 @@ module.exports = {
         let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
         if(Member.roles.cache.has(role2.id)) return message.channel.send(`${Member.displayName} has already been muted.`)
         await Member.roles.add(role2)
-        message.channel.send(`${Member.displayName} is now muted.`)
+        message.channel.send(`${Member.displayName} is now muted for ${(time)}`)
+
+        setTimeout(async () =>{
+
+            await Member.roles.remove(role2)
+            message.channel.send(`${Member.displayName} is now unmuted`)
+        }, ms(time))
     }
 }
