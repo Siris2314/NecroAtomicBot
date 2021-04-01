@@ -10,7 +10,7 @@ module.exports = {
 
   try{
     if(option){
-        const input = args.shift().shift().join(" ");
+        const input = args.slice(1).join(" ");
         if(!input) return message.channel.send("Please specify text to translate")
 
         const translated = await translate(input, {to: option})
