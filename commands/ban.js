@@ -1,4 +1,4 @@
-const Discord = require('discord.js')
+const {Client, Message, MessageEmbed}= require('discord.js')
 
 module.exports = {
 
@@ -7,48 +7,36 @@ module.exports = {
 
   async execute(message,args, client){
 
-    if(!message.member.hasPermission("BAN_MEMBERS")){
-      return message.channel.send("You can't use that!")
-    }
-    if(!message.guild.me.hasPermission("BAN_MEMBERS")){
-      return message.channel.send("I don't have perms")
-    }
+    if(!message.member.hasPermission('BAN_MEMBERS')) return message.channel.send('Perms Denied')
 
-    const member = message.mentions.members.first() || message.guild.members.cache.gets(args[0])
+    const member = message.mentions.members.first()
 
-    if(!member){
-      return message.channel.send("Can't seem to find this user")
-    }
+    if(!member) return message.channel.send('Please specify a member to ban')
 
-    if(!member.bannable){
-      return message.channel.send("This can't be kicked")
-    }
-    if(member.id === message.author.id){
-      return message.channel.send("You tryna die or sumthin?")
-    }
+    if(
+      message.member.roles.highest.position <= member.roles.highest.position
+    ) return message.channel.send('You cannot ban people who are at the same role level or higher role level than you')
 
-    let reason = args.slice(1).join(" ")
+    const reason = args.slice(1).join(' ') || "No Reason"
 
-    if(reason === undefined){
-      reason = "Unspecified"
-    }
-    member.ban(reason)
-    .catch(err => {
-      if(err){
-        return message.channel.send("Something went wrong")
-      }
-    })
+    
 
-    const banembed = new Discord.MessageEmbed()
-     .setTitle('Member Banned')
-     .setThumbnail(member.user.displayAvatarURL())
-     .addField('User Banned', member)
-     .addField('Banned by', message.author)
-     .addField('Reason', reason)
-     .setFooter('Time Banned', client.user.displayAvatarURL())
-     .setTimestamp()
+    const embed = new MessageEmbed()
+      .setTitle(`User banned`)
+      .addField('Reason', [
+        `${reason}`
+      ])
+      .setTimestamp()
+      .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic:true}))
 
-     return message.channel.send(banembed);
+    
+    member.ban();
+
+    
+    return message.channel.send(embed)
+
+
+
 
   }
 }
