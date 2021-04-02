@@ -28,6 +28,9 @@ const reactionSchema = require('./schemas/reaction-roles')
 const ms = require('ms')
 const countSchema = require('./schemas/member-count')
 const {Manager}= require('erela.js')
+const antijoin = new Discord.Collection()
+
+module.exports = {antijoin};
 
 
 
@@ -106,7 +109,7 @@ client.on('ready', async () => {
   client.manager.init(client.user.id)
 
 
-  await mongo().then(mongoose => {
+  await mongo().then((mongoose) => {
     try {
       console.log('Connected to mongo')
     } finally {
@@ -434,6 +437,13 @@ client.on ('message', async (message) => {
 
 });
 client.on('guildMemberAdd', async(member) => {
+
+  const getCollection = antijoin.get(member.guild.id)
+  if(!getCollection) return;
+  if(!getCollection.includes(member.user)){getCollection.push(member.user)}
+  member.kick({reason: 'Antijoin was enabled'})
+
+
   Schema.findOne({Guild: member.guild.id}, async(e, data) => {
     if(!data) return;
     const user = member.user;

@@ -1,7 +1,79 @@
-2021-04-01 00:30:30.193  INFO 96892 --- [Thread-1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
-2021-04-01 00:30:30.294  INFO 96892 --- [Thread-1] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring disabled.
-2021-04-01 00:30:30.333  INFO 96892 --- [Thread-1] io.undertow.servlet                      : Destroying Spring FrameworkServlet 'dispatcherServlet'
-2021-04-01 02:26:40.625  INFO 96254 --- [main] lavalink.server.Launcher                 : 
+2021-04-02 02:26:06.881  INFO 96254 --- [XNIO-1 I/O-5] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:49657 -- CloseStatus[code=1006, reason=]
+2021-04-02 02:26:07.377  INFO 96254 --- [XNIO-1 I/O-5] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 02:26:12.867  INFO 96254 --- [XNIO-1 task-3] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:56814
+2021-04-02 02:26:12.946  INFO 96254 --- [XNIO-1 task-3] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:56814
+2021-04-02 02:54:07.424  INFO 96254 --- [XNIO-1 I/O-10] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:56814 -- CloseStatus[code=1006, reason=]
+2021-04-02 02:54:07.453  INFO 96254 --- [XNIO-1 I/O-10] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 02:56:00.820  INFO 96254 --- [XNIO-1 task-4] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:58748
+2021-04-02 02:56:00.857  INFO 96254 --- [XNIO-1 task-4] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:58748
+2021-04-02 02:57:40.028  INFO 96254 --- [XNIO-1 I/O-12] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:58748 -- CloseStatus[code=1006, reason=]
+2021-04-02 02:57:40.033  INFO 96254 --- [XNIO-1 I/O-12] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 02:57:43.634  INFO 96254 --- [XNIO-1 task-5] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:58853
+2021-04-02 02:57:43.655  INFO 96254 --- [XNIO-1 task-5] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:58853
+2021-04-02 12:32:17.346  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:58853 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:32:17.376  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:32:21.410  INFO 96254 --- [XNIO-1 task-6] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:53249
+2021-04-02 12:32:21.471  INFO 96254 --- [XNIO-1 task-6] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:53249
+2021-04-02 12:34:20.003  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:53249 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:34:20.005  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:34:23.218  INFO 96254 --- [XNIO-1 task-7] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:53390
+2021-04-02 12:34:23.237  INFO 96254 --- [XNIO-1 task-7] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:53390
+2021-04-02 12:37:57.088  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:53390 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:37:57.089  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:38:00.420  INFO 96254 --- [XNIO-1 task-8] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:53892
+2021-04-02 12:38:00.441  INFO 96254 --- [XNIO-1 task-8] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:53892
+2021-04-02 12:39:05.144  INFO 96254 --- [XNIO-1 I/O-4] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:53892 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:39:05.146  INFO 96254 --- [XNIO-1 I/O-4] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:39:08.593  INFO 96254 --- [XNIO-1 task-9] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:54158
+2021-04-02 12:39:08.701  INFO 96254 --- [XNIO-1 task-9] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:54158
+2021-04-02 12:41:32.576  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:54158 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:41:32.579  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:41:35.845  INFO 96254 --- [XNIO-1 task-10] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:54389
+2021-04-02 12:41:35.867  INFO 96254 --- [XNIO-1 task-10] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:54389
+2021-04-02 12:42:50.747  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:54389 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:42:50.749  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:42:53.965  INFO 96254 --- [XNIO-1 task-11] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:54509
+2021-04-02 12:42:53.979  INFO 96254 --- [XNIO-1 task-11] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:54509
+2021-04-02 12:54:33.169  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:54509 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:54:33.181  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:54:36.657  INFO 96254 --- [XNIO-1 task-12] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:55249
+2021-04-02 12:54:36.690  INFO 96254 --- [XNIO-1 task-12] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:55249
+2021-04-02 12:56:20.059  INFO 96254 --- [XNIO-1 I/O-5] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:55249 -- CloseStatus[code=1006, reason=]
+2021-04-02 12:56:20.063  INFO 96254 --- [XNIO-1 I/O-5] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 12:56:23.141  INFO 96254 --- [XNIO-1 task-13] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:55337
+2021-04-02 12:56:23.158  INFO 96254 --- [XNIO-1 task-13] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:55337
+2021-04-02 14:11:59.332  INFO 96254 --- [XNIO-1 task-14] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:play nigga song"
+2021-04-02 14:12:02.677  INFO 96254 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: play nigga song
+2021-04-02 14:12:02.829  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : {"op":"volume","guildId":"788924818820169740","volume":100}
+2021-04-02 14:12:02.843  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : {"op":"play","guildId":"788924818820169740","track":"QAAApgIASllHIC0gTXkgTmlnZ2EgZnQuIEplZXp5LCBSaWNoIEhvbWllIFF1YW4gKEV4cGxpY2l0KSAoT2ZmaWNpYWwgTXVzaWMgVmlkZW8pAAJZRwAAAAAAA5ngAAtNU3JUbldEVGR3SQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PU1TclRuV0RUZHdJAAd5b3V0dWJlAAAAAAAAAAA="}
+2021-04-02 14:12:02.869  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : {"sessionId":"31a80de1d8e1b50450ca92db20f4b738","op":"voiceUpdate","guildId":"788924818820169740","event":{"token":"4f0cb8d264314463","guild_id":"788924818820169740","endpoint":"us-east8371.discord.media:443"}}
+2021-04-02 14:13:50.985  WARN 96254 --- [lava-daemon-pool-manager-3-thread-1] c.s.d.l.tools.GarbageCollectionMonitor   : Suspicious GC results for the last 2 minutes: [Bucket 0 = 11] [Bucket 20 = 0] [Bucket 50 = 1] [Bucket 200 = 1] [Bucket 500 = 0] [Bucket 2000 = 0] 
+2021-04-02 14:16:01.051  INFO 96254 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : {"op":"destroy","guildId":"788924818820169740"}
+2021-04-02 14:17:46.079  INFO 96254 --- [Thread-1] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2021-04-02 14:17:46.083  INFO 96254 --- [Thread-1] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring disabled.
+2021-04-02 14:17:46.089  INFO 96254 --- [Thread-1] io.undertow.servlet                      : Destroying Spring FrameworkServlet 'dispatcherServlet'
+2021-04-02 14:17:46.111 ERROR 96254 --- [XNIO-1 I/O-9] org.xnio.listener                        : XNIO001007: A channel event listener threw an exception
+
+java.util.concurrent.RejectedExecutionException: XNIO007007: Thread is terminating
+	at org.xnio.nio.WorkerThread.execute(WorkerThread.java:590) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+	at io.undertow.websockets.jsr.UndertowSession$3.handleEvent(UndertowSession.java:396) ~[undertow-websockets-jsr-2.0.26.Final.jar!/:2.0.26.Final]
+	at io.undertow.websockets.jsr.UndertowSession$3.handleEvent(UndertowSession.java:388) ~[undertow-websockets-jsr-2.0.26.Final.jar!/:2.0.26.Final]
+	at org.xnio.ChannelListeners.invokeChannelListener(ChannelListeners.java:92) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at io.undertow.server.protocol.framed.AbstractFramedChannel$FrameCloseListener.handleEvent(AbstractFramedChannel.java:1063) ~[undertow-core-2.0.26.Final.jar!/:2.0.26.Final]
+	at io.undertow.server.protocol.framed.AbstractFramedChannel$FrameCloseListener.handleEvent(AbstractFramedChannel.java:978) ~[undertow-core-2.0.26.Final.jar!/:2.0.26.Final]
+	at org.xnio.ChannelListeners.invokeChannelListener(ChannelListeners.java:92) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.conduits.WriteReadyHandler$ChannelListenerHandler.terminated(WriteReadyHandler.java:70) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.nio.NioSocketConduit.writeTerminated(NioSocketConduit.java:234) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.nio.NioSocketConduit.terminateWrites(NioSocketConduit.java:223) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.nio.NioSocketConduit.truncateWrites(NioSocketConduit.java:228) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+	at io.undertow.conduits.IdleTimeoutConduit.truncateWrites(IdleTimeoutConduit.java:387) ~[undertow-core-2.0.26.Final.jar!/:2.0.26.Final]
+	at org.xnio.conduits.ConduitStreamSinkChannel.close(ConduitStreamSinkChannel.java:186) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.IoUtils.safeClose(IoUtils.java:134) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.conduits.WriteReadyHandler$ChannelListenerHandler.forceTermination(WriteReadyHandler.java:57) ~[xnio-api-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.nio.NioSocketConduit.forceTermination(NioSocketConduit.java:107) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+	at org.xnio.nio.WorkerThread.run(WorkerThread.java:494) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
+
+2021-04-02 15:06:59.630  INFO 81704 --- [main] lavalink.server.Launcher                 : 
 
 [32m       .  [31m _                  _ _       _    [32m__ _ _
 [32m      /\\ [31m| | __ ___   ____ _| (_)_ __ | | __[32m\ \ \ \
@@ -19,25 +91,25 @@
 	JVM:            14.0.2
 	Lavaplayer      1.3.65
 
-2021-04-01 02:26:40.713  INFO 96254 --- [main] lavalink.server.Launcher                 : Starting Launcher on MacBook-Pro.local with PID 96254 (/Users/arihanttripathi/Documents/NecroAtomicBot/Lavalink.jar started by arihanttripathi in /Users/arihanttripathi/Documents/NecroAtomicBot)
-2021-04-01 02:26:40.714  INFO 96254 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to default profiles: default
-2021-04-01 02:26:41.709  WARN 96254 --- [main] io.undertow.websockets.jsr               : UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
-2021-04-01 02:26:41.740  INFO 96254 --- [main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext
-2021-04-01 02:26:41.740  INFO 96254 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 987 ms
-2021-04-01 02:26:42.103  WARN 96254 --- [main] l.server.config.SentryConfiguration      : Turning off sentry
-2021-04-01 02:26:42.438  INFO 96254 --- [main] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring enabled, reporting results every 2 minutes.
-2021-04-01 02:26:42.632  INFO 96254 --- [main] lavalink.server.config.KoeConfiguration  : OS: Mac OS X, Arch: x86_64
-2021-04-01 02:26:42.633  WARN 96254 --- [main] lavalink.server.config.KoeConfiguration  : This system and architecture appears to not support native audio sending! GC pauses may cause your bot to stutter during playback.
-2021-04-01 02:26:42.820  INFO 96254 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
-2021-04-01 02:26:43.048  INFO 96254 --- [main] org.xnio                                 : XNIO version 3.3.8.Final
-2021-04-01 02:26:43.059  INFO 96254 --- [main] org.xnio.nio                             : XNIO NIO Implementation Version 3.3.8.Final
-2021-04-01 02:26:43.146  INFO 96254 --- [main] o.s.b.w.e.u.UndertowServletWebServer     : Undertow started on port(s) 9001 (http) with context path ''
-2021-04-01 02:26:43.149  INFO 96254 --- [main] lavalink.server.Launcher                 : Started Launcher in 3.157 seconds (JVM running for 3.785)
-2021-04-01 02:26:43.150  INFO 96254 --- [main] lavalink.server.Launcher                 : You can safely ignore the big red warning about illegal reflection. See https://github.com/Frederikam/Lavalink/issues/295
-2021-04-01 02:26:55.215  INFO 96254 --- [XNIO-1 task-1] io.undertow.servlet                      : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2021-04-01 02:26:55.216  INFO 96254 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2021-04-01 02:26:55.224  INFO 96254 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
-2021-04-01 02:26:55.250  INFO 96254 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:52982
-2021-04-01 02:26:55.338  INFO 96254 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:52982
-2021-04-01 14:32:56.304  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:52982 -- CloseStatus[code=1006, reason=]
-2021-04-01 14:32:56.356  INFO 96254 --- [XNIO-1 I/O-6] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 15:06:59.814  INFO 81704 --- [main] lavalink.server.Launcher                 : Starting Launcher on MacBook-Pro.local with PID 81704 (/Users/arihanttripathi/Documents/NecroAtomicBot/Lavalink.jar started by arihanttripathi in /Users/arihanttripathi/Documents/NecroAtomicBot)
+2021-04-02 15:06:59.816  INFO 81704 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to default profiles: default
+2021-04-02 15:07:00.909  WARN 81704 --- [main] io.undertow.websockets.jsr               : UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
+2021-04-02 15:07:00.941  INFO 81704 --- [main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext
+2021-04-02 15:07:00.941  INFO 81704 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1054 ms
+2021-04-02 15:07:01.324  WARN 81704 --- [main] l.server.config.SentryConfiguration      : Turning off sentry
+2021-04-02 15:07:01.635  INFO 81704 --- [main] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring enabled, reporting results every 2 minutes.
+2021-04-02 15:07:01.818  INFO 81704 --- [main] lavalink.server.config.KoeConfiguration  : OS: Mac OS X, Arch: x86_64
+2021-04-02 15:07:01.819  WARN 81704 --- [main] lavalink.server.config.KoeConfiguration  : This system and architecture appears to not support native audio sending! GC pauses may cause your bot to stutter during playback.
+2021-04-02 15:07:02.005  INFO 81704 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-04-02 15:07:02.230  INFO 81704 --- [main] org.xnio                                 : XNIO version 3.3.8.Final
+2021-04-02 15:07:02.241  INFO 81704 --- [main] org.xnio.nio                             : XNIO NIO Implementation Version 3.3.8.Final
+2021-04-02 15:07:02.325  INFO 81704 --- [main] o.s.b.w.e.u.UndertowServletWebServer     : Undertow started on port(s) 9001 (http) with context path ''
+2021-04-02 15:07:02.328  INFO 81704 --- [main] lavalink.server.Launcher                 : Started Launcher in 3.448 seconds (JVM running for 3.963)
+2021-04-02 15:07:02.330  INFO 81704 --- [main] lavalink.server.Launcher                 : You can safely ignore the big red warning about illegal reflection. See https://github.com/Frederikam/Lavalink/issues/295
+2021-04-02 15:07:08.373  INFO 81704 --- [XNIO-1 task-1] io.undertow.servlet                      : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-02 15:07:08.374  INFO 81704 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-04-02 15:07:08.386  INFO 81704 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2021-04-02 15:07:08.415  INFO 81704 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:62111
+2021-04-02 15:07:08.521  INFO 81704 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:62111
+2021-04-02 18:32:15.251  INFO 81704 --- [XNIO-1 I/O-3] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:62111 -- CloseStatus[code=1006, reason=]
+2021-04-02 18:32:15.316  INFO 81704 --- [XNIO-1 I/O-3] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
