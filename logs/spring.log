@@ -113,3 +113,11 @@ java.util.concurrent.RejectedExecutionException: XNIO007007: Thread is terminati
 2021-04-02 15:07:08.521  INFO 81704 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:62111
 2021-04-02 18:32:15.251  INFO 81704 --- [XNIO-1 I/O-3] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:62111 -- CloseStatus[code=1006, reason=]
 2021-04-02 18:32:15.316  INFO 81704 --- [XNIO-1 I/O-3] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 18:40:13.307  INFO 81704 --- [XNIO-1 task-2] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:57018
+2021-04-02 18:40:13.430  INFO 81704 --- [XNIO-1 task-2] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:57018
+2021-04-02 18:40:15.537  INFO 81704 --- [XNIO-1 I/O-10] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:57018 -- CloseStatus[code=1006, reason=]
+2021-04-02 18:40:15.538  INFO 81704 --- [XNIO-1 I/O-10] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-02 18:42:49.802  INFO 81704 --- [XNIO-1 task-3] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:57357
+2021-04-02 18:42:49.816  INFO 81704 --- [XNIO-1 task-3] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:57357
+2021-04-02 18:43:24.839  INFO 81704 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:57357 -- CloseStatus[code=1006, reason=]
+2021-04-02 18:43:24.839  INFO 81704 --- [XNIO-1 I/O-1] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
