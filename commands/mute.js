@@ -1,84 +1,38 @@
-var Discord = require('discord.js')
-var ms = require('ms')
+const {Message, MessageEmbed}= require('discord.js')
+const ms = require('ms')
 
 module.exports = {
+    name : 'mute',
+    description: 'mutes users',
+    async execute(message, args, client){
+        if(!message.member.hasPermission('MANAGE_MESSAGES')) return message.channel.send('You do not have permissions to use this command')
+        const Member = message.mentions.members.first() || message.guild.members.cache.get(args[0])
+        if(!Member) return message.channel.send('Member is not found.')
+        const role = message.guild.roles.cache.find(role => role.name.toLowerCase() === 'muted')
+        if(!role) {
+            try {
+                message.channel.send('Muted role is not found, attempting to create muted role.')
 
-  name: 'mute',
-  description: 'mute users',
-
-
-  async execute(message,args,client){
-
-    if(!message.member.hasPermission('MANAGE_MESSAGES')){
-      return message.reply('Perms Denied')
+                let muterole = await message.guild.roles.create({
+                    data : {
+                        name : 'muted',
+                        permissions: []
+                    }
+                });
+                message.guild.channels.cache.filter(c => c.type === 'text').forEach(async (channel, id) => {
+                    await channel.createOverwrite(muterole, {
+                        SEND_MESSAGES: false,
+                        ADD_REACTIONS: false
+                    })
+                });
+                message.channel.send('Muted role has sucessfully been created.')
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
+        if(Member.roles.cache.has(role2.id)) return message.channel.send(`${Member.displayName} has already been muted.`)
+        await Member.roles.add(role2)
+        message.channel.send(`${Member.displayName} is now muted.`)
     }
-
-    var user = message.mentions.users.first();
-
-    if(!user){
-      message.reply('Mention Someone to Mute')
-    }
-
-    var member;
-
-    try {
-
-      member = await message.guild.members.fetch(user)
-
-    } catch(err){
-      member = null;
-    }
-    if(!member){
-      return message.reply('User not in server')
-    }
-
-    var rawTime = args[1];
-    var time = ms(rawTime)
-
-    if(!time) {
-      return message.reply('Please specify duration to mute')
-    }
-
-    // var reason = args.splice(1).join(' ')
-    // if(!reason){
-    //   return message.reply('Provide a reason to warn')
-    // }
-
-    var channel = message.guild.channels.cache.find(c => c.name === 'general')
-
-    var log = new Discord.MessageEmbed()
-      .setTitle('User Muted')
-      .addField('User: ', user, true)
-      .addField('By: ', message.author, true)
-      .addField('Expires: ', rawTime, true)
-      .addField('Reason: ', reason, true)
-
-      message.channel.send(log)
-
-    var embed = new Discord.MessageEmbed()
-      .setTitle(`You were muted!`)
-      .addField('Expires: ', rawTime, true)
-      .addField('Reason: ', reason, true)
-
-
-      try {
-        user.send(embed)
-
-      } catch(err){
-        console.warn(err)
-      }
-
-      var role = message.guild.roles.cache.find(r => r.name === 'Muted')
-      members.roles.add(role)
-
-      setTimeout(async() => {
-
-        member.roles.remove(role)
-      }, time)
-
-
-      message.channel.send(`**${user}** has been muted by **${message.author}** for **${rawTime}**`)
-
-
-  }
 }

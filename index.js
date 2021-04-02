@@ -27,10 +27,39 @@ const Schema = require('./schemas/welcomeChannel')
 const reactionSchema = require('./schemas/reaction-roles')
 const ms = require('ms')
 const countSchema = require('./schemas/member-count')
+const {Manager}= require('erela.js')
 
 
 
 
+
+client.manager = new Manager({
+  nodes: [{
+    host: 'localhost',
+    port:9001,
+    password:'password123'
+  }],
+
+  send(id, payload){
+    const guild = client.guilds.cache.get(id);
+
+    if(guild) guild.shard.send(payload);
+  }
+})
+.on("nodeConnect", node => console.log(`Node ${node.options.identifier} connected`))
+.on("nodeError", (node, error) => console.log(`Node ${node.options.identifier} had an error: ${error.message}`))
+.on("trackStart", (player, track) => {
+  client.channels.cache
+    .get(player.textChannel)
+    .send(`Now playing: ${track.title}`);
+})
+.on("queueEnd", (player) => {
+  client.channels.cache
+    .get(player.textChannel)
+    .send("Queue has ended.");
+
+  player.destroy();
+});
 
 
 
@@ -40,29 +69,6 @@ const opts = {
   type: 'video'
 }
 
-// const status = (queue) => `Volume: \`${queue.volume}\` | Filter: \`${queue.filter || "OFF"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: false, youtubeCookie: key1, leaveOnStop: true, leaveOnEmpty: true});
-const status = queue => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode === 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``
-client.distube
-  .on("playSong", (message, queue, song) => message.channel.send(
-    `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}\n${status(queue)}`
-))
-  .on("addSong", (message, queue, song) => message.channel.send(
-    `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}`
-))
-  .on("playList", (message, queue, playlist, song) => message.channel.send(
-    `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
-))
-  .on("addList", (message, queue, playlist) => message.channel.send(
-    `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
-))
-// DisTubeOptions.searchSongs = true
-  .on("searchResult", (message, result) => {
-    let i = 0;
-    message.channel.send(`**Choose an option from below**\n${result.map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``).join("\n")}\n*Enter anything else or wait 60 seconds to cancel*`);
-})
-// DisTubeOptions.searchSongs = true
-  .on("searchCancel", (message) => message.channel.send(`Searching canceled`))
 
 client.commands = new Discord.Collection();
 client.giveawaysManager = new GiveawaysManager(client, {
@@ -90,10 +96,14 @@ function embedbuilder(client, message, color, title, description){
 }
 
 
+client.login(token);
+
+
 
 client.on('ready', async () => {
 
   console.log(botname);
+  client.manager.init(client.user.id)
 
 
   await mongo().then(mongoose => {
@@ -149,6 +159,9 @@ client.on('ready', async () => {
 
 });
 
+
+client.on("raw", (d) => client.manager.updateVoiceState(d));
+
 client.once('disconnect', () => {
 
   console.log('Disconnect');
@@ -188,6 +201,112 @@ client.on ('message', async (message) => {
     return;
   }
 
+
+  if (message.content.startsWith("!necroplay")) {
+   
+    const res = await client.manager.search(
+      message.content.slice(6),
+      message.author
+    );
+
+    
+    const player = client.manager.create({
+      guild: message.guild.id,
+      voiceChannel: message.member.voice.channel.id,
+      textChannel: message.channel.id,
+    });
+
+    
+    player.connect();
+
+    
+    player.queue.add(res.tracks[0]);
+    message.channel.send(`Enqueuing track ${res.tracks[0].title}.`);
+
+    
+    if (!player.playing && !player.paused && !player.queue.size)
+      player.play();
+
+    
+    if (
+      !player.playing &&
+      !player.paused &&
+      player.queue.totalSize === res.tracks.length
+    )
+      player.play();
+  } else if(message.content.startsWith("!necroskip")){
+      const player = client.manager.players.get(message.guild.id)
+      player.stop();
+
+  } else if(message.content.startsWith("!necropause")){
+    const player = client.manager.players.get(message.guild.id)
+    if(player.paused){
+      player.pause(false)
+      message.channel.send('Music has been resumed')
+    } else{
+      player.pause(true)
+      message.channel.send('Music has been paused')
+    }
+
+  } else if(message.content.startsWith("!necroloop")){
+    const player = client.manager.players.get(message.guild.id)
+    if(player.queueRepeat){
+      player.setQueueRepeat(false);
+      message.channel.send("Music is not on repeat")
+    } else{
+      player.setQueueRepeat(true);
+      message.channel.send("Music is now on repeat")
+    }
+  } else if (message.content.startsWith("!necrosearch")) {
+    const index = message.content.indexOf(" ");
+    const query = message.content.slice(index + 1);
+    const results = await client.manager.search(query, message.author);
+    const tracks = results.tracks.slice(0, 10);
+    let resultsDescription = "";
+    let counter = 1;
+    for (const track of tracks) {
+      resultsDescription += `${counter}) [${track.title}](${track.uri})\n`;
+      counter++;
+    }
+    const embed = new MessageEmbed().setDescription(resultsDescription);
+    message.channel.send(
+      "What song would you like to choose? Enter the number.",
+      embed
+    );
+    const response = await message.channel.awaitMessages(
+      (msg) => msg.author.id === message.author.id,
+      {
+        max: 1,
+        time: 30000,
+      }
+    );
+    const answer = response.first().content;
+    const track = tracks[answer - 1];
+    console.log(track);
+    const player = client.manager.players.get(message.guild.id);
+    if (player) {
+      player.queue.add(track);
+      message.channel.send(`${track.title} was added to the queue.`);
+    } else {
+      message.channel.send(
+        "The bot is not in a voice channel or does not have a player existing."
+      );
+    }
+  }
+
+
+
+
+
+
+
+   else if(message.content.startsWith("!necrostop")){
+    const player = client.manager.players.get(message.guild.id)
+    if(!player) return message.channel.send('Nothing is playing')
+    await player.destroy()
+    message.channel.send('Left VC')
+  }
+
   if(message.content.toLowerCase().startsWith('!necropokemon')) {
         const pokemon = message.content.toLowerCase().split(" ")[1];
         try {
@@ -217,7 +336,7 @@ client.on ('message', async (message) => {
         }
     }
 
-  if(message.content.toLowerCase() == '!necrosearch'){
+  if(message.content.toLowerCase() == '!necroytsearch'){
     let embed = new Discord.MessageEmbed()
     .setColor('RANDOM')
     .setDescription("Please enter a search query. Please narrow your search")
@@ -437,4 +556,3 @@ client.on('messageReactionRemove', async(reaction, user) => {
 
 
 
-client.login(token);
