@@ -28,6 +28,9 @@ const reactionSchema = require('./schemas/reaction-roles')
 const ms = require('ms')
 const countSchema = require('./schemas/member-count')
 const {Manager}= require('erela.js')
+const antijoin = new Discord.Collection()
+
+module.exports = {antijoin};
 
 
 
@@ -96,7 +99,7 @@ function embedbuilder(client, message, color, title, description){
 }
 
 
-client.login(token);
+
 
 
 
@@ -106,7 +109,7 @@ client.on('ready', async () => {
   client.manager.init(client.user.id)
 
 
-  await mongo().then(mongoose => {
+  await mongo().then((mongoose) => {
     try {
       console.log('Connected to mongo')
     } finally {
@@ -258,6 +261,13 @@ client.on ('message', async (message) => {
       message.channel.send("Music is now on repeat")
     }
   } else if (message.content.startsWith("!necrosearch")) {
+    const player = client.manager.players.get(message.guild.id);
+
+    if(!player){
+      message.channel.send('Bot in not VC')
+    } else{
+
+    
     const index = message.content.indexOf(" ");
     const query = message.content.slice(index + 1);
     const results = await client.manager.search(query, message.author);
@@ -268,7 +278,7 @@ client.on ('message', async (message) => {
       resultsDescription += `${counter}) [${track.title}](${track.uri})\n`;
       counter++;
     }
-    const embed = new MessageEmbed().setDescription(resultsDescription);
+    const embed = new Discord.MessageEmbed().setDescription(resultsDescription);
     message.channel.send(
       "What song would you like to choose? Enter the number.",
       embed
@@ -280,17 +290,9 @@ client.on ('message', async (message) => {
         time: 30000,
       }
     );
-    const answer = response.first().content;
+    const answer = response.first();
     const track = tracks[answer - 1];
     console.log(track);
-    const player = client.manager.players.get(message.guild.id);
-    if (player) {
-      player.queue.add(track);
-      message.channel.send(`${track.title} was added to the queue.`);
-    } else {
-      message.channel.send(
-        "The bot is not in a voice channel or does not have a player existing."
-      );
     }
   }
 
@@ -305,6 +307,18 @@ client.on ('message', async (message) => {
     if(!player) return message.channel.send('Nothing is playing')
     await player.destroy()
     message.channel.send('Left VC')
+  }
+  else if(message.content.startsWith("!necrovolume")){
+
+    
+    const player = client.manager.players.get(message.guild.id)
+    const index = message.content.indexOf(" ");
+    const query = message.content.slice(index + 1);
+    const number = parseInt(query)
+
+    player.setVolume(number);
+
+    message.channel.send(` Volume has been set to ${number}`)
   }
 
   if(message.content.toLowerCase().startsWith('!necropokemon')) {
@@ -423,6 +437,13 @@ client.on ('message', async (message) => {
 
 });
 client.on('guildMemberAdd', async(member) => {
+
+  const getCollection = antijoin.get(member.guild.id)
+  if(!getCollection) return;
+  if(!getCollection.includes(member.user)){getCollection.push(member.user)}
+  member.kick({reason: 'Antijoin was enabled'})
+
+
   Schema.findOne({Guild: member.guild.id}, async(e, data) => {
     if(!data) return;
     const user = member.user;
@@ -552,6 +573,8 @@ client.on('messageReactionRemove', async(reaction, user) => {
 
   })
 })
+
+client.login(token);
 
 
 
