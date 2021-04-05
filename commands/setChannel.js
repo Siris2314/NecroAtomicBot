@@ -1,5 +1,6 @@
 const Schema = require('../schemas/welcomeChannel')
 const {Client, Message, MessageEmbed} = require('discord.js')
+const mongoose = require('mongoose')
 
 
 module.exports = {

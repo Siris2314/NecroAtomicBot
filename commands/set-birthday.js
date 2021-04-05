@@ -1,5 +1,4 @@
 const {Client, Message, MessageEmbed} = require('discord.js');
-const { codePointAt } = require('ffmpeg-static');
 const Schema = require('../schemas/birthday')
 
 module.exports ={
