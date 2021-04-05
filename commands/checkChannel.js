@@ -1,5 +1,6 @@
 const Schema = require('../schemas/welcomeChannel')
 const {Client, Message, MessageEmbed} = require('discord.js')
+const mongoose = require('mongoose')
 
 
 module.exports = {
@@ -7,7 +8,11 @@ module.exports = {
     description:'checks for welcome channel',
 
     async execute(message,args,client){
+
+
         if(!(message.member.hasPermission('ADMINSTRATOR'))) return message.channel.send("Perms Denied")
+
+      try{  
       
         Schema.findOne({Guild: message.guild.id}, async(err, data) => {
           try{
@@ -22,5 +27,9 @@ module.exports = {
         })
 
 
-    }
+    } catch(err){
+      console.log(err)
+  }
+  }
+
 }

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const token = process.env.token;
-const prefix = process.env.prefix
+const mongoPath = process.env.mongoPath;
+const mongoose = require('mongoose');
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
@@ -9,28 +10,30 @@ const client = new Discord.Client({
   partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
 });
 const fs = require('fs');
-const db = require('./reconDB.js')
+// const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
-const mongo = require('./mongo.js')
-const alexa = require("alexa-bot-api");
-var chatbot = new alexa("aw2plm");
+// const mongo = require('./mongo.js')
 
-const search = require('youtube-search')
+
+const search = require('youtube-search')  
 const DisTube = require('distube')
 const {MessageAttachment} = require('discord.js')
 const { getPokemon } = require('./commands/pokemon');
-const translate = require('@k3rn31p4nic/google-translate-api')
 client.snipes = new Map();
-const prefixSchema = require('./schemas/prefix')
 const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
+const guildSchema = require('./schemas/Guild')
 const reactionSchema = require('./schemas/reaction-roles')
 const ms = require('ms')
 const countSchema = require('./schemas/member-count')
 const {Manager}= require('erela.js')
 const antijoin = new Discord.Collection()
+const blacklistedWords = new Discord.Collection();
+const {chatBot} = require('reconlx')
+const chatschema = require('./schemas/chatbot-channel')
+const blacklistSchema = require('./schemas/blacklist')
 
-module.exports = {antijoin};
+module.exports = {antijoin, blacklistedWords};
 
 
 
@@ -109,13 +112,17 @@ client.on('ready', async () => {
   client.manager.init(client.user.id)
 
 
-  await mongo().then((mongoose) => {
-    try {
-      console.log('Connected to mongo')
-    } finally {
-      mongoose.connection.close()
-    }
-  })
+  await mongoose.connect(mongoPath, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  }).then(console.log('Connected to Mongo'))
+
+
+  blacklistSchema.find().then((data) => {
+      data.forEach((val) => {
+        blacklistedWords.set(val.Guild, val.Words)
+      })
+    })
   setInterval(() =>{
     countSchema.find().then((data) => {
       if(!data && !data.length) return;
@@ -180,19 +187,7 @@ for(const file of commandFiles){
 
 
 
-client.prefix = async function(message) {
-        let custom;
 
-        const data = await prefixSchema.findOne({ Guild : message.guild.id })
-            .catch(err => console.log(err))
-
-        if(data) {
-            custom = data.Prefix;
-        } else {
-            custom = prefix;
-        }
-        return custom;
-    }
 
 
 
@@ -200,9 +195,56 @@ client.prefix = async function(message) {
 client.on ('message', async (message) => {
 
 
-  if(!message.content.startsWith(prefix) || message.author.bot){
+  if(!message.guild || message.author.bot){
     return;
   }
+
+  const settings = await guildSchema.findOne({
+    guildID: message.guild.id
+}, async (err, guild) => {
+    if(err) console.log(err)
+    if(!guild){
+        const newGuild = new guildSchema({
+            guildID: message.guild.id,
+            guildName: message.guild.name,
+            prefix: process.env.prefix
+        })
+
+        newGuild.save().then(result => console.log(result)).catch(err => console.log(err))
+
+      return message.channel.send('This server was not in our database so we set your prefix to !necro by default, you should be able to use commands now').then(m => m.delete({timeout:10000}))
+    }
+
+});
+
+const prefix = settings.prefix
+
+
+  await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
+    if(!data) return;
+
+    if(message.channel.id !== data.Channel) return;
+
+    chatBot(message, message.content, message.author.id)
+
+  })
+
+
+  const splittedMsgs = message.content.split(' ');
+
+  let deleting = false;
+
+  await Promise.all(
+    splittedMsgs.map((content) => {
+      if(blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase())) deleting = true
+
+    })
+  )
+
+  if(deleting) return message.delete();
+
+
+
 
 
   if (message.content.startsWith("!necroplay")) {
@@ -397,11 +439,11 @@ client.on ('message', async (message) => {
 
 
 
-  if(message.content.toLowerCase() == '!necrochat'){
-    let content = message.content;
-      if(!content) return;
-          chatbot.getReply(content).then(r => message.channel.send(r));
-    }
+
+
+
+
+
 
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -436,12 +478,8 @@ client.on ('message', async (message) => {
 
 
 });
-client.on('guildMemberAdd', async(member) => {
 
-  const getCollection = antijoin.get(member.guild.id)
-  if(!getCollection) return;
-  if(!getCollection.includes(member.user)){getCollection.push(member.user)}
-  member.kick({reason: 'Antijoin was enabled'})
+client.on('guildMemberAdd', async(member) => {
 
 
   Schema.findOne({Guild: member.guild.id}, async(e, data) => {
@@ -474,18 +512,19 @@ client.on('guildMemberAdd', async(member) => {
     const channel = member.guild.channels.cache.get(data.Channel)
     await channel.send(attachment)
 
+
+
+  const getCollection = antijoin.get(member.guild.id)
+  if(!getCollection) return;
+  if(!getCollection.includes(member.user)){getCollection.push(member.user)}
+  member.kick({reason: 'Antijoin was enabled'})
+
   });
 });
 
 
-client.on('guildDelete', async (guild) => {
-    prefixSchema.findOne({ Guild: guild.id }, async (err, data) => {
-        if (err) throw err;
-        if (data) {
-            prefixSchema.findOneAndDelete({ Guild : guild.id }).then(console.log('deleted data.'))
-        }
-    })
-});
+
+
 
 
 
@@ -515,11 +554,7 @@ client.on('messageDelete', async message => {
 
 
 
-client.translate = async(text, message) => {
-  const lang  = await db.has(`lang-${message.guild.id}`) ? await db.get(`lang-${message.guild.id}`) : 'en';
-  const translated = await translate(text, {from: 'en', to: lang})
-  return translated.text;
-}
+
 
 const voiceCollection = new Discord.Collection()
 
