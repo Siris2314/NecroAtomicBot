@@ -1,65 +1,53 @@
-var Discord = require('discord.js')
+const Schema = require('../schemas/warn')
+const {Client, Message, MessageEmbed} = require('discord.js')
 
 module.exports = {
+    name:'warn', 
+    description:'warns users',
+    async execute(message, args, client){
+        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms denied')
 
-  name: 'warn',
-  description: 'warns users',
+        const user = message.mentions.members.first() || message.guild.members.cache.get(args[0])
+        const reason = args.slice(1).join(' ');
+        if(!user) return message.channel.send('Member not found')
+
+        Schema.findOne({guildid: message.guild.id, user: user.user.id}, async(err, data) => {
+            if(err) return message.channel.send('Something went wrong');
+
+            if(!data){
+                data = new Schema({
+                    guildid: message.guild.id,
+                    user: user.user.id,
+                    content: [
+                        {
+                            moderator: message.author.id,
+                            reason: reason
+
+                        }
+                    ]
+                })
+            } else{
+                const obj = {
+                    moderator: message.author.id,
+                    reason: reason
+                }
+                data.content.push(obj)
+            }
+            data.save();
+        });
+        user.send(new MessageEmbed()
+            .setDescription(`You have been warned for ${reason}`)
+            .setColor('RANDOM')
+        
+        
+        )
+        message.channel.send(new MessageEmbed()
+            .setDescription(`Warned ${user} for ${reason}`).setColor('RANDOM')
+        
+        )
 
 
-  async execute(message,args,client){
 
-    if(!message.member.hasPermission('MANAGE_MESSAGES')){
-      return message.reply('Perms Denied')
+
     }
-
-    var user = message.mentions.users.first();
-
-    if(!user){
-      message.reply('Mention Someone to Warn')
-    }
-
-    var member;
-
-    try {
-
-      member = await message.guild.members.fetch(user)
-
-    } catch(err){
-      member = null;
-    }
-    if(!member){
-      return message.reply('User not in server')
-    }
-
-    var reason = args.splice(1).join(' ')
-    if(!reason){
-      return message.reply('Provide a reason to warn')
-    }
-
-    var channel = message.guild.channels.cache.find(c => c.name === 'general')
-
-    var log = new Discord.MessageEmbed()
-      .setTitle('User Warned')
-      .addField('User: ', user, true)
-      .addField('By: ', message.author, true)
-      .addField('Reason: ', reason)
-
-      message.channel.send(log)
-
-    var embed = new Discord.MessageEmbed()
-      .setTitle(`You were warned!`)
-      .setDescription(reason)
-
-      try {
-        user.send(embed)
-
-      } catch(err){
-        console.warn(err)
-      }
-
-
-      message.channel.send(`**${user}** has been warned by **${message.author}**`)
-
-
-  }
 }
