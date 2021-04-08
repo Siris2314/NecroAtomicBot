@@ -1,6 +1,9 @@
 const Instagram = require('scraper-instagram')
 const {MessageEmbed} = require('discord.js')
 const paginationEmbed = require('discord.js-pagination')
+const instaID = process.env.instaID
+require('dotenv').config();
+
 
 
 module.exports = {
@@ -13,13 +16,13 @@ module.exports = {
     let Replaced = Text.replace(/ +/g, " ")
 
     const InstaClient = new Instagram();
-    const yourSessionId = '40843558906%3AkNwfH1fHFSg92q%3A6';
+    const yourSessionId = instaID;
 
     const emojiList = ["⬅️", "➡️"]
     const timeout = '300000';
     const verified_instagram = '✔️';
 
-    const instagram = await InstaClient.authBySessionId(yourSessionId)
+    const instagram = await InstaClient.authBySessionId(instaID)
       .catch(err => console.error(err))
 
     try {
