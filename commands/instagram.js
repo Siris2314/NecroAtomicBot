@@ -13,7 +13,7 @@ module.exports = {
     let Replaced = Text.replace(/ +/g, " ")
 
     const InstaClient = new Instagram();
-    const yourSessionId = '40843558906%3A6GhuPZOV9wZS9D%3A14';
+    const yourSessionId = '40843558906%3AkNwfH1fHFSg92q%3A6';
 
     const emojiList = ["⬅️", "➡️"]
     const timeout = '300000';
