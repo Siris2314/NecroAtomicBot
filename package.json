@@ -29,6 +29,7 @@
     "discord.js-pagination": "^1.0.3",
     "distube": "^2.8.12",
     "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
     "erela.js": "^2.3.3",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.3.0",
@@ -47,6 +48,7 @@
     "node-fetch": "^2.6.1",
     "node-superfetch": "^0.1.11",
     "numeral": "^2.0.6",
+    "path": "^0.12.7",
     "querystring": "^0.2.1",
     "random-puppy": "^1.1.0",
     "react-katex": "^2.0.2",
@@ -65,7 +67,6 @@
     "ytdl-core": "^4.5.0",
     "ytsr": "^3.4.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "hello"
   },
