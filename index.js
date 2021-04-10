@@ -6,13 +6,15 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
+const path = require('path')
 const client = new Discord.Client({
   partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
 });
 const fs = require('fs');
 // const db = require('./reconDB.js')
 const {GiveawaysManager} = require('discord-giveaways')
-// const mongo = require('./mongo.js')
+const afk = new Discord.Collection();
+const moment = require('moment');
 
 
 const search = require('youtube-search')  
@@ -22,7 +24,7 @@ const { getPokemon } = require('./commands/pokemon');
 client.snipes = new Map();
 const canvas = require('discord-canvas')
 const Schema = require('./schemas/welcomeChannel')
-const guildSchema = require('./schemas/Guild')
+const guildSchema = require('./schemas/Guilds')
 const reactionSchema = require('./schemas/reaction-roles')
 const ms = require('ms')
 const countSchema = require('./schemas/member-count')
@@ -33,7 +35,7 @@ const {chatBot} = require('reconlx')
 const chatschema = require('./schemas/chatbot-channel')
 const blacklistSchema = require('./schemas/blacklist')
 
-module.exports = {antijoin, blacklistedWords};
+module.exports = {antijoin, blacklistedWords, afk};
 
 
 
@@ -100,6 +102,7 @@ function embedbuilder(client, message, color, title, description){
     if(description) embed.setDescription(description);
     return message.channel.send(embed);
 }
+  
 
 
 
@@ -110,6 +113,37 @@ client.on('ready', async () => {
 
   console.log(botname);
   client.manager.init(client.user.id)
+
+  const clientDetails = {
+    guilds: client.guilds.cache.size,
+    users: client.users.cache.size,
+    channels: client.channels.cache.size
+  }
+
+  const express = require('express')
+  const app = express();
+
+  const port = 3000 | 3001;
+
+  app.set("view engine", "ejs");
+
+  app.get("/", (req, res) => {
+    res.status(200).sendFile(path.join(__dirname, "../NecroAtomicBot", "landingPage.html"))
+
+  })
+
+  app.get("/commands", (req, res) => {
+    const commands = getCommands();
+    console.log(commands)
+    res.status(200).render('commands', {commands})
+  })
+  app.get("/info" , (req, res) => {
+    res.status(200).send(clientDetails)
+  })
+
+  
+
+  app.listen(port)
 
 
   await mongoose.connect(mongoPath, {
@@ -160,7 +194,7 @@ client.on('ready', async () => {
 
  
 
-
+ 
 
 
 
@@ -192,6 +226,8 @@ for(const file of commandFiles){
 
 
 
+
+
 client.on ('message', async (message) => {
 
 
@@ -205,6 +241,7 @@ client.on ('message', async (message) => {
     if(err) console.log(err)
     if(!guild){
         const newGuild = new guildSchema({
+            _id: mongoose.Types.ObjectId(),
             guildID: message.guild.id,
             guildName: message.guild.name,
             prefix: process.env.prefix
@@ -217,7 +254,10 @@ client.on ('message', async (message) => {
 
 });
 
-const prefix = settings.prefix
+    const prefix = settings.prefix
+
+
+  if(!message.content.startsWith(prefix)) return;
 
 
   await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
@@ -242,6 +282,29 @@ const prefix = settings.prefix
   )
 
   if(deleting) return message.delete();
+
+
+  const mentionedMember = message.mentions.members.first()
+
+  if(mentionedMember){
+    const data = afk.get(mentionedMember.id)
+
+    if(data){
+      const[timestamp, reason] = data;
+      const timeAgo = moment(timestamp).fromNow()
+      
+      message.channel.send(`${mentionedMember} is currently afk (${timeAgo})\nReason: ${reason}`)
+
+    }
+  }
+
+  const getData = afk.get(message.author.id)
+  if(getData){
+    afk.delete(message.author.id)
+    message.channel.send(`${message.member} afk has been removed`)
+  }
+
+
 
 
 
@@ -478,6 +541,47 @@ const prefix = settings.prefix
 
 
 });
+
+
+function getCommands() {
+  let categories = [];
+  const value = [];
+  const commands = fs.readdirSync(`${process.cwd()}/commands/`)
+      .filter((file) => file.split(".").pop() === "js");
+  if (commands.length <= 0) return console.log(`❎ | Couldnt find any commands`);
+
+  commands.forEach((command) => {
+
+    const file = require(`./commands/${command}`);
+        value.push({
+          name: file.name ? file.name : 'No Command Name',
+          description: file.description ? file.description: 'No Description',
+  
+        })
+
+      let data = new Object();
+
+        data = {
+          name: command.toUpperCase(),
+          value
+        };
+    
+        categories.push(data);
+
+
+
+
+      
+  })
+
+ 
+
+
+
+    return categories;
+
+    
+  }
 
 client.on('guildMemberAdd', async(member) => {
 
