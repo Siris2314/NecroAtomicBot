@@ -112,38 +112,8 @@ function embedbuilder(client, message, color, title, description){
 client.on('ready', async () => {
 
   console.log(botname);
+  console.log("Heroku Connected")
   client.manager.init(client.user.id)
-
-  const clientDetails = {
-    guilds: client.guilds.cache.size,
-    users: client.users.cache.size,
-    channels: client.channels.cache.size
-  }
-
-  const express = require('express')
-  const app = express();
-
-  const port = 3000 | 3001;
-
-  app.set("view engine", "ejs");
-
-  app.get("/", (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, "../NecroAtomicBot", "landingPage.html"))
-
-  })
-
-  app.get("/commands", (req, res) => {
-    const commands = getCommands();
-    console.log(commands)
-    res.status(200).render('commands', {commands})
-  })
-  app.get("/info" , (req, res) => {
-    res.status(200).send(clientDetails)
-  })
-
-  
-
-  app.listen(port)
 
 
   await mongoose.connect(mongoPath, {
@@ -248,14 +218,14 @@ client.on ('message', async (message) => {
         })
 
         newGuild.save()
-        .then(result => console.log(result))
-        .catch(err => console.error(err));
+         .then(result => console.log(result))
+         .catch(err => console.error(err));
 
         return message.channel.send('This server was not in our database! We have now added and you should be able to use bot commands.').then(m => m.delete({timeout: 10000}));
     }
 });
 
-const prefix = settings.prefix;
+  const prefix = settings.prefix;
 
 
   
