@@ -205,6 +205,49 @@ client.on ('message', async (message) => {
     return;
   }
 
+  const splittedMsgs = message.content.split(' ');
+
+  let deleting = false;
+
+  await Promise.all(
+    splittedMsgs.map((content) => {
+      if(blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase())) deleting = true
+
+    })
+  )
+
+  if(deleting) return message.delete();
+
+  await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
+    if(!data) return;
+
+    if(message.channel.id !== data.Channel) return;
+
+    chatBot(message, message.content, message.author.id)
+
+  })
+
+  const mentionedMember = message.mentions.members.first()
+
+  if(mentionedMember){
+    const data = afk.get(mentionedMember.id)
+
+    if(data){
+      const[timestamp, reason] = data;
+      const timeAgo = moment(timestamp).fromNow()
+      
+      message.channel.send(`${mentionedMember} is currently afk (${timeAgo})\nReason: ${reason}`)
+
+    }
+  }
+
+  const getData = afk.get(message.author.id)
+  if(getData){
+    afk.delete(message.author.id)
+    message.channel.send(`${message.member} afk has been removed`)
+  }
+
+
   const settings = await guildSchema.findOne({
     guildID: message.guild.id
 }, (err, guild) => {
@@ -233,49 +276,7 @@ client.on ('message', async (message) => {
   if(!message.content.startsWith(prefix)) return;
 
 
-  await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
-    if(!data) return;
 
-    if(message.channel.id !== data.Channel) return;
-
-    chatBot(message, message.content, message.author.id)
-
-  })
-
-
-  const splittedMsgs = message.content.split(' ');
-
-  let deleting = false;
-
-  await Promise.all(
-    splittedMsgs.map((content) => {
-      if(blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase())) deleting = true
-
-    })
-  )
-
-  if(deleting) return message.delete();
-
-
-  const mentionedMember = message.mentions.members.first()
-
-  if(mentionedMember){
-    const data = afk.get(mentionedMember.id)
-
-    if(data){
-      const[timestamp, reason] = data;
-      const timeAgo = moment(timestamp).fromNow()
-      
-      message.channel.send(`${mentionedMember} is currently afk (${timeAgo})\nReason: ${reason}`)
-
-    }
-  }
-
-  const getData = afk.get(message.author.id)
-  if(getData){
-    afk.delete(message.author.id)
-    message.channel.send(`${message.member} afk has been removed`)
-  }
 
 
 
@@ -516,45 +517,6 @@ client.on ('message', async (message) => {
 });
 
 
-function getCommands() {
-  let categories = [];
-  const value = [];
-  const commands = fs.readdirSync(`${process.cwd()}/commands/`)
-      .filter((file) => file.split(".").pop() === "js");
-  if (commands.length <= 0) return console.log(`❎ | Couldnt find any commands`);
-
-  commands.forEach((command) => {
-
-    const file = require(`./commands/${command}`);
-        value.push({
-          name: file.name ? file.name : 'No Command Name',
-          description: file.description ? file.description: 'No Description',
-  
-        })
-
-      let data = new Object();
-
-        data = {
-          name: command.toUpperCase(),
-          value
-        };
-    
-        categories.push(data);
-
-
-
-
-      
-  })
-
- 
-
-
-
-    return categories;
-
-    
-  }
 
 client.on('guildMemberAdd', async(member) => {
 
