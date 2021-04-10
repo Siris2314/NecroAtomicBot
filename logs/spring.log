@@ -169,3 +169,27 @@
 2021-04-10 14:40:36.101  INFO 97608 --- [XNIO-1 task-44] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:63538
 2021-04-10 14:41:55.765  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:63538 -- CloseStatus[code=1006, reason=]
 2021-04-10 14:41:55.767  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:44:25.575  INFO 97608 --- [XNIO-1 task-45] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64176
+2021-04-10 14:44:25.588  INFO 97608 --- [XNIO-1 task-45] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64176
+2021-04-10 14:44:56.086  INFO 97608 --- [XNIO-1 I/O-4] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64176 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:44:56.089  INFO 97608 --- [XNIO-1 I/O-4] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:46:32.183  INFO 97608 --- [XNIO-1 task-46] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64372
+2021-04-10 14:46:32.199  INFO 97608 --- [XNIO-1 task-46] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64372
+2021-04-10 14:51:05.284  INFO 97608 --- [XNIO-1 I/O-8] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64372 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:51:05.286  INFO 97608 --- [XNIO-1 I/O-8] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:51:08.185  INFO 97608 --- [XNIO-1 task-47] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64690
+2021-04-10 14:51:08.197  INFO 97608 --- [XNIO-1 task-47] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64690
+2021-04-10 14:52:35.715  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64690 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:52:35.715  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:52:38.335  INFO 97608 --- [XNIO-1 task-48] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64762
+2021-04-10 14:52:38.348  INFO 97608 --- [XNIO-1 task-48] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64762
+2021-04-10 14:52:53.695  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64762 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:52:53.699  INFO 97608 --- [XNIO-1 I/O-2] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:52:55.978  INFO 97608 --- [XNIO-1 task-49] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64785
+2021-04-10 14:52:55.987  INFO 97608 --- [XNIO-1 task-49] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64785
+2021-04-10 14:53:33.425  INFO 97608 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64785 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:53:33.427  INFO 97608 --- [XNIO-1 I/O-1] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2021-04-10 14:53:36.059  INFO 97608 --- [XNIO-1 task-50] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:64827
+2021-04-10 14:53:36.077  INFO 97608 --- [XNIO-1 task-50] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:64827
+2021-04-10 14:53:39.533  INFO 97608 --- [XNIO-1 I/O-7] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:64827 -- CloseStatus[code=1006, reason=]
+2021-04-10 14:53:39.535  INFO 97608 --- [XNIO-1 I/O-7] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
