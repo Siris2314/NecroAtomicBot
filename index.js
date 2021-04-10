@@ -237,26 +237,29 @@ client.on ('message', async (message) => {
 
   const settings = await guildSchema.findOne({
     guildID: message.guild.id
-}, async (err, guild) => {
-    if(err) console.log(err)
-    if(!guild){
-        const newGuild = new guildSchema({
+}, (err, guild) => {
+    if (err) console.error(err)
+    if (!guild) {
+        const newGuild = new Guild({
             _id: mongoose.Types.ObjectId(),
             guildID: message.guild.id,
             guildName: message.guild.name,
-            prefix: process.env.prefix
+            prefix: process.env.PREFIX
         })
 
-        newGuild.save().then(result => console.log(result)).catch(err => console.log(err))
+        newGuild.save()
+        .then(result => console.log(result))
+        .catch(err => console.error(err));
 
-      return message.channel.send('This server was not in our database so we set your prefix to !necro by default, you should be able to use commands now').then(m => m.delete({timeout:10000}))
+        return message.channel.send('This server was not in our database! We have now added and you should be able to use bot commands.').then(m => m.delete({timeout: 10000}));
     }
-
 });
 
-    const prefix = settings.prefix
+const prefix = settings.prefix;
 
 
+  
+  
   if(!message.content.startsWith(prefix)) return;
 
 
