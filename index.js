@@ -38,7 +38,7 @@ const blacklistSchema = require('./schemas/blacklist')
 
 module.exports = {antijoin, blacklistedWords, afk};
 
-
+const status = (queue) => `Volume: \`${queue.volume}%\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 music.on('playSong', (message, queue,song) => {
   message.channel.send(
     `${song.name} has started playing`
@@ -48,10 +48,6 @@ music.on('playSong', (message, queue,song) => {
 )).on("addList", (message, queue, playlist) => {
   message.channel.send(
     `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
-)
-}).on('playList', (message, queue, playlist, song) => {
-  message.channel.send(
-    `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
 )
 }).on("playList", (message, queue, playlist, song) => message.channel.send(
   `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
@@ -281,7 +277,7 @@ client.on ('message', async (message) => {
 }, (err, guild) => {
     if (err) console.error(err)
     if (!guild) {
-        const newGuild = new Guild({
+        const newGuild = new guildSchema({
             _id: mongoose.Types.ObjectId(),
             guildID: message.guild.id,
             guildName: message.guild.name,
