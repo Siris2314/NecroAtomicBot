@@ -26,6 +26,9 @@ module.exports = {
       .setTitle(anime.titles.english ? anime.titles.english : search)
       .setColor("RANDOM")
       .setDescription(anime.synopsis.replace(/<[^>]*>/g, '').split('\n')[0])
+      .addField('>Information', `**Japanese Name** ${anime.titles.romaji}\n **Age Rating:** ${anime.ageRating}\n\**Is NSFW: ** ${anime.nsfw ? 'Yes' : 'No'}`, true)
+      .addField('>Stats', `**Average Rating:** ${anime.averageRating}\n\**Rank by rating:** ${anime.rankRating}\n\**Rank by popularity:** ${anime.popularityRank}`, true)
+      .addField('>Status',`**Episode Count:** ${anime.episodeCount ? anime.episodeCount: 'N/A'}\n`, true)
       .setThumbnail(anime.posterImage.original, 100, 200)
 
       return message.channel.send(embed);
