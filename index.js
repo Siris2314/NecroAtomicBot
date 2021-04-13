@@ -52,6 +52,7 @@ music.on('playSong', (message, queue,song) => {
 }).on("playList", (message, queue, playlist, song) => message.channel.send(
   `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
 )).on('initQueue', queue => {
+  
   queue.autoplay = false;
   queue.volume =100;
 }).on("empty", message => {
@@ -260,7 +261,7 @@ client.on ('message', async (message) => {
       const[timestamp, reason] = data;
       const timeAgo = moment(timestamp).fromNow()
       
-      message.channel.send(`${mentionedMember} is currently afk (${timeAgo})\nReason: ${reason}`)
+      message.channel.send(`${mentionedMember.user.username} is currently afk (${timeAgo})\nReason: ${reason}`)
 
     }
   }
@@ -283,6 +284,7 @@ client.on ('message', async (message) => {
             guildName: message.guild.name,
             prefix: process.env.PREFIX
         })
+        
 
         newGuild.save()
          .then(result => console.log(result))
