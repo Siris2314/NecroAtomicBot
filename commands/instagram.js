@@ -38,7 +38,7 @@ module.exports = {
         .setColor('RANDOM')
         .setThumbnail(insta.pic)
         .addFields(
-          {name: 'TotalPosts', value: insta.post, inline:true},
+          {name: 'TotalPosts', value: insta.posts, inline:true},
           {name:'Followers', value: insta.followers, inline:true},
           {name: 'Followings', value:insta.following, inline:true}
         )
