@@ -9,9 +9,8 @@ module.exports = {
 
     const embed = new Discord.MessageEmbed()
       .setTitle('Invite Me')
-      .setField('Click this link to invite me:', [
-        'https://discord.com/api/oauth2/authorize?client_id=769028291611983882&permissions=0&scope=bot'
-      ])
+      .setDescription(`**[Click this to invite me](https://discord.com/api/oauth2/authorize?client_id=769028291611983882&permissions=0&scope=bot)**`)
+      .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic:true}))
       
 
     return message.channel.send(embed);
