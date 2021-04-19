@@ -15,7 +15,8 @@ const fs = require('fs');
 const {GiveawaysManager} = require('discord-giveaways')
 const afk = new Discord.Collection();
 const moment = require('moment');
-
+const Levels = require('discord-xp')
+Levels.setURL(mongoPath)
 
 const search = require('youtube-search')  
 const DisTube = require('distube')
@@ -230,6 +231,16 @@ client.on ('message', async (message) => {
     return;
   }
 
+  const randomXP = Math.floor(Math.random() * 29) + 1;
+  const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP)
+
+
+
+
+
+
+
+
   const splittedMsgs = message.content.split(' ');
 
   let deleting = false;
@@ -255,9 +266,12 @@ client.on ('message', async (message) => {
   const mentionedMember = message.mentions.members.first()
 
   if(mentionedMember){
+
     const data = afk.get(mentionedMember.id)
+    
 
     if(data){
+      await message.delete()
       const[timestamp, reason] = data;
       const timeAgo = moment(timestamp).fromNow()
       
@@ -519,6 +533,38 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 });
 
 client.on('messageReactionAdd', async(reaction, user) => {
+
+  const handleStarboard = async () => {
+    const starboard = client.channels.cache.find(channel => channel.name.toLowerCase() === 'starboard');
+    const msgs = await starboard.messages.fetch({ limit: 100 });
+    const existingMsg = msgs.find(msg => 
+        msg.embeds.length === 1 ?
+        (msg.embeds[0].footer.text.startsWith(reaction.message.id) ? true : false) : false);
+    if(existingMsg) existingMsg.edit(`${reaction.count} - ⭐`);
+    else {
+        const embed = new Discord.MessageEmbed()
+            .setAuthor(reaction.message.author.tag, reaction.message.author.displayAvatarURL())
+            .setDescription(`**[Jump to this message](${reaction.message.url})**\n\n${reaction.message.content || ''}\n`)
+            .setFooter(reaction.message.id + ' - ' + new Date(reaction.message.createdTimestamp));
+          
+            if (reaction.message.attachments.array().length > 0) {
+              embed.setImage(reaction.message.attachments.first().url);
+            }
+          
+        if(starboard)
+            starboard.send(`1 - ⭐ | ${reaction.message.channel}`, embed);
+    }
+}
+if(reaction.emoji.name === '⭐') {
+    if(reaction.message.channel.name.toLowerCase() === 'starboard') return;
+    if(reaction.message.partial) {
+        await reaction.fetch();
+        await reaction.message.fetch();
+        handleStarboard();
+    }
+    else
+        handleStarboard();
+}
   if(reaction.message.partial) await reaction.message.fetch();
   if(reaction.partial) await reaction.fetch()
   if(user.bot) return;
@@ -536,6 +582,32 @@ client.on('messageReactionAdd', async(reaction, user) => {
 
 
 client.on('messageReactionRemove', async(reaction, user) => {
+  const handleStarboard = async () => {
+    const starboard = client.channels.cache.find(channel => channel.name.toLowerCase() === 'starboard');
+    const msgs = await starboard.messages.fetch({ limit: 100 });
+    const existingMsg = msgs.find(msg => 
+        msg.embeds.length === 1 ? 
+        (msg.embeds[0].footer.text.startsWith(reaction.message.id) ? true : false) : false);
+    if(existingMsg) {
+        if(reaction.count === 0)
+            existingMsg.delete({ timeout: 2500 });
+        else
+            existingMsg.edit(`${reaction.count} - `)
+    };
+}
+if(reaction.emoji.name === '⭐') {
+    if(reaction.message.channel.name.toLowerCase() === 'starboard') return;
+    if(reaction.message.partial) {
+        await reaction.fetch();
+        await reaction.message.fetch();
+        handleStarboard();
+    }
+    else
+        handleStarboard();
+}
+
+
+
   if(reaction.message.partial) await reaction.message.fetch();
   if(reaction.partial) await reaction.fetch()
   if(user.bot) return;
