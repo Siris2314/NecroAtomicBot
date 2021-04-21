@@ -56,7 +56,7 @@ music.on('playSong', (message, queue,song) => {
  const embed = new Discord.MessageEmbed()
  .setDescription( `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`)
  .setColor("RANDOM")
- .setThumbnail(playlist.thumbnail)
+ .setThumbnail(song.thumbnail)
 message.channel.send(embed)
 }).on('initQueue', queue => {
   
