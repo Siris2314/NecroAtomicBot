@@ -41,18 +41,24 @@ module.exports = {antijoin, blacklistedWords, afk};
 
 const status = (queue) => `Volume: \`${queue.volume}%\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 music.on('playSong', (message, queue,song) => {
-  message.channel.send(
-    `${song.name} has started playing`
-  )
+  const embed = new Discord.MessageEmbed()
+  .setDescription(`Playing: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(queue)}`)
+  .setColor("RANDOM")
+  .setThumbnail(song.thumbnail)
+  message.channel.send(embed)
 }).on("addSong", (message, queue, song) => message.channel.send(
   `Added ${song.name} - \`${song.formattedDuration}\` to the queue`
 )).on("addList", (message, queue, playlist) => {
   message.channel.send(
     `Added \`${playlist.name}\` playlist (${playlist.songs.length} songs) to queue\n${status(queue)}`
 )
-}).on("playList", (message, queue, playlist, song) => message.channel.send(
-  `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
-)).on('initQueue', queue => {
+}).on("playList", (message, queue, playlist, song) => {
+ const embed = new Discord.MessageEmbed()
+ .setDescription( `Play \`${playlist.name}\` playlist (${playlist.songs.length} songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`)
+ .setColor("RANDOM")
+ .setThumbnail(playlist.thumbnail)
+message.channel.send(embed)
+}).on('initQueue', queue => {
   
   queue.autoplay = false;
   queue.volume =100;
