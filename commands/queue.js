@@ -22,6 +22,11 @@ module.exports = {
          .setTitle('Current Queue')
          .setDescription(fullqueue)
 
+         if(queueEmbed.description.length > 2048){
+            queueEmbed.description.slice(2048)
+            queueEmbed.setDescription(fullqueue)
+         }
+
         return message.channel.send(queueEmbed);
 
 
