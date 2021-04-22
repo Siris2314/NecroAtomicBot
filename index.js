@@ -536,7 +536,18 @@ client.on('messageReactionAdd', async(reaction, user) => {
             starboard.send(`1 - ⭐ | ${reaction.message.channel}`, embed);
     }
 }
-        handleStarboard();
+if(reaction.emoji.name === '⭐') {
+  const reactionguild = starboardcollection.get(reaction.message.guild.id);
+  const channel = reactionguild;
+  if(reaction.message.channel.id == channel.id) return;
+  if(reaction.message.partial) {
+      await reaction.fetch();
+      await reaction.message.fetch();
+      handleStarboard();
+  }
+  else
+      handleStarboard();
+}
 
   if(reaction.message.partial) await reaction.message.fetch();
   if(reaction.partial) await reaction.fetch()
@@ -571,7 +582,20 @@ client.on('messageReactionRemove', async(reaction, user) => {
     };
 }
 
-        handleStarboard();
+
+
+if(reaction.emoji.name === '⭐') {
+  const reactionguild = starboardcollection.get(reaction.message.guild.id);
+  const channel = reactionguild;
+  if(reaction.message.channel.id == channel.id) return;
+  if(reaction.message.partial) {
+      await reaction.fetch();
+      await reaction.message.fetch();
+      handleStarboard();
+  }
+  else
+      handleStarboard();
+}
 
 
 
