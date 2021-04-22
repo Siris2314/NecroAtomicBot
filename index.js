@@ -36,8 +36,9 @@ const blacklistedWords = new Discord.Collection();
 const {chatBot} = require('reconlx')
 const chatschema = require('./schemas/chatbot-channel')
 const blacklistSchema = require('./schemas/blacklist')
+const starboardcollection = new Discord.Collection();
 
-module.exports = {antijoin, blacklistedWords, afk};
+module.exports = {antijoin, blacklistedWords, afk, starboardcollection};
 
 const status = (queue) => `Volume: \`${queue.volume}%\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "Server Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 music.on('playSong', (message, queue,song) => {
@@ -513,7 +514,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 client.on('messageReactionAdd', async(reaction, user) => {
 
   const handleStarboard = async () => {
-    const starboard = client.channels.cache.find(channel => channel.name.toLowerCase() === 'starboard');
+    const reactionguild = starboardcollection.get(reaction.message.guild.id);
+    const channel = reactionguild;
+    const starboard = client.channels.cache.get(channel.id)
     const msgs = await starboard.messages.fetch({ limit: 100 });
     const existingMsg = msgs.find(msg => 
         msg.embeds.length === 1 ?
@@ -533,16 +536,8 @@ client.on('messageReactionAdd', async(reaction, user) => {
             starboard.send(`1 - ⭐ | ${reaction.message.channel}`, embed);
     }
 }
-if(reaction.emoji.name === '⭐') {
-    if(reaction.message.channel.name.toLowerCase() === 'starboard') return;
-    if(reaction.message.partial) {
-        await reaction.fetch();
-        await reaction.message.fetch();
         handleStarboard();
-    }
-    else
-        handleStarboard();
-}
+
   if(reaction.message.partial) await reaction.message.fetch();
   if(reaction.partial) await reaction.fetch()
   if(user.bot) return;
@@ -561,7 +556,9 @@ if(reaction.emoji.name === '⭐') {
 
 client.on('messageReactionRemove', async(reaction, user) => {
   const handleStarboard = async () => {
-    const starboard = client.channels.cache.find(channel => channel.name.toLowerCase() === 'starboard');
+    const reactionguild = starboardcollection.get(reaction.message.guild.id);
+    const channel = reactionguild;
+    const starboard = client.channels.cache.get(channel.id)
     const msgs = await starboard.messages.fetch({ limit: 100 });
     const existingMsg = msgs.find(msg => 
         msg.embeds.length === 1 ? 
@@ -573,16 +570,9 @@ client.on('messageReactionRemove', async(reaction, user) => {
             existingMsg.edit(`${reaction.count} - `)
     };
 }
-if(reaction.emoji.name === '⭐') {
-    if(reaction.message.channel.name.toLowerCase() === 'starboard') return;
-    if(reaction.message.partial) {
-        await reaction.fetch();
-        await reaction.message.fetch();
+
         handleStarboard();
-    }
-    else
-        handleStarboard();
-}
+
 
 
 
