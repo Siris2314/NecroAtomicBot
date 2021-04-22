@@ -7,6 +7,7 @@ const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
+const { registerFont, createCanvas, loadImage } = require('canvas')
 const client = new Discord.Client({
   partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
 });
@@ -419,34 +420,61 @@ client.on('guildMemberAdd', async(member) => {
 
   Schema.findOne({Guild: member.guild.id}, async(e, data) => {
     if(!data) return;
-    const user = member.user;
-    const image = await new canvas.Welcome()
-      .setUsername(user.username)
-      .setDiscriminator(user.discriminator)
-      .setMemberCount(member.guild.memberCount)
-      .setGuildName(member.guild.name)
-      .setAvatar(user.displayAvatarURL({format: "png"}))
-      .setColor("border", "#8015EA")
-      .setColor("username-box", "#8015EA")
-      .setColor("discriminator-box", "#8015EA")
-      .setColor("message-box", "#8015EA")
-      .setColor("title", "#8015EA")
-      .setColor("avatar", "#8015EA")
-      .setBackground("http://2.bp.blogspot.com/_708_wIdtSh0/S_6CRX-cA4I/AAAAAAAABf4/PgAp07RgaB8/s1600/Colorful+%2845%29.jpg")
-      .toAttachment();
+
+    const channel = member.guild.channels.cache.get(data.Channel);
+    const fontName = 'sans-serif'
+    const fontColor = '#ffffff'
+    let bannerPath = './Colorful.jpg'
+    if(member.guild.id == "798700075517870120"){
+      bannerPath = "./banner.png"
+    }
+    const bannerWidth = 2134
+    const bannerHeight = 834
+    const scale = 2
+    const userLabel = `Hey, ${member.displayName}`
+  
+    const memberLabel = `${member.guild.memberCount}TH MEMBER!`
+    const userLabelFontSize = 54 * scale
+    const memberLabelFontSize = 34 * scale
+
+    // registerFont(fontPath, { family: fontName })
+
+    const canvas = createCanvas(bannerWidth, bannerHeight)
+    const ctx = canvas.getContext('2d')
+
+    const banner = await loadImage(bannerPath)
+    const avatar = await loadImage(member.user.displayAvatarURL({ format: 'jpg' }))
+    
+
+   
+    ctx.drawImage(banner, 0, 0)
+ 
+    ctx.fillStyle = fontColor
+ 
+    ctx.font = `${userLabelFontSize}px "${fontName}"`
+    ctx.fillText(userLabel, 392 * scale, 144 * scale)
+  
+    ctx.font = `${memberLabelFontSize}px "${fontName}"`
+    ctx.fillText(memberLabel, 400 * scale, 344 * scale)
+    ctx.beginPath()
+ 
+    ctx.arc(45 * scale + 280, 68 * scale + 280, 280, 0, Math.PI * 2, true)
+
+    ctx.closePath()
+
+    ctx.clip()
+    
+    ctx.drawImage(avatar, 45 * scale, 68 * scale, 280 * scale, 280 * scale)
+
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-image.png')
+    channel.send(attachment)
+ })
+
+
+   
     
     
-    const attachment = new Discord.MessageAttachment(
-      (await image).toBuffer(), 
-      "goodbye-image.png"
-      
-      );
-
-    console.log(attachment)
-    console.log(user)
-    const channel = member.guild.channels.cache.get(data.Channel)
-    await channel.send(attachment)
-
+    
 
 
   const getCollection = antijoin.get(member.guild.id)
@@ -454,7 +482,6 @@ client.on('guildMemberAdd', async(member) => {
   if(!getCollection.includes(member.user)){getCollection.push(member.user)}
   member.kick({reason: 'Antijoin was enabled'})
 
-  });
 });
 
 
@@ -521,7 +548,7 @@ client.on('messageReactionAdd', async(reaction, user) => {
     const existingMsg = msgs.find(msg => 
         msg.embeds.length === 1 ?
         (msg.embeds[0].footer.text.startsWith(reaction.message.id) ? true : false) : false);
-    if(existingMsg) existingMsg.edit(`${reaction.count} - ⭐`);
+    if(existingMsg) existingMsg.edit(`${reaction.count} - ⭐ | ${reaction.message.channel}`);
     else {
         const embed = new Discord.MessageEmbed()
             .setAuthor(reaction.message.author.tag, reaction.message.author.displayAvatarURL())
@@ -578,7 +605,7 @@ client.on('messageReactionRemove', async(reaction, user) => {
         if(reaction.count === 0)
             existingMsg.delete({ timeout: 2500 });
         else
-            existingMsg.edit(`${reaction.count} - `)
+            existingMsg.edit(`${reaction.count} - | ${reaction.message.channel}`)
     };
 }
 
