@@ -7,6 +7,7 @@ const botname = process.env.botname;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
+const voiceSchema = require('./schemas/customvoice')
 const { registerFont, createCanvas, loadImage } = require('canvas')
 const client = new Discord.Client({
   partials:['CHANNEL', 'MESSAGE', 'GUILD_MEMBER','REACTION']
@@ -424,7 +425,7 @@ client.on('guildMemberAdd', async(member) => {
     const channel = member.guild.channels.cache.get(data.Channel);
     const fontName = 'sans-serif'
     const fontColor = '#ffffff'
-    let bannerPath = './Colorful.jpg'
+    let bannerPath = './background.jpg'
     if(member.guild.id == "798700075517870120"){
       bannerPath = "./banner.png"
     }
@@ -521,10 +522,12 @@ client.on('messageDelete', async message => {
 const voiceCollection = new Discord.Collection()
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
+
   const user = await client.users.fetch(newState.id)
   const member = newState.guild.member(user)
-
-  if(!oldState.channel && newState.channel.id === "815461483219517450"){
+await voiceSchema.findOne({Guild: oldState.guild.id}, async(e, data) =>  {
+    
+  if(!oldState.channel && newState.channel.id === data.Channel){
     const channel = await newState.guild.channels.create(user.tag, {
       type: "voice",
       parent: newState.channel.parent,
@@ -532,10 +535,11 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     member.voice.setChannel(channel);
     voiceCollection.set(user.id, channel.id)
   } else if(!newState.channel){
-    if(oldState.channelID === voiceCollection.get(newState.id)){
+     if(oldState.channelID === voiceCollection.get(newState.id)){
       return oldState.channel.delete();
     }
   }
+ })
 });
 
 client.on('messageReactionAdd', async(reaction, user) => {
