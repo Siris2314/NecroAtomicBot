@@ -43,6 +43,7 @@
     "mal-scraper": "^2.11.3",
     "math": "0.0.3",
     "mathjs": "^9.3.0",
+    "memer-api": "^2.1.5",
     "merge-options": "^3.0.4",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
