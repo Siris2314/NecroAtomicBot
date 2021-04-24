@@ -15,7 +15,19 @@ module.exports = {
 
         const translated = await translate(input, {to: option})
 
-        message.channel.send(translated.text)
+
+        const translatedEmbed = new MessageEmbed()
+         .setTitle(`${message.author.username} translatation`)
+         .addFields(
+            { name: `Original Text`, value: `\`\`\`${input}\`\`\``, inline:true},
+            { name: `Translated Text`, value: `\`\`\`${translated.text}\`\`\``, inline:true}
+        )
+         .setColor("RANDOM")
+         .setTimestamp()
+
+
+
+        message.channel.send(translatedEmbed)
 
     }
 } catch(err){

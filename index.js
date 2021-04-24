@@ -2,8 +2,10 @@ require('dotenv').config();
 const token = process.env.token;
 const mongoPath = process.env.mongoPath;
 const mongoose = require('mongoose');
+const nekoyasui = require("nekoyasui");
 const youtube = process.env.youtube;
 const botname = process.env.botname;
+const ownerID = process.env.ownerid;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
@@ -266,10 +268,31 @@ client.on ('message', async (message) => {
   await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
     if(!data) return;
 
-    if(message.channel.id !== data.Channel) return;
+  
 
-    chatBot(message, message.content, message.author.id)
 
+  const master = await nekoyasui.search.user(message, ownerID);
+  const channel = await nekoyasui.search.channel(message, data.Channel)
+  if(!channel) return;
+	if(!(master)) console.log("Oh! noooooo.. where r u master!");
+	 const bot = {
+		name: message.client.user.username,
+		birthdate: "10/24/2001",
+		prefix: message.client.prefix,
+		gender: "Genderless",
+		description: "The Omnipotent Bot",
+		country: "Latveria",
+		city: "Doomstadt"
+	};
+	const owner = {
+		id: master.id,
+		username: master.username,
+		discriminator: master.discriminator,
+		invite: ""
+	}
+  const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
+  channel.send(res.cnt);
+  
   })
 
   const mentionedMember = message.mentions.members.first()
