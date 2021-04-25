@@ -9,6 +9,7 @@ const ownerID = process.env.ownerid;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
+const modlogsSchema = require("./schemas/modlogs")
 const voiceSchema = require('./schemas/customvoice')
 const { registerFont, createCanvas, loadImage } = require('canvas')
 const client = new Discord.Client({
@@ -21,6 +22,19 @@ const afk = new Discord.Collection();
 const moment = require('moment');
 const Levels = require('discord-xp')
 Levels.setURL(mongoPath)
+client.modlogs = async function({Member, Action, Color, Reason}, message){
+  const data = await modlogsSchema.findOne({Guild: message.guild.id});
+  if(!data) return;
+
+  const channel = message.guild.channels.cache.get(data.Channel);
+  const logsEmbed = new Discord.MessageEmbed()
+    .setColor(Color)
+    .setDescription(`Reason: ${Reason} || 'No Reason!`)
+    .setThumbnail(Member.user.displayAvatarURL())
+    .addField('Member', `${Member.user.tag} (${Member.id})`)
+    .setTitle(`Action Took: ${Action}`)
+  channel.send(logsEmbed);
+}
 
 const search = require('youtube-search')  
 const DisTube = require('distube')

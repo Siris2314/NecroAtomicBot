@@ -23,7 +23,7 @@ module.exports = {
          .setDescription(fullqueue)
 
          if(queueEmbed.description.length > 2048){
-            queueEmbed.description.slice(2048)
+            queueEmbed.description.substr(0, 2048)
             queueEmbed.setDescription(fullqueue)
          }
 
