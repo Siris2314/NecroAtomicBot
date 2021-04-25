@@ -41,6 +41,19 @@ module.exports = {
         
         
         )
+
+        client.modlogs({
+            Member: user,
+            Action: 'Warn',
+            Color:"RED",
+            Reason: reason,
+        
+        
+        
+          },
+          message
+          
+        );
         message.channel.send(new MessageEmbed()
             .setDescription(`Warned ${user} for ${reason}`).setColor('RANDOM')
         

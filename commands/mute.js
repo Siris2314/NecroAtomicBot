@@ -33,6 +33,19 @@ module.exports = {
         let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
         if(Member.roles.cache.has(role2.id)) return message.channel.send(`${Member.displayName} has already been muted.`)
         await Member.roles.add(role2)
+
+        client.modlogs({
+            Member: Member,
+            Action: 'Mute',
+            Color:"RED",
+            Reason: reason,
+        
+        
+        
+          },
+          message
+          
+        );
         message.channel.send(`${Member.displayName} is now muted.`)
     }
 }

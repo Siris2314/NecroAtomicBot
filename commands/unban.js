@@ -19,6 +19,18 @@ module.exports = {
 
 
         message.guild.members.unban(id);
+        client.modlogs({
+            Member: id,
+            Action: 'Unban',
+            Color:"RED",
+            Reason: reason,
+        
+        
+        
+          },
+          message
+          
+        );
 
         message.channel.send(`Unbanned user ${id}`)
 
