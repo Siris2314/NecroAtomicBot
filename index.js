@@ -242,6 +242,58 @@ client.on ('message', async (message) => {
     return;
   }
 
+  function Check(str) {
+    if (
+      client.emojis.cache.find(emoji => emoji.name === str) ||
+      message.guild.emojis.cache.find(emoji => emoji.name === str)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  if (message.content.startsWith(":") && message.content.endsWith(":")) {
+    let EmojiName = message.content.slice(1, -1);
+
+    if (Check(EmojiName) === true) {
+      const channel = client.channels.cache.get(message.channel.id);
+      try {
+        let webhooks = await channel.fetchWebhooks();
+        let webhook = webhooks.first();
+        if (webhook === undefined || null || !webhook) {
+          let Created = channel
+            .createWebhook("Bloxiphy", {
+              avatar:
+                "https://cdn.discordapp.com/avatars/708580906880860171/a_229b573176f79643d7fa5f6f7d8aed63.gif?size=256"
+            })
+            .then(async webhook => {
+              const emoji =
+                client.emojis.cache.find(e => e.name == EmojiName).id ||
+                message.guild.emojis.cache.find(e => e.name === EmojiName).id;
+
+              await webhook.send(`${client.emojis.cache.get(emoji)}`, {
+                username: message.author.username,
+                avatarURL: message.author.avatarURL({ dynamic: true })
+              });
+              message.delete();
+            });
+        }
+
+        const emoji =
+          client.emojis.cache.find(e => e.name == EmojiName).id ||
+          message.guild.emojis.cache.find(e => e.name === EmojiName).id;
+
+        await webhook.send(`${client.emojis.cache.get(emoji)}`, {
+          username: message.author.username,
+          avatarURL: message.author.avatarURL({ dynamic: true })
+        });
+        message.delete();
+      } catch (error) {
+        console.log(`Error :\n${error}`);
+      }
+    }
+  }
+
   const randomXP = Math.floor(Math.random() * 29) + 1;
   const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP)
 
@@ -268,9 +320,10 @@ client.on ('message', async (message) => {
   await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
     if(!data) return;
 
+  if(message.channel.id !== data.Channel) return;
+
   
-
-
+   
   const master = await nekoyasui.search.user(message, ownerID);
   const channel = await nekoyasui.search.channel(message, data.Channel)
   if(!channel) return;
@@ -280,7 +333,7 @@ client.on ('message', async (message) => {
 		birthdate: "10/24/2001",
 		prefix: message.client.prefix,
 		gender: "Genderless",
-		description: "The Omnipotent Bot",
+		description: "Omnipotent Bot",
 		country: "Latveria",
 		city: "Doomstadt"
 	};
@@ -292,7 +345,6 @@ client.on ('message', async (message) => {
 	}
   const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
   channel.send(res.cnt);
-  
   })
 
   const mentionedMember = message.mentions.members.first()
