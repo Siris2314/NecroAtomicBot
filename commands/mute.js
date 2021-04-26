@@ -38,7 +38,7 @@ module.exports = {
             Member: Member,
             Action: 'Mute',
             Color:"RED",
-            Reason: reason,
+            Reason: "No Reason",
         
         
         
