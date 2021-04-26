@@ -394,7 +394,7 @@ client.on ('message', async (message) => {
             _id: mongoose.Types.ObjectId(),
             guildID: message.guild.id,
             guildName: message.guild.name,
-            prefix: process.env.PREFIX
+            prefix: process.env.prefix
         })
         
 
