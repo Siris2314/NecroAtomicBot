@@ -9,6 +9,7 @@ const ownerID = process.env.ownerid;
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
+const starboardSchema = require('./schemas/starboard')
 const modlogsSchema = require("./schemas/modlogs")
 const voiceSchema = require('./schemas/customvoice')
 const { registerFont, createCanvas, loadImage } = require('canvas')
@@ -634,9 +635,10 @@ await voiceSchema.findOne({Guild: oldState.guild.id}, async(e, data) =>  {
 client.on('messageReactionAdd', async(reaction, user) => {
 
   const handleStarboard = async () => {
-    const reactionguild = starboardcollection.get(reaction.message.guild.id);
-    const channel = reactionguild;
-    const starboard = client.channels.cache.get(channel.id)
+
+  starboardSchema.findOne({Guild: reaction.message.guild.id}, async(err, data) => {
+    const starboardchannel = data.Channel;
+    const starboard = client.channels.cache.get(starboardchannel)
     const msgs = await starboard.messages.fetch({ limit: 100 });
     const existingMsg = msgs.find(msg => 
         msg.embeds.length === 1 ?
@@ -655,11 +657,15 @@ client.on('messageReactionAdd', async(reaction, user) => {
         if(starboard)
             starboard.send(`1 - ⭐ | ${reaction.message.channel}`, embed);
     }
+  })
 }
 if(reaction.emoji.name === '⭐') {
-  const reactionguild = starboardcollection.get(reaction.message.guild.id);
-  const channel = reactionguild;
-  if(reaction.message.channel.id == channel.id) return;
+ starboardSchema.findOne({Guild: reaction.message.guild.id}, async(err, data) => { 
+  const starboardchannel = data.Channel;
+  const starboard = client.channels.cache.get(starboardchannel)
+
+
+  if(reaction.message.channel.id == starboard.id) return;
   if(reaction.message.partial) {
       await reaction.fetch();
       await reaction.message.fetch();
@@ -667,7 +673,10 @@ if(reaction.emoji.name === '⭐') {
   }
   else
       handleStarboard();
+ })
 }
+
+
 
   if(reaction.message.partial) await reaction.message.fetch();
   if(reaction.partial) await reaction.fetch()
@@ -687,9 +696,9 @@ if(reaction.emoji.name === '⭐') {
 
 client.on('messageReactionRemove', async(reaction, user) => {
   const handleStarboard = async () => {
-    const reactionguild = starboardcollection.get(reaction.message.guild.id);
-    const channel = reactionguild;
-    const starboard = client.channels.cache.get(channel.id)
+  starboardSchema.findOne({Guild: reaction.message.guild.id}, async(err, data) => { 
+    const starboardchannel = data.Channel;
+    const starboard = client.channels.cache.get(starboardchannel)
     const msgs = await starboard.messages.fetch({ limit: 100 });
     const existingMsg = msgs.find(msg => 
         msg.embeds.length === 1 ? 
@@ -700,14 +709,17 @@ client.on('messageReactionRemove', async(reaction, user) => {
         else
             existingMsg.edit(`${reaction.count} - | ${reaction.message.channel}`)
     };
+  })
 }
 
 
 
 if(reaction.emoji.name === '⭐') {
-  const reactionguild = starboardcollection.get(reaction.message.guild.id);
-  const channel = reactionguild;
-  if(reaction.message.channel.id == channel.id) return;
+  starboardSchema.findOne({Guild: reaction.message.guild.id}, async(err, data) => { 
+    const starboardchannel = data.Channel;
+    const starboard = client.channels.cache.get(starboardchannel)
+  
+  if(reaction.message.channel.id == starboard.id) return;
   if(reaction.message.partial) {
       await reaction.fetch();
       await reaction.message.fetch();
@@ -715,6 +727,7 @@ if(reaction.emoji.name === '⭐') {
   }
   else
       handleStarboard();
+ })
 }
 
 
