@@ -6,6 +6,7 @@ const nekoyasui = require("nekoyasui");
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const ownerID = process.env.ownerid;
+const counterSchema = require("./schemas/count");
 const key1 = process.env.key1;
 const Discord = require('discord.js');
 const path = require('path')
@@ -332,6 +333,29 @@ client.on ('message', async (message) => {
 
   if(deleting) return message.delete();
 
+  await counterSchema.findOne({Guild: message.guild.id}, async(err, data) => {
+    
+    if(message.channel.id !== data.Channel) return;
+    
+
+    let number = parseInt(message.content);
+    let current = parseInt(data.Count);
+
+    
+
+    if(number == current+1) {
+
+      data.Count = data.Count + 1;
+      await data.save();
+      message.react('✅');
+    } else {
+      data.Count = 0;
+      await data.save();
+      message.react('❌');
+      message.channel.send(`${message.author.username} has messed it up, stopped at ${number - 1} ,resetting game to start at 1`)
+    }
+  })
+
   await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
     if(!data) return;
 
@@ -361,6 +385,9 @@ client.on ('message', async (message) => {
   const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
   channel.send(res.cnt);
   })
+
+
+
 
   const mentionedMember = message.mentions.members.first()
 
