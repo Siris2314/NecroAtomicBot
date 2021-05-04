@@ -340,6 +340,12 @@ client.on ('message', async (message) => {
 
     let number = parseInt(message.content);
     let current = parseInt(data.Count);
+
+
+  if(isNaN(number)){
+     
+  }
+  else {
     message.guild.channels.cache.get(data.Channel).messages.fetch({limit: 10}).then(async messages => {
       if(messages.array()[0].author.id === messages.array()[1].author.id){
         data.Count = 0;
@@ -363,6 +369,7 @@ client.on ('message', async (message) => {
         }
       }
   })
+}
     
 
   })
