@@ -20,7 +20,11 @@ module.exports = {
             var counter = 0;
             var temp = [];
             readdirSync("./commands/").forEach((dir) => {
-                temp.push({ name: dir, value: "\u200B", inline: true });
+                temp.push({
+                    name: dir.substring(0, dir.indexOf(".")),
+                    value: "\u200B",
+                    inline: true,
+                });
                 counter++;
                 if (counter == 24) {
                     counter = 0;
