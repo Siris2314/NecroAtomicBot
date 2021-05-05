@@ -295,6 +295,51 @@ client.on("message", async (message) => {
 
     let deleting = false;
 
+
+
+  const splittedMsgs = message.content.split(' ');
+
+  let deleting = false;
+
+  await Promise.all(
+    splittedMsgs.map((content) => {
+      if(blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase())) deleting = true
+
+    })
+  )
+
+  if(deleting) return message.delete();
+
+  await counterSchema.findOne({ Guild: message.guild.id }, async (err, data) => {
+    if (message.channel.id !== data.Channel) return;
+
+    let number = parseInt(message.content);
+    let current = parseInt(data.Count);
+
+    if (!isNaN(number)) {
+        message.guild.channels.cache
+            .get(data.Channel)
+            .messages.fetch({ limit: 10 })
+            .then(async (messages) => {
+                if (messages.array()[0].author.id === messages.array()[1].author.id) {
+                    data.Count = 0;
+                    await data.save();
+                    message.react("❌");
+                    return message.channel.send(
+                        `${message.author.username} has messed it up, stopped at ${
+                            number - 1
+                        } ,resetting game to start at 1`
+                    );
+                } else {
+                    if (number == current + 1) {
+                        data.Count = data.Count + 1;
+                        await data.save();
+                        message.react("✅");
+                    } else {
+                        data.Count = 0;
+                        await data.save();
+                        message.react("❌");
+
     await Promise.all(
         splittedMsgs.map((content) => {
             if (blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase()))
@@ -320,10 +365,51 @@ client.on("message", async (message) => {
                         await data.save();
                         message.react("❌");
                         return message.channel.send(
+
                             `${message.author.username} has messed it up, stopped at ${
                                 number - 1
                             } ,resetting game to start at 1`
                         );
+
+                    }
+                }
+            });
+    }
+});
+
+  await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
+    if(!data) return;
+
+  if(message.channel.id !== data.Channel) return;
+
+  
+   
+  const master = await nekoyasui.search.user(message, ownerID);
+  const channel = await nekoyasui.search.channel(message, data.Channel)
+  if(!channel) return;
+	if(!(master)) console.log("Oh! noooooo.. where r u master!");
+	 const bot = {
+		name: message.client.user.username,
+		birthdate: "10/24/2001",
+		prefix: message.client.prefix,
+		gender: "Genderless",
+		description: "Omnipotent Bot",
+		country: "Latveria",
+		city: "Doomstadt"
+	};
+	const owner = {
+		id: master.id,
+		username: master.username,
+		discriminator: master.discriminator,
+		invite: ""
+	}
+  const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
+  channel.send(res.cnt);
+  })
+
+
+
+
                     } else {
                         if (number == current + 1) {
                             data.Count = data.Count + 1;
@@ -343,6 +429,7 @@ client.on("message", async (message) => {
                 });
         }
     });
+
 
     await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
         if (!data) return;
