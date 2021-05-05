@@ -330,6 +330,7 @@ client.on("message", async (message) => {
                     message.react("✅");
                 } else {
                     data.Count = 0;
+                    data.UserID = null;
                     await data.save();
                     message.react("❌");
                     message.channel.send(
