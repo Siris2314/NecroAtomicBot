@@ -305,41 +305,38 @@ client.on("message", async (message) => {
     if (deleting) return message.delete();
 
     await counterSchema.findOne({ Guild: message.guild.id }, async (err, data) => {
+        if(data == null) return;
         if (message.channel.id !== data.Channel) return;
 
         let number = parseInt(message.content);
         let current = parseInt(data.Count);
         if (!isNaN(number)) {
-            message.guild.channels.cache
-                .get(data.Channel)
-                .messages.fetch({ limit: 10 })
-                .then(async (messages) => {
-                    if (!isNaN(messages.array()[1].content)) {
-                        if (messages.array()[0].author.id === messages.array()[1].author.id) {
-                            data.Count = 0;
-                            await data.save();
-                            message.react("❌");
-                            return message.channel.send(
-                                `${message.author.username} has messed it up, stopped at ${
-                                    number - 1
-                                } ,resetting game to start at 1`
-                            );
-                        } else {
-                            if (number == current + 1) {
-                                data.Count = data.Count + 1;
-                                await data.save();
-                                message.react("✅");
-                            } else {
-                                data.Count = 0;
-                                await data.save();
-                                message.react("❌");
-                                message.channel.send(
-                                    `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`
-                                );
-                            }
-                        }
-                    }
-                });
+            if (message.author.id == data.UserID) {
+                data.Count = 0;
+                await data.save();
+                message.react("❌");
+                data.UserID = null;
+                await data.save();
+                return message.channel.send(
+                    `${message.author.username} has messed it up, stopped at ${
+                        number - 1
+                    } ,resetting game to start at 1`
+                );
+            } else {
+                if (number == current + 1) {
+                    data.Count = data.Count + 1;
+                    data.UserID = message.author.id;
+                    await data.save();
+                    message.react("✅");
+                } else {
+                    data.Count = 0;
+                    await data.save();
+                    message.react("❌");
+                    message.channel.send(
+                        `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`
+                    );
+                }
+            }
         }
     });
 
@@ -579,6 +576,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     const user = await client.users.fetch(newState.id);
     const member = newState.guild.member(user);
     await voiceSchema.findOne({ Guild: oldState.guild.id }, async (e, data) => {
+        if(data == null) return;
         if (!oldState.channel && newState.channel.id === data.Channel) {
             const channel = await newState.guild.channels.create(user.tag, {
                 type: "voice",
@@ -597,6 +595,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 client.on("messageReactionAdd", async (reaction, user) => {
     const handleStarboard = async () => {
         starboardSchema.findOne({ Guild: reaction.message.guild.id }, async (err, data) => {
+            if(data == null) return;
             const starboardchannel = data.Channel;
             const starboard = client.channels.cache.get(starboardchannel);
             const msgs = await starboard.messages.fetch({ limit: 100 });
@@ -634,6 +633,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
     };
     if (reaction.emoji.name === "⭐") {
         starboardSchema.findOne({ Guild: reaction.message.guild.id }, async (err, data) => {
+           if(data == null) return;
             const starboardchannel = data.Channel;
             const starboard = client.channels.cache.get(starboardchannel);
 
@@ -663,6 +663,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 client.on("messageReactionRemove", async (reaction, user) => {
     const handleStarboard = async () => {
         starboardSchema.findOne({ Guild: reaction.message.guild.id }, async (err, data) => {
+          if(data == null) return;
             const starboardchannel = data.Channel;
             const starboard = client.channels.cache.get(starboardchannel);
             const msgs = await starboard.messages.fetch({ limit: 100 });
@@ -682,6 +683,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
     if (reaction.emoji.name === "⭐") {
         starboardSchema.findOne({ Guild: reaction.message.guild.id }, async (err, data) => {
+          if(data == null) return;
             const starboardchannel = data.Channel;
             const starboard = client.channels.cache.get(starboardchannel);
 
