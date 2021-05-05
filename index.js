@@ -314,30 +314,29 @@ client.on("message", async (message) => {
                 .get(data.Channel)
                 .messages.fetch({ limit: 10 })
                 .then(async (messages) => {
-                    if (
-                        messages.array()[0].author.id === messages.array()[1].author.id &&
-                        !isNaN(messages.array()[0].content)
-                    ) {
-                        data.Count = 0;
-                        await data.save();
-                        message.react("❌");
-                        return message.channel.send(
-                            `${message.author.username} has messed it up, stopped at ${
-                                number - 1
-                            } ,resetting game to start at 1`
-                        );
-                    } else {
-                        if (number == current + 1) {
-                            data.Count = data.Count + 1;
-                            await data.save();
-                            message.react("✅");
-                        } else {
+                    if (!isNaN(messages.array()[1].content)) {
+                        if (messages.array()[0].author.id === messages.array()[1].author.id) {
                             data.Count = 0;
                             await data.save();
                             message.react("❌");
-                            message.channel.send(
-                                `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`
+                            return message.channel.send(
+                                `${message.author.username} has messed it up, stopped at ${
+                                    number - 1
+                                } ,resetting game to start at 1`
                             );
+                        } else {
+                            if (number == current + 1) {
+                                data.Count = data.Count + 1;
+                                await data.save();
+                                message.react("✅");
+                            } else {
+                                data.Count = 0;
+                                await data.save();
+                                message.react("❌");
+                                message.channel.send(
+                                    `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`
+                                );
+                            }
                         }
                     }
                 });
