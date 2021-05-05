@@ -111,34 +111,6 @@ music
     });
 client.music = music;
 
-client.manager = new Manager({
-    nodes: [
-        {
-            host: "localhost",
-            port: 9001,
-            password: "password123",
-        },
-    ],
-
-    send(id, payload) {
-        const guild = client.guilds.cache.get(id);
-
-        if (guild) guild.shard.send(payload);
-    },
-})
-    .on("nodeConnect", (node) => console.log(`Node ${node.options.identifier} connected`))
-    .on("nodeError", (node, error) =>
-        console.log(`Node ${node.options.identifier} had an error: ${error.message}`)
-    )
-    .on("trackStart", (player, track) => {
-        client.channels.cache.get(player.textChannel).send(`Now playing: ${track.title}`);
-    })
-    .on("queueEnd", (player) => {
-        client.channels.cache.get(player.textChannel).send("Queue has ended.");
-
-        player.destroy();
-    });
-
 const opts = {
     maxResults: 25,
     key: youtube,
@@ -297,7 +269,7 @@ client.on("message", async (message) => {
 
     await Promise.all(
         splittedMsgs.map((content) => {
-            if (blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase()))
+            if (blacklistedWords.get(message.guild.id).includes(content.toLowerCase()))
                 deleting = true;
         })
     );
@@ -310,7 +282,8 @@ client.on("message", async (message) => {
         let number = parseInt(message.content);
         let current = parseInt(data.Count);
 
-        if (!isNaN(number)) {
+        if (isNaN(number)) {
+        } else {
             message.guild.channels.cache
                 .get(data.Channel)
                 .messages.fetch({ limit: 10 })
