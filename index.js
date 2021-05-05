@@ -316,7 +316,7 @@ client.on("message", async (message) => {
                 .then(async (messages) => {
                     if (
                         messages.array()[0].author.id === messages.array()[1].author.id &&
-                        !isNaN(messages.array()[0].content)
+                        !isNaN(messages.array()[1].content)
                     ) {
                         data.Count = 0;
                         await data.save();
