@@ -333,46 +333,45 @@ client.on ('message', async (message) => {
 
   if(deleting) return message.delete();
 
-  await counterSchema.findOne({Guild: message.guild.id}, async(err, data) => {
-    
-    if(message.channel.id !== data.Channel) return;
-    
+  await counterSchema.findOne({ Guild: message.guild.id }, async (err, data) => {
+    if (message.channel.id !== data.Channel) return;
 
     let number = parseInt(message.content);
     let current = parseInt(data.Count);
 
-
-  if(isNaN(number)){
-     
-  }
-  else {
-    message.guild.channels.cache.get(data.Channel).messages.fetch({limit: 10}).then(async messages => {
-      if(messages.array()[0].author.id === messages.array()[1].author.id){
-        data.Count = 0;
-        await data.save();
-        message.react('❌');
-        return message.channel.send(`${message.author.username} has messed it up, stopped at ${number - 1} ,resetting game to start at 1`);
-        
-      }
-      else{
-        if(number == current+1) {
-
-          data.Count = data.Count + 1;
-          await data.save();
-          message.react('✅');
-        } else {
-    
-          data.Count = 0;
-          await data.save();
-          message.react('❌');
-          message.channel.send(`${message.author.username} has messed it up, stopped at ${number - 1} ,resetting game to start at 1`)
-        }
-      }
-  })
-}
-    
-
-  })
+    if (!isNaN(number)) {
+        message.guild.channels.cache
+            .get(data.Channel)
+            .messages.fetch({ limit: 10 })
+            .then(async (messages) => {
+                if (messages.array()[0].author.id === messages.array()[1].author.id) {
+                    data.Count = 0;
+                    await data.save();
+                    message.react("❌");
+                    return message.channel.send(
+                        `${message.author.username} has messed it up, stopped at ${
+                            number - 1
+                        } ,resetting game to start at 1`
+                    );
+                } else {
+                    if (number == current + 1) {
+                        data.Count = data.Count + 1;
+                        await data.save();
+                        message.react("✅");
+                    } else {
+                        data.Count = 0;
+                        await data.save();
+                        message.react("❌");
+                        message.channel.send(
+                            `${message.author.username} has messed it up, stopped at ${
+                                number - 1
+                            } ,resetting game to start at 1`
+                        );
+                    }
+                }
+            });
+    }
+});
 
   await chatschema.findOne({Guild: message.guild.id}, async(err, data) => {
     if(!data) return;
