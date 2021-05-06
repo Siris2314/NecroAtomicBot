@@ -15,7 +15,7 @@ module.exports = {
 
         const neededXp = Levels.xpFor(parseInt(user.level) + 1)
 
-        const img = "https://cdn.discordapp.com/embed/avatars/0.png";
+        const img = "https://cdn.discordapp.com/attachments/779452147326648360/803042845363011624/unknown.png";
 
         const rank = new canvacord.Rank()
             .setAvatar(target.displayAvatarURL({dynamic: false, format:'png'}))
