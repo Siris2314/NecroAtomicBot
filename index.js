@@ -49,6 +49,10 @@ const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
 const reactionSchema = require("./schemas/reaction-roles");
 const ms = require("ms");
+const { DiscordTogether } = require('discord-together');
+client.discordTogether = new DiscordTogether(client, {
+    token: token
+});
 const countSchema = require("./schemas/member-count");
 const { Manager } = require("erela.js");
 const antijoin = new Discord.Collection();
