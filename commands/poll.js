@@ -20,7 +20,7 @@ async execute(message,args,client){
   const e = new Discord.MessageEmbed()
   .setTitle('Poll')
   .setDescription( `${question}`)
-  .addField('Author: ', message.author)
+  .setFooter('Author: ', message.author)
   .setColor('RANDOM')
   let msg = await pollChannel.send(e)
   await msg.react('👍')
