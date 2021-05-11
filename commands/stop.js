@@ -9,5 +9,6 @@ module.exports = {
         if(!message.member.voice.channel) return message.channel.send('Cannot use command when not in VC')
 
         client.music.stop(message);
+        message.channel.send('Music has stopped playing')
     }
 }

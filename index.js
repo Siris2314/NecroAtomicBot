@@ -6,6 +6,7 @@ const nekoyasui = require("nekoyasui");
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const ownerID = process.env.ownerid;
+const {format} = require('./functions2')
 const counterSchema = require("./schemas/count");
 const key1 = process.env.key1;
 const Discord = require("discord.js");
@@ -40,7 +41,15 @@ client.modlogs = async function ({ Member, Action, Color, Reason }, message) {
 
 const search = require("youtube-search");
 const DisTube = require("distube");
-const music = new DisTube(client, { leaveOnEmpty: true, leaveOnStop: true });
+const music = new DisTube(client,  { searchSongs: false,
+    emitNewSongOnly: false,
+    highWaterMark: 1024*1024*64,
+    leaveOnEmpty: true,
+    leaveOnFinish: true,
+    leaveOnStop: true,
+    // youtubeCookie --> prevents ERRORCODE: "429"
+    youtubeDL: true,
+    updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
 const { getPokemon } = require("./commands/pokemon");
 client.snipes = new Map();
@@ -81,7 +90,7 @@ music
         message.channel.send(embed);
     })
     .on("addSong", (message, queue, song) =>
-        message.channel.send(`Added ${song.name} - \`${song.formattedDuration}\` to the queue`)
+        message.channel.send(`Added ${song.name} - \`${format(queue.duration*1000)}\` to the queue`)
     )
     .on("addList", (message, queue, playlist) => {
         message.channel.send(

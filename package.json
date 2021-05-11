@@ -66,6 +66,7 @@
     "save": "^2.4.0",
     "scraper-instagram": "^1.0.17",
     "sourcebin": "^4.1.3",
+    "spotify-url-info": "^2.2.0",
     "sqlite3": "^5.0.2",
     "twemoji-parser": "^13.0.0",
     "weather-js": "^2.0.0",

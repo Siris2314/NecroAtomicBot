@@ -17,6 +17,7 @@ module.exports = {
 
 
         const queueEmbed = new MessageEmbed()
+         .setTitle(`Queue for ${message.guild.name}`)
          .setColor("RANDOM")
          .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
          .setTitle('Current Queue')
