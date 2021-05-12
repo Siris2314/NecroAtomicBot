@@ -1,5 +1,4 @@
 const {Client, Message, MessageEmbed} = require('discord.js');
-const { getTracks, getPreview } = require("spotify-url-info")
 
 module.exports = {
     name: 'play',
@@ -9,23 +8,13 @@ module.exports = {
 
         if(!message.member.voice.channel) return message.channel.send('Cannot use command when not in VC')
 
-        if(!args.join(" ")) return message.channel.send('Please enter a song name')
+        const query = args.join(" ");
+        if(!query) return message.channel.send('Please enter a song name')
+
+
+        client.music.play(message,query)
         
-        if(args.join(" ").toLowerCase().includes("spotify") && (args.join(" ").toLowerCase().includes("track"))){
-            getPreview(args.join(" ")).then(result => {
-              client.music.play(message, result.track);
-            })
-          }
-          else if(args.join(" ").toLowerCase().includes("spotify") && args.join(" ").toLowerCase().includes("playlist")){
-            getTracks(args.join(" ")).then(result => {
-              for(const song of result){
-               client.music.play(message, song.name);
-              }
-            })
-          }
-          else{
-            client.music.play(message,args.join(" "));
-          }
+      
 
         
 

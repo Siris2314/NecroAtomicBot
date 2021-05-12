@@ -8,7 +8,9 @@ module.exports = {
     async execute(message,args,client){
         if(!message.member.voice.channel) return message.channel.send('Cannot use command when not in VC')
 
+        message.member.voice.channel.leave();
+        
+
         client.music.stop(message);
-        message.channel.send('Music has stopped playing')
     }
 }

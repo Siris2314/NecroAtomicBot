@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
+    "@distube/spotify": "^0.2.0",
     "@iamtraction/google-translate": "^1.1.2",
     "@reconlx/discord.js": "^1.1.101",
     "aki-api": "^5.2.1",
@@ -30,7 +31,7 @@
     "discord-ytdl-core": "^5.0.2",
     "discord.js": "^12.5.3",
     "discord.js-pagination": "^1.0.3",
-    "distube": "^2.8.12",
+    "distube": "^3.0.0-beta.11",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
     "erela.js": "^2.3.3",
