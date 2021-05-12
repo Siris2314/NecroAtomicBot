@@ -6,6 +6,7 @@ const nekoyasui = require("nekoyasui");
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const ownerID = process.env.ownerid;
+const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
 const counterSchema = require("./schemas/count");
 const key1 = process.env.key1;
@@ -41,12 +42,13 @@ client.modlogs = async function ({ Member, Action, Color, Reason }, message) {
 
 const search = require("youtube-search");
 const DisTube = require("distube");
-const music = new DisTube(client,  { searchSongs: false,
+const music = new DisTube(client,  { searchSongs: 0,
     emitNewSongOnly: false,
     highWaterMark: 1024*1024*64,
-    leaveOnEmpty: true,
-    leaveOnFinish: true,
+    leaveOnEmpty: false,
+    leaveOnFinish: false,
     leaveOnStop: true,
+    plugins: [new SpotifyPlugin({ parallel: true })],
     // youtubeCookie --> prevents ERRORCODE: "429"
     youtubeDL: true,
     updateYouTubeDL: true, });
@@ -78,49 +80,62 @@ const status = (queue) =>
         queue.repeatMode ? (queue.repeatMode == 2 ? "Server Queue" : "This Song") : "Off"
     }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
 music
-    .on("playSong", (message, queue, song) => {
+    .on("connect", (queue) => {
+        queue.textChannel.send(`Connected to ${queue.voiceChannel}`)
+    })
+    .on("disconnect", (queue) => {
+        queue.textChannel.send(`Disconnected from ${queue.voiceChannel}`)
+    })
+    .on("playSong", (queue, song) => {
         const embed = new Discord.MessageEmbed()
             .setDescription(
-                `Playing: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(
+                `Playing: :notes: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(
                     queue
                 )}`
             )
             .setColor("RANDOM")
             .setThumbnail(song.thumbnail);
-        message.channel.send(embed);
+        queue.textChannel.send(embed);
     })
-    .on("addSong", (message, queue, song) =>
-        message.channel.send(`Added ${song.name} - \`${format(queue.duration*1000)}\` to the queue`)
-    )
-    .on("addList", (message, queue, playlist) => {
-        message.channel.send(
+    .on("addSong", (queue, song) => {
+        const embed = new Discord.MessageEmbed()
+            .setDescription(
+                    `Added: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(
+                            queue
+                )} to the queue`
+             )
+            .setColor("RANDOM")
+            .setThumbnail(song.thumbnail);
+        queue.textChannel.send(embed);
+    })
+    .on("addList", (queue, playlist) => {
+        queue.textChannel.send(
             `Added \`${playlist.name}\` playlist (${
                 playlist.songs.length
             } songs) to queue\n${status(queue)}`
         );
     })
-    .on("playList", (message, queue, playlist, song) => {
+    .on("playList", (queue, playlist) => {
         const embed = new Discord.MessageEmbed()
             .setDescription(
                 `Play \`${playlist.name}\` playlist (${
                     playlist.songs.length
-                } songs).\nRequested by: ${song.user}\nNow playing \`${song.name}\` - \`${
-                    song.formattedDuration
+                } 
                 }\`\n${status(queue)}`
             )
             .setColor("RANDOM")
             .setThumbnail(song.thumbnail);
-        message.channel.send(embed);
+        queue.textChannel.send(embed);
     })
     .on("initQueue", (queue) => {
         queue.autoplay = false;
         queue.volume = 100;
     })
-    .on("empty", (message) => {
-        message.channel.send("Channel is empty. Leaving the channel");
+    .on("empty", (queue) => {
+        (queue.textChannel.send("Channel is empty. Leaving the channel"))
     })
-    .on("error", (message, error) => {
-        message.channel.send(`An error has occured ${error}`);
+    .on("error", (channel, error) => {
+        channel.send(`An error has occured ${error}`);
     });
 client.music = music;
 
