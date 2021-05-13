@@ -12,6 +12,15 @@ module.exports = {
 
         const query = args[0];
 
+        const queue = client.music.getQueue(message);
+        
+        if(!queue){
+            const embed = new MessageEmbed()
+              .setTitle(`:x: **Queue Error**`)
+              .setDescription('No Queue Currently Exists')
+          return message.channel.send(embed)
+        }
+
         if(query == 'single'){
             client.music.setRepeatMode(message, 1);
             const repeatEmbed = new MessageEmbed()
