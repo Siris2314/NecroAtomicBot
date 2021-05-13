@@ -11,6 +11,12 @@ module.exports = {
         if(!message.member.voice.channel) return message.channel.send('Cannot use command when not in VC')
         let queue = client.music.getQueue(message);
 
+        if(!queue){
+            const embed = new MessageEmbed()
+              .setTitle(`:x: **Queue Error**`)
+              .setDescription('No Queue Currently Exists')
+          return message.channel.send(embed)
+        }
         let fullqueue =  queue.songs.map((song, id) =>
         `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
         ).join("\n");
