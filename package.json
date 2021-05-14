@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
-    "@distube/spotify": "^0.2.0",
+    "@distube/spotify": "^0.3.0",
     "@iamtraction/google-translate": "^1.1.2",
     "@ksoft/api": "^3.1.9",
     "@reconlx/discord.js": "^1.1.101",
@@ -77,7 +77,7 @@
     "weky": "^1.4.1",
     "youtube-search": "^1.1.6",
     "youtube-sr": "^4.0.3",
-    "ytdl-core": "^4.7.0",
+    "ytdl-core": "^4.8.0",
     "ytsr": "^3.4.0"
   },
   "scripts": {
