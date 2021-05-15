@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const nekoyasui = require("nekoyasui");
 const youtube = process.env.youtube;
 const botname = process.env.botname;
+const colors = require('colors');
+const logger = require('./logger')
 const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
@@ -66,7 +68,6 @@ client.discordTogether = new DiscordTogether(client, {
     token: token
 });
 const countSchema = require("./schemas/member-count");
-const { Manager } = require("erela.js");
 const antijoin = new Discord.Collection();
 const blacklistedWords = new Discord.Collection();
 const { chatBot } = require("reconlx");
@@ -140,34 +141,6 @@ music
     });
 client.music = music;
 
-client.manager = new Manager({
-    nodes: [
-        {
-            host: "localhost",
-            port: 9001,
-            password: "password123",
-        },
-    ],
-
-    send(id, payload) {
-        const guild = client.guilds.cache.get(id);
-
-        if (guild) guild.shard.send(payload);
-    },
-})
-    .on("nodeConnect", (node) => console.log(`Node ${node.options.identifier} connected`))
-    .on("nodeError", (node, error) =>
-        console.log(`Node ${node.options.identifier} had an error: ${error.message}`)
-    )
-    .on("trackStart", (player, track) => {
-        client.channels.cache.get(player.textChannel).send(`Now playing: ${track.title}`);
-    })
-    .on("queueEnd", (player) => {
-        client.channels.cache.get(player.textChannel).send("Queue has ended.");
-
-        player.destroy();
-    });
-
 const opts = {
     maxResults: 25,
     key: youtube,
@@ -198,7 +171,7 @@ function embedbuilder(client, message, color, title, description) {
 client.on("ready", async () => {
     console.log(botname);
     console.log("Heroku Connected");
-    client.manager.init(client.user.id);
+
 
     await mongoose
         .connect(mongoPath, {
@@ -247,7 +220,6 @@ client.on("ready", async () => {
     }, 5000);
 });
 
-client.on("raw", (d) => client.manager.updateVoiceState(d));
 
 client.once("disconnect", () => {
     console.log("Disconnect");
@@ -750,4 +722,5 @@ client.on("messageReactionRemove", async (reaction, user) => {
     });
 });
 
+logger(client);
 client.login(token);
