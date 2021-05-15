@@ -20,11 +20,12 @@ const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
 });
 const fs = require("fs");
-// const db = require('./reconDB.js')
 const { GiveawaysManager } = require("discord-giveaways");
 const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
+const glob = require("glob");
+
 Levels.setURL(mongoPath);
 client.modlogs = async function ({ Member, Action, Color, Reason }, message) {
     const data = await modlogsSchema.findOne({ Guild: message.guild.id });
@@ -53,7 +54,7 @@ const music = new DisTube(client,  { searchSongs: 0,
     youtubeDL: true,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
-const { getPokemon } = require("./commands/pokemon");
+const { getPokemon } = require("./commands/fun/pokemon");
 client.snipes = new Map();
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
@@ -185,8 +186,6 @@ client.giveawaysManager = new GiveawaysManager(client, {
     },
 });
 
-const commandFiles = fs.readdirSync("./commands").filter((file) => file.endsWith(".js"));
-
 function embedbuilder(client, message, color, title, description) {
     let embed = new Discord.MessageEmbed()
         .setColor(color)
@@ -254,10 +253,7 @@ client.once("disconnect", () => {
     console.log("Disconnect");
 });
 
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
-}
+
 
 client.on("message", async (message) => {
     if (!message.guild || message.author.bot) {
@@ -499,24 +495,39 @@ client.on("message", async (message) => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
+    var getDirectories = function (src, callback) {
+        glob(src + '/**/*', callback);
+    };
+    getDirectories('./commands', function (err, res) {
+    if (err) {
+        console.log(err);
+    } else {
+        var commandFiles = [];
+        commandFiles = res.filter((v, i) => v.endsWith(".js"));
+        for (const file of commandFiles) {
+            const command = require(file);
+            client.commands.set(command.name, command);
+        }
+        if (!client.commands.has(command)) {
+            return;
+        }
+        try {
+            client.commands.get(command).execute(message, args, client);
+        } catch (error) {
+            console.error(error);
+            message.reply("Issue loading command");
+        }
 
-    if (!client.commands.has(command)) {
-        return;
-    }
-    try {
-        client.commands.get(command).execute(message, args, client);
-    } catch (error) {
-        console.error(error);
-        message.reply("Issue loading command");
-    }
+        if (command) {
+            const channel = client.channels.cache.get("800421170301501470");
 
-    if (command) {
-        const channel = client.channels.cache.get("800421170301501470");
-
-        channel.send(
-            `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
-        );
+            channel.send(
+                `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
+            );
+        }
     }
+    });
+
 });
 
 client.on("guildMemberAdd", async (member) => {
