@@ -32,18 +32,6 @@ module.exports = {
     
     member.ban();
 
-    client.modlogs({
-      Member: member,
-      Action: 'Ban',
-      Color:"RED",
-      Reason: reason,
-
-
-
-    },
-    message
-    
-  );
 
     
     return message.channel.send(embed)
