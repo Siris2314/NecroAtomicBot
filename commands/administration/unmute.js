@@ -13,18 +13,6 @@ module.exports = {
 
         await Member.roles.remove(role)
 
-        client.modlogs({
-            Member: Member,
-            Action: 'Unmute',
-            Color:"RED",
-            Reason: "Reason",
-        
-        
-        
-          },
-          message
-          
-        );
 
         message.channel.send(`${Member.displayName} has been unmuted`)
     }

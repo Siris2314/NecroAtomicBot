@@ -29,19 +29,6 @@ const Levels = require("discord-xp");
 const glob = require("glob");
 
 Levels.setURL(mongoPath);
-client.modlogs = async function ({ Member, Action, Color, Reason }, message) {
-    const data = await modlogsSchema.findOne({ Guild: message.guild.id });
-    if (!data) return;
-
-    const channel = message.guild.channels.cache.get(data.Channel);
-    const logsEmbed = new Discord.MessageEmbed()
-        .setColor(Color)
-        .setDescription(`Reason: ${Reason} || 'No Reason!`)
-        .setThumbnail(Member.user.displayAvatarURL())
-        .addField("Member", `${Member.user.tag} (${Member.id})`)
-        .setTitle(`Action Took: ${Action}`);
-    channel.send(logsEmbed);
-};
 
 const search = require("youtube-search");
 const DisTube = require("distube");

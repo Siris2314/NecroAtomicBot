@@ -33,18 +33,7 @@ module.exports = {
    member.kick()
 
 
-   client.modlogs({
-    Member: member,
-    Action: 'Kick',
-    Color:"RED",
-    Reason: reason,
 
-
-
-  },
-  message
-  
-);
 
 
     return message.channel.send(kickembed);

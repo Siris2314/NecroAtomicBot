@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-// const Schema = require('./schemas/modlogs')
+const Schema = require('./schemas/modlogs')
 const auditid = '798702099273482241';
 module.exports = c => {
     console.log("Loaded Logger Module".green)
@@ -26,7 +26,9 @@ module.exports = c => {
 async function send_log(client, guild,color, title, description,thumb){
 
     try{
-     
+     await Schema.findOne({Guild:guild.id}, async(err, data) => {
+        if(!data) return;
+        const auditchannel = data.Channel;
         const logembed = new Discord.MessageEmbed()
             .setColor(color ? color: "RANDOM")
             .setDescription(description ? description.substr(0,2048) : "\u200b")
@@ -35,8 +37,7 @@ async function send_log(client, guild,color, title, description,thumb){
             .setTimestamp()
             .setFooter(guild.name,guild.iconURL({format: "png"}))
 
-        const logger = await client.channels.cache.get(auditid);
-        console.log(client.user.username)
+        const logger = await client.channels.cache.get(auditchannel);
         logger.createWebhook(client.user.username, {
             avatar: client.user.displayAvatarURL({format:'png'})
         }).then(webhook => {
@@ -48,6 +49,9 @@ async function send_log(client, guild,color, title, description,thumb){
                 .then(msg => webhook.delete().catch(e => console.log(String(e.stack).yellow)))
                   .catch(e=> console.log(String(e.stack).yellow))
             })
+
+
+    })
         
         
     }catch(e){
