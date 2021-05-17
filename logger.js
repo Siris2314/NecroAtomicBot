@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const Schema = require('./schemas/modlogs')
-const auditid = '798702099273482241';
 module.exports = c => {
     console.log("Loaded Logger Module".green)
     try{
@@ -95,19 +94,75 @@ module.exports = c => {
             send_log(c, member.guild, "RED","Member LEFT",`Member: ${member.user} \n(\`${member.user.id}\`) \n(\`${member.user.tag}\`)`, member.user.displayAvatarURL({dynamic: true}))
         })
         c.on("guildMembersChunk", function(members, guild){
-            send_logs(c, guild, "RED", `MEMBER RAID BAN, ${members.length} USERS BANNED`, members.map((user, index) => `${index}) - ${user} - ${user.tag} - ${user.id}`),
+            send_log(c, guild, "RED", `MEMBER RAID BAN, ${members.length} USERS BANNED`, members.map((user, index) => `${index}) - ${user} - ${user.tag} - ${user.id}`),
             )
 
         })
-        // c.on("guildMemberUpdate", function(oldMember, newMember){
-        //     let options = {}
+        c.on("guildMemberUpdate", function(oldMember, newMember){
+            let options = {}
 
-        //     if(options[newMember.guildid]){
-        //         options = options[newMember.guild.id]
-        //     }
+            if(options[newMember.guildid]){
+                options = options[newMember.guild.id]
+            }
 
-        //     if(typeof options.excludedroles === "undefined") options.excludedroles = new 
-        // })
+            if(typeof options.excludedroles === "undefined") options.excludedroles = new Array([])
+            if(typeof options.trackroles === "undefined") options.trackroles = true
+            const oldMemberRoles = oldMember.roles.cache.keyArray()
+            const newMemberRoles = newMember.roles.cache.keyArray()
+            const oldRoles = oldMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !newMemberRoles.includes(x))
+            const newRoles = newMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !oldMemberRoles.includes(x))
+            const rolechanged = (newRoles.length || oldRoles.length);
+
+            if(rolechanged){
+                let roleadded = ""
+                if(newRoles.length > 0){
+                    for(let i = 0; i<newRoles.length; i++){
+                        if(i > 0) roleadded += ", "
+                        roleadded += `<@&${newRoles[i]}>`
+
+                    }
+                }
+                let roleremoved = ""
+                if(oldRoles.length > 0){
+                    for(let i = 0; i<oldRoles.length; i++){
+                        if(i > 0) roleremoved += ", "
+                        roleremoved += `<@&${oldRoles[i]}>`
+
+                    }
+                }
+                let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
+                send_log(c, oldMember.guild,`${roleadded ? "GREEN" : "RED"}`, "Member Roles Changed",`Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`)
+
+            }
+        })
+        c.on("messageDelete", function(message){
+           
+                if(message.author.bot) return;
+                if(message.channel.type != "text") return;
+
+                send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",
+                `**Author :** <@${message.author.id}> - *${message.author.tag}*
+                **Date : ** ${message.createdAt}
+                **Channel : ** <#${message.channel.id}> - *${message.channel.name}*
+                **Deleted Message : ** ${message.content.replace(/`/g, "'")}
+                **Attachment URL : ** ${message.attachments.map(x => x.proxyURL)}`)
+
+                
+            
+        })
+        c.on("messageDeleteBulk", function(messages){
+            send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel}`)
+        })
+        c.on("messageUpdate", function(oldMessage, newMessage){
+            if(oldMessage.author.bot) return;
+            
+            if(oldMessage.channel.type !== "text") return;
+            if(newMessage.channel.type !== "text") return;
+
+            if(oldMessage.content === newMessage.content) return;
+            send_log(c, oldMessage.guild, "YELLOW", "MESSAGE UPDATED", `**Author : ** `)
+
+        })
 
 
 
