@@ -59,6 +59,7 @@
     "node-superfetch": "^0.1.11",
     "numeral": "^2.0.6",
     "path": "^0.12.7",
+    "patience-diff": "^0.0.2",
     "pokedex-promise-v2": "^3.3.0",
     "querystring": "^0.2.1",
     "random-puppy": "^1.1.0",

@@ -158,11 +158,60 @@ module.exports = c => {
             
             if(oldMessage.channel.type !== "text") return;
             if(newMessage.channel.type !== "text") return;
+        
+         
 
             if(oldMessage.content === newMessage.content) return;
-            send_log(c, oldMessage.guild, "YELLOW", "MESSAGE UPDATED", `**Author : ** `)
+            send_log(c, oldMessage.guild, "YELLOW", "MESSAGE UPDATED", `**Author : ** <@${newMessage.member.user.id}> - *${newMessage.member.user.tag}*
+            **Date : ** ${newMessage.createdAt}
+            **Channel : ** <#${newMessage.channel.id}> - *${newMessage.channel.name}*
+            **Original Message : ** 
+            \`\`\`
+            ${oldMessage.content.replace(/`/g, "'")} \`\`\`}
+            **Updated Message : ** 
+            \`\`\`
+            ${newMessage.content.replace(/`/g, "'")} \`\`\`}`)
 
         })
+        c.on("roleCreate", function(role) {
+            send_log(c, role.guild, "GREEN", "ROLE CREATED",
+            `ROLE: ${role}\nROLENAME: ${role.name}\nCOLOR: ${role.hexColor}\n POSITION: ${role.position}`)
+        })
+        c.on("roleDelete", function(role){
+            send_log(c, role.guild, "RED", "ROLE DELETED",
+            `ROLE: ${role}\nROLENAME: ${role.name}\nROLEID: ${role.id}\nCOLOR: ${role.hexColor}\n POSITION: ${role.position}`)
+
+        })
+        c.on("roleUpdate", function(oldRole, newRole){
+            if(oldRole.name !== newRole.name){
+                send_log(c, oldRole.guild, "ORANGE","ROLE NAME CHANGED", `__ROLE: ${oldRole}__ \n\n **Before:** \`${oldRole.name}\ 
+                **After:** \`${newRole.name}\
+                **Role ID:** \`${newRole.id}\``)
+            }
+            else if(oldColor.color !== newRole.color){
+                send_log(c, oldRole.guild, "ORANGE","ROLE COLOR CHANGED", `__ROLE: ${oldRole}__ \n\n **Before:** \`${oldRole.color.toString(16)}\ 
+                **After:** \`${newRole.color.toString(16)}\
+                **Role ID:** \`${newRole.id}\``)
+
+            }
+            else{
+                send_log(c, oldRole.guild,"RED" ,"ROLE PERMS CHANGED",
+                `__ROLE: ${newRole}__ \n **THE PERMISSIONS CHANGED PLEASE CHECK**\n **Role ID: \`${newRole.id}\``)
+            }
+        })
+        c.on("voiceStateUpdate", function(oldState, newState){
+        
+            if(oldState.channel == null && newState.channel){
+                send_log(c, oldState.guild, "BLUE", `Member connected to VC`, `${newState.member} has connected to ${newState.channel}`)
+            }
+            else if(newState.channelID == null){
+                send_log(c, oldState.guild, "RED", `Member disconnected from VC`, `${oldState.member} has disconnected from ${oldState.channel}`)
+            }
+    
+        })
+
+        
+
 
 
 
