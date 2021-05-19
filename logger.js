@@ -137,7 +137,7 @@ module.exports = c => {
         })
         c.on("messageDelete", function(message){
            
-                if(message.author.bot) return;
+                if(message.author.bot || message.author == null) return;
                 if(message.channel.type != "text") return;
 
                 send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",
@@ -154,7 +154,7 @@ module.exports = c => {
             send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel}`)
         })
         c.on("messageUpdate", function(oldMessage, newMessage){
-            if(oldMessage.author.bot) return;
+            if(oldMessage.author.bot || oldMessage.author == null) return;
             
             if(oldMessage.channel.type !== "text") return;
             if(newMessage.channel.type !== "text") return;
@@ -203,6 +203,9 @@ module.exports = c => {
         
             if(oldState.channel == null && newState.channel){
                 send_log(c, oldState.guild, "BLUE", `Member connected to VC`, `${newState.member} has connected to ${newState.channel}`)
+            }
+            else if(oldState.channel !== newState.channel && (newState.channelID !== null)){
+                send_log(c, oldState.guild, "BLUE", `Member has switched voice channels`,`${newState.member} switched from ${oldState.channel} => ${newState.channel}`)
             }
             else if(newState.channelID == null){
                 send_log(c, oldState.guild, "RED", `Member disconnected from VC`, `${oldState.member} has disconnected from ${oldState.channel}`)
