@@ -137,7 +137,7 @@ module.exports = c => {
         })
         c.on("messageDelete", function(message){
            
-                if(message.author.bot || message.author == null) return;
+                if(message.author == null) return;
                 if(message.channel.type != "text") return;
 
                 send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",
@@ -154,7 +154,7 @@ module.exports = c => {
             send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel}`)
         })
         c.on("messageUpdate", function(oldMessage, newMessage){
-            if(oldMessage.author.bot || oldMessage.author == null) return;
+            if(oldMessage.author == null) return;
             
             if(oldMessage.channel.type !== "text") return;
             if(newMessage.channel.type !== "text") return;
@@ -188,7 +188,7 @@ module.exports = c => {
                 **After:** \`${newRole.name}\
                 **Role ID:** \`${newRole.id}\``)
             }
-            else if(oldColor.color !== newRole.color){
+            else if(oldRole.color !== newRole.color){
                 send_log(c, oldRole.guild, "ORANGE","ROLE COLOR CHANGED", `__ROLE: ${oldRole}__ \n\n **Before:** \`${oldRole.color.toString(16)}\ 
                 **After:** \`${newRole.color.toString(16)}\
                 **Role ID:** \`${newRole.id}\``)
