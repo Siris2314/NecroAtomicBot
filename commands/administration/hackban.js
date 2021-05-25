@@ -17,6 +17,19 @@ module.exports = {
         const member = await client.users.fetch(id);
         message.guild.members.ban(member.id);
 
-        message.channel.send(`Member ${member.username} has been banned`)
+        const banEmbed = new MessageEmbed()
+        .setTitle('Banned Member(Outside of Server Ban)!')
+        .setDescription(`${member} was successfully banned.`)
+        .addField('Moderator', message.member, true)
+        .addField('Member', member, true)
+        .setColor("RANDOM")
+        .addField('Reason', reason)
+        .setFooter(message.member.displayName, message.author.displayAvatarURL({
+            dynamic: true
+        }))
+        .setTimestamp()
+
+    
+        return message.channel.send(banEmbed);
     }
 }
