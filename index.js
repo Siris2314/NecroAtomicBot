@@ -55,6 +55,8 @@ client.discordTogether = new DiscordTogether(client, {
     token: token
 });
 const countSchema = require("./schemas/member-count");
+const blacklistserver = require("./schemas/blacklist-server")
+const inviteschema = require("./schemas/anti-invite")
 const antijoin = new Discord.Collection();
 const blacklistedWords = new Discord.Collection();
 const { chatBot } = require("reconlx");
@@ -274,6 +276,29 @@ client.on("message", async (message) => {
     const randomXP = Math.floor(Math.random() * 29) + 1;
     const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP);
 
+    await inviteschema.findOne({Server: message.guild.id}, async(err, data) => {
+        if(!data) return;
+        if(data.Server === message.guild.id){
+            
+            const InviteLinks = ['discord.gg/','discord.com/invite/','discordapp.com/invite/']
+    
+            if(InviteLinks.some(link => message.content.toLowerCase().includes(link))){
+                const UserCode = message.content.split('discord.gg/' || 'discord.com/invite/' || 'discordapp.com/invite/')[1]
+                message.guild.fetchInvites().then(invites => {
+                    let InviteArray = []
+                    for(let inviteCode of invites){
+                        InviteArray.push(inviteCode[0])
+    
+                    }
+                    if(!InviteArray.includes(UserCode)){
+                        message.delete()
+                        return message.channel.send("Please do not send links to other servers")
+                    }
+                })
+            }
+        }
+    })
+
     const splittedMsgs = message.content.split(" ");
 
     let deleting = false;
@@ -452,12 +477,13 @@ client.on("message", async (message) => {
         }
     }
 
+
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
     var getDirectories = function (src, callback) {
         glob(src + '/**/*', callback);
     };
-    getDirectories('./commands', function (err, res) {
+    getDirectories('./commands', async function (err, res) {
     if (err) {
         console.log(err);
     } else {
@@ -478,6 +504,9 @@ client.on("message", async (message) => {
         }
 
         if (command) {
+            const blacklisted = await blacklistserver.findOne({Server: message.guild.id})
+
+            if(blacklisted) return message.channel.send("Cannot use commands as owner has blacklisted this server")
             const channel = client.channels.cache.get("800421170301501470");
 
             channel.send(
