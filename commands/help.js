@@ -1,14 +1,27 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
 require("dotenv").config();
+const schema = require('../schemas/Guilds')
 const token = process.env.token;
-const prefix = process.env.prefix;
+let prefix = process.env.prefix;
 const paginationEmbed = require("discord.js-pagination");
 
 module.exports = {
     name: "help",
     description: "Shows all available bot commands.",
     async execute(message, args, client) {
+
+        await schema.findOne({guildID:message.guild.id}, async(err,data)=>{
+            if(!data){
+                prefix = process.env.prefix;
+            } else{
+                prefix = data.prefix
+            }
+
+        
+        })
+
+
         const roleColor =
             message.guild.me.displayHexColor === "#000000"
                 ? "#ffffff"
@@ -50,8 +63,8 @@ module.exports = {
                                 value: "```" + prefix + " help owner```",
                             },
                             {
-                                name: "🛠 Tools",
-                                value: "```" + prefix + " help tools```",
+                                name: "🛠 Utility",
+                                value: "```" + prefix + " help utility```",
                             },
                             {
                                 name: "✂ Work in Progress",
@@ -160,7 +173,7 @@ module.exports = {
                     "USAGE:",
                     command.usage
                         ? `\`${prefix}${command.name} ${command.usage}\``
-                        : `\`${prefix}${command.name}\``
+                        : `\`${prefix} ${command.name}\``
                 )
                 .addField(
                     "DESCRIPTION:",
