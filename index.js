@@ -54,6 +54,7 @@ const { DiscordTogether } = require('discord-together');
 client.discordTogether = new DiscordTogether(client, {
     token: token
 });
+const disbut = require('discord-buttons')(client);
 const countSchema = require("./schemas/member-count");
 const blacklistserver = require("./schemas/blacklist-server")
 const inviteschema = require("./schemas/anti-invite")
