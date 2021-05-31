@@ -9,22 +9,27 @@ module.exports = {
     async execute(message,args,client){
 
  
-
-        const user = message.mentions.users.first()
-        if(!user){
-            return message.channel.send('Please mention a user to fight')
-        }
-        
-        const game = new fight({
-            client:client,
+   try{
+    const opponent = message.mentions.users.first();
+    if (!opponent) return message.channel.send(`Please mention who you want to fight`);
+    
+        const x = new fight({
+            client: client,
             message: message,
-            acceptMessage: 'Click to fight with ' + message.author.username,
+            acceptMessage: 'Click to fight with <@' + message.author + '>',
             challenger: message.author,
-            opponent: user
-        })
-
-       
-        game.start();
+            opponent: message.mentions.users.first(),
+            hitButtonText: 'HIT',
+            hitButtonColor: 'red',
+            healButtonText: 'HEAL',
+            healButtonColor:  'green',
+            cancelButtonText: 'CANCEL',
+            cancelButtonColor: 'blurple',
+    })
+        x.start()
+} catch(err){
+    return message.channel.send(`User ${opponent} has failed to accept the fight`)
+}
      
     }
 }
