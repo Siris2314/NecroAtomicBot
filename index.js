@@ -17,7 +17,6 @@ const path = require("path");
 const starboardSchema = require("./schemas/starboard");
 const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
-const { registerFont, createCanvas, loadImage } = require("canvas");
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
 });
@@ -522,52 +521,27 @@ client.on("message", async (message) => {
 client.on("guildMemberAdd", async (member) => {
     Schema.findOne({ Guild: member.guild.id }, async (e, data) => {
         if (!data) return;
+        const user = member.user;
+        const image = await new canvas.Welcome()
+            .setUsername(user.username)
+            .setDiscriminator(user.discriminator)
+            .setMemberCount(member.guild.memberCount)
+            .setGuildName(member.guild.name)
+            .setAvatar(user.displayAvatarURL({format: 'png'}))
+            .setColor("border", "#08D9FB")
+            .setColor("username-box", "#2063E9")
+            .setColor("discriminator-box", "#2063E9")
+            .setColor("message-box", "#2063E9")
+            .setColor("title", "#2063E9")
+            .setColor("avatar", "#2063E9")
+            .setBackground("./background.jpg")
+            .toAttachment();
+ 
+    const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
+    const channel = member.guild.channels.cache.get(data.Channel); 
+ 
+    channel.send(attachment);
 
-        const channel = member.guild.channels.cache.get(data.Channel);
-        const fontName = "sans-serif";
-        const fontColor = "#ffffff";
-        let bannerPath = "./background.jpg";
-        if (member.guild.id == "798700075517870120") {
-            bannerPath = "./banner.png";
-        }
-        const bannerWidth = 2134;
-        const bannerHeight = 834;
-        const scale = 2;
-        const userLabel = `Hey, ${member.displayName}`;
-
-        const memberLabel = `${member.guild.memberCount}TH MEMBER!`;
-        const userLabelFontSize = 54 * scale;
-        const memberLabelFontSize = 34 * scale;
-
-        // registerFont(fontPath, { family: fontName })
-
-        const canvas = createCanvas(bannerWidth, bannerHeight);
-        const ctx = canvas.getContext("2d");
-
-        const banner = await loadImage(bannerPath);
-        const avatar = await loadImage(member.user.displayAvatarURL({ format: "jpg" }));
-
-        ctx.drawImage(banner, 0, 0);
-
-        ctx.fillStyle = fontColor;
-
-        ctx.font = `${userLabelFontSize}px "${fontName}"`;
-        ctx.fillText(userLabel, 392 * scale, 144 * scale);
-
-        ctx.font = `${memberLabelFontSize}px "${fontName}"`;
-        ctx.fillText(memberLabel, 400 * scale, 344 * scale);
-        ctx.beginPath();
-
-        ctx.arc(45 * scale + 280, 68 * scale + 280, 280, 0, Math.PI * 2, true);
-
-        ctx.closePath();
-
-        ctx.clip();
-
-        ctx.drawImage(avatar, 45 * scale, 68 * scale, 280 * scale, 280 * scale);
-
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "welcome-image.png");
-        channel.send(attachment);
     });
 
     const getCollection = antijoin.get(member.guild.id);
