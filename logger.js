@@ -231,7 +231,6 @@ async function send_log(client, guild,color, title, description,thumb){
     try{
      await Schema.findOne({Guild:guild.id}, async(err, data) => {
         if(!data) return;
-        const auditchannel = data.Channel;
         const logembed = new Discord.MessageEmbed()
             .setColor(color ? color: "RANDOM")
             .setDescription(description ? description.substr(0,2048) : "\u200b")
@@ -239,8 +238,9 @@ async function send_log(client, guild,color, title, description,thumb){
             .setThumbnail(thumb ? thumb: guild.iconURL({format: "png"}))
             .setTimestamp()
             .setFooter(guild.name,guild.iconURL({format: "png"}))
-
-        const logger = await client.channels.cache.get(auditchannel);
+        
+        if(!data.Channel) return;
+        const logger = await client.channels.cache.get(data.Channel);
         logger.createWebhook(client.user.username, {
             avatar: client.user.displayAvatarURL({format:'png'})
         }).then(webhook => {
