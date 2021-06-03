@@ -9,7 +9,7 @@ module.exports = {
     async execute(message,args,client){
 
  
-   try{
+   
     const opponent = message.mentions.users.first();
     if (!opponent) return message.channel.send(`Please mention who you want to fight`);
     
@@ -27,9 +27,6 @@ module.exports = {
             cancelButtonColor: 'blurple',
     })
         x.start()
-} catch(err){
-    return message.channel.send(`User ${opponent} has failed to accept the fight`)
-}
-     
+
     }
 }
