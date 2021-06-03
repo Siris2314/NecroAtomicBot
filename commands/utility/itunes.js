@@ -4,7 +4,7 @@ module.exports = {
     name: 'itunes',
     description:'Returns information about a song on iTunes(price, artist, etc.)',
 
- async execute(client, message, args) {
+ async execute( message, args,client) {
 
   try {
     const query = args.join('+');
