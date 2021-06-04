@@ -26,6 +26,7 @@ const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+const alt = require('discord-anti-alt')
 
 Levels.setURL(mongoPath);
 
@@ -49,6 +50,7 @@ const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
 const reactionSchema = require("./schemas/reaction-roles");
 const ms = require("ms");
+const altschema = require('./schemas/anti-alt');
 const { DiscordTogether } = require('discord-together');
 client.discordTogether = new DiscordTogether(client, {
     token: token
@@ -493,6 +495,40 @@ client.on("guildMemberAdd", async (member) => {
     channel.send(attachment);
 
     });
+
+    altschema.findOne({Guild:member.guild.id}, async(err,data)=>{
+        if(!data) return;
+
+        const days = data.Days;
+        const altchannel = data.Channel;
+
+        const account = new alt.config({
+            days: parseInt(days),
+            options:'ban'
+        })
+
+        let running = account.run(member);
+        let profile = alt.profile(member);
+
+        if(running){
+            
+            const embed = new Discord.MessageEmbed()
+                .setTitle(member.user.tag,member.user.displayAvatarURL({ dynamic: true }))
+                .setColor("RANDOM")
+                .addField("Account's Age: ",profile.userAge,true)
+                .addField("Minimum Age required: ",altdays,true)
+                .addField("Account was created at: ",profile.date.userDateCreated,true)
+        return member.guild.channels.cache.get(altchannel).send(embed)
+        
+        }
+
+
+
+
+
+
+
+    })
 
     const getCollection = antijoin.get(member.guild.id);
     if (!getCollection) return;

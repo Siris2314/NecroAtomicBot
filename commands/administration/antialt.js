@@ -31,8 +31,9 @@ module.exports = {
             if(data) return message.channel.send(new MessageEmbed() .setTitle('System Already Enabled')
             .setDescription('Anti Alt System is already turned on') .setColor('BLUE'));
 
-            new Schema({
-                Channel:logsChannel,
+            new schema({
+                Guild:message.guild.id,
+                Channel:logsChannel.id,
                 Days: parseInt(days),
 
             }).save()
@@ -46,6 +47,24 @@ module.exports = {
         .setDescription(`${message.author.tag} has enabled the anti-alt system!`)
         .setTimestamp()
         return message.channel.send(embed)
+     }
+     else if(option.toLowerCase() === 'disable'){
+        schema.findOne({Guild:message.guild.id}, async(err, data) =>{
+
+            if(!data) return message.channel.send('Anti Alt was never enabled in this server');
+
+            data.delete();
+
+
+        })
+
+        const embed = new MessageEmbed()
+        .setTitle(":white_check_mark: Disabled Anti Alt System for this server")
+        .setColor('RED')
+        .setDescription(`${message.author.tag} has disabled the anti-alt system!`)
+        .setTimestamp()
+        return message.channel.send(embed)
+
      }
     }
 }
