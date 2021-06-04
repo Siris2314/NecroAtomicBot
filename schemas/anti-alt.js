@@ -6,7 +6,7 @@ module.exports = mongoose.model(
     new mongoose.Schema({
         Guild: String,
         Channel:String,
-        Days: Number
+        Days: String
 
     })
 );

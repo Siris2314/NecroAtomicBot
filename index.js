@@ -502,9 +502,10 @@ client.on("guildMemberAdd", async (member) => {
         const days = data.Days;
         const altchannel = data.Channel;
 
+        console.log(parseInt(days));
         const account = new alt.config({
             days: parseInt(days),
-            options:'ban'
+            options:'kick'
         })
 
         let running = account.run(member);
@@ -513,10 +514,12 @@ client.on("guildMemberAdd", async (member) => {
         if(running){
             
             const embed = new Discord.MessageEmbed()
-                .setTitle(member.user.tag,member.user.displayAvatarURL({ dynamic: true }))
+                .setTitle('Alt Account Detector')
+                .setDescription(`${member.user.tag}`)
+                .setThumbnail(`${member.user.displayAvatarURL({dynamic: true})}`)
                 .setColor("RANDOM")
                 .addField("Account's Age: ",profile.userAge,true)
-                .addField("Minimum Age required: ",altdays,true)
+                .addField("Minimum Age required: ",days,true)
                 .addField("Account was created at: ",profile.date.userDateCreated,true)
         return member.guild.channels.cache.get(altchannel).send(embed)
         

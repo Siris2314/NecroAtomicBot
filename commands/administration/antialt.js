@@ -34,7 +34,7 @@ module.exports = {
             new schema({
                 Guild:message.guild.id,
                 Channel:logsChannel.id,
-                Days: parseInt(days),
+                Days: days,
 
             }).save()
 
