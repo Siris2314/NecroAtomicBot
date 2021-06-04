@@ -502,7 +502,6 @@ client.on("guildMemberAdd", async (member) => {
         const days = data.Days;
         const altchannel = data.Channel;
 
-        console.log(parseInt(days));
         const account = new alt.config({
             days: parseInt(days),
             options:'kick'
