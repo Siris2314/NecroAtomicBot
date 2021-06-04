@@ -19,10 +19,10 @@ module.exports = {
 
     const embed = new Discord.MessageEmbed()
       .setTitle(`**${char.name}**`)
-      .setThumbnail(char.images.image)
+      .setThumbnail(char.images.icon)
       .setColor("RANDOM")
       .addFields(
-        {name:"Titles:", value:char.titles,inline:false},
+        {name:"Titles:", value:char.title,inline:false},
         {name:"Element:", value:char.element,inline:false},
         {name:"Weapon Type:", value:char.weapontype,inline:false},
         {name:"Gender:", value:char.gender,inline:false},

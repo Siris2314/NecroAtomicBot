@@ -244,7 +244,6 @@ async function send_log(client, guild,color, title, description,thumb){
        
         const logger = await client.channels.cache.get(data.Channel);
         if(!data.Channel) return;
-        console.log(data.Channel)
         
         logger.createWebhook(client.user.username, {
             avatar: client.user.displayAvatarURL({format:'png'})
