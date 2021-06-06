@@ -57,6 +57,7 @@ client.discordTogether = new DiscordTogether(client, {
 });
 const disbut = require('discord-buttons')(client)
 const countSchema = require("./schemas/member-count");
+const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server")
 const inviteschema = require("./schemas/anti-invite")
 const antijoin = new Discord.Collection();
@@ -495,6 +496,17 @@ client.on("guildMemberAdd", async (member) => {
     channel.send(attachment);
 
     });
+
+
+    autoroleschema.findOne({Guild:member.guild.id}, async(err, data)=>{
+        if(!data) return;
+
+        const role = member.guild.roles.cache.get(data.Role);
+
+        member.roles.add(role);
+
+    })
+
 
     altschema.findOne({Guild:member.guild.id}, async(err,data)=>{
         if(!data) return;
