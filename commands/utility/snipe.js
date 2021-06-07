@@ -21,6 +21,7 @@ async execute(message,args,client){
 
 var i = 0;
 var desc = "";
+var image = null;
 
 const embed = new Discord.MessageEmbed()
 .setColor('#ff1100')
@@ -35,7 +36,7 @@ client.snipes.reverse().forEach(msg => {
       image = msg.image;
     }
     else{
-    desc = desc + `\n\n **Author: ${msg.author}** *(Deleted ${secondsToDhms(time)} ago)*\nContent: \`${msg.content ? msg.image : null}\``
+    desc = desc + `\n\n **Author: ${msg.author}** *(Deleted ${secondsToDhms(time)} ago)*\nContent: \`${msg.content}\``
     }
     i++
 })
@@ -48,8 +49,9 @@ if (i == 0) {
     } else {
     embed.setTitle(`Here is the last ${i} deleted messages in this channel!`)
     }
-    if(image){
+    if(image !== null){
     embed.setImage(image)
+    embed.setDescription(desc)
     } else{
     embed.setDescription(desc)
     }
