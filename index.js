@@ -44,7 +44,7 @@ const music = new DisTube(client,  { searchSongs: 0,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
 const { getPokemon } = require("./commands/fun/pokemon");
-client.snipes = new Map();
+client.snipes = []
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
@@ -553,24 +553,14 @@ client.on("guildMemberAdd", async (member) => {
 });
 
 client.on("messageDelete", async (message) => {
-    client.snipes.set(message.channel.id, {
+    client.snipes.push({
+        channel: message.channel,
         content: message.content,
         author: message.author,
-    });
+        image: message.attachments.first() ? message.attachments.first().url : null,
+        date: new Date()
+ })
 
-    if (!message.partial) {
-        const channel = client.channels.cache.get("807398780160573501");
-
-        if (channel) {
-            const embed = new Discord.MessageEmbed()
-                .setTitle("Deleted Message")
-                .addField("Author", `${message.author.tag} (${message.author.id})`)
-                .addField("Channel", `${message.channel.name} (${message.channel.id})`)
-                .setDescription(message.content)
-                .setTimestamp();
-            channel.send(embed);
-        }
-    }
 });
 
 const voiceCollection = new Discord.Collection();
