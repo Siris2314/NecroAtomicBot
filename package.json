@@ -26,6 +26,7 @@
     "common-tags": "^1.8.0",
     "concurrently": "^6.0.0",
     "cpu-stat": "^2.0.1",
+    "dayjs": "^1.10.5",
     "discord-anti-alt": "^1.1.0",
     "discord-backup": "^2.5.0",
     "discord-buttons": "^3.1.1",
