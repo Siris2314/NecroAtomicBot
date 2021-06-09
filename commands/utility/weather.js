@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 module.exports = {
   name: "weather",
   description:"Returns weather forecast",
-  execute(message,args){
+  async execute(message,args){
     weather.find({search: args.join(" "), degreeType: 'F'}, function(error,result){
         if (error) {
             return message.channel.send(error);
