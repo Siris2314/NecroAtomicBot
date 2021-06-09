@@ -7,6 +7,7 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require('colors');
 const logger = require('./logger')
+const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
@@ -60,14 +61,13 @@ const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server")
 const inviteschema = require("./schemas/anti-invite")
-const antijoin = new Discord.Collection();
 const blacklistedWords = new Discord.Collection();
 const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 
-module.exports = { antijoin, blacklistedWords, afk, starboardcollection };
+module.exports = { blacklistedWords, afk, starboardcollection };
 
 const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Loop: \`${
@@ -507,6 +507,28 @@ client.on("guildMemberAdd", async (member) => {
 
     })
 
+    antiraid.findOne({Guild:member.guild.id}, async(err,data)=>{
+        const kickReason = 'Anti-raidmode activated';
+		if (!data) return;
+		if (data) {
+            try {
+                member.send(
+                    new Discord.MessageEmbed()
+                        .setTitle(`Server Under Lockdown`)
+                        .setDescription(
+                            `You have been kicked from **${
+                                member.guild.name
+                            }** with reason: **${kickReason}**`
+                        )
+                        .setColor('RED')
+                );
+            } catch(e){
+                throw e
+            }
+			member.kick(kickReason);
+		}
+    })
+
 
     altschema.findOne({Guild:member.guild.id}, async(err,data)=>{
         if(!data) return;
@@ -544,12 +566,7 @@ client.on("guildMemberAdd", async (member) => {
 
     })
 
-    const getCollection = antijoin.get(member.guild.id);
-    if (!getCollection) return;
-    if (!getCollection.includes(member.user)) {
-        getCollection.push(member.user);
-    }
-    member.kick({ reason: "Antijoin was enabled" });
+  
 });
 
 client.on("messageDelete", async (message) => {
