@@ -30,12 +30,14 @@ module.exports = {
         }
 
         const member = message.mentions.members.first() || message.member;
+        const user = message.mentions.users.first() || message.author;
         const roles = member.roles.cache 
             .sort((a,b) => b.position - a.position)
             .map(role => role.toString())
             .slice(0,-1)
 
         const userFlags = member.user.flags.toArray();
+        const devices = user.presence?.clientStatus  || {};
         const embeduserinfo = new Discord.MessageEmbed()
             .setThumbnail(member.user.displayAvatarURL({dynamic: true, size:512}))
             .setAuthor("Information about: " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({dynamic: true}))
@@ -47,6 +49,7 @@ module.exports = {
             .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
             .addField('**Flags:**',`\`${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
             .addField('**Status:**',`\`${member.user.presence.status}\``,true)
+            .addField('Devices: ',`${Object.entries(devices).length}`)
             .addField('**Game**:',`\`${member.user.presence.game || 'Not Currently Playing a Game.'}\``,true)
             .addField('**Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
             .addField(`\`${roles.length}\` **Roles:**`,`${roles.length < 10 ? roles.join(', '): roles.length > 10 ? trimArray(roles): 'None'}`)
