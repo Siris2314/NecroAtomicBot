@@ -33,6 +33,7 @@ Levels.setURL(mongoPath);
 
 const search = require("youtube-search");
 const DisTube = require("distube");
+const afkschema = require('./schemas/afk');
 const music = new DisTube(client,  { searchSongs: 0,
     emitNewSongOnly: false,
     highWaterMark: 1024*1024*64,
@@ -379,24 +380,35 @@ client.on("message", async (message) => {
     const mentionedMember = message.mentions.members.first();
 
     if (mentionedMember) {
-        const data = afk.get(mentionedMember.id);
+        await afkschema.findOne({Guild:message.guild.id}, async(err,data)=>{
+
+        if(!data) return;
 
         if (data) {
-            await message.delete();
-            const [timestamp, reason] = data;
+            const reason = data.Reason
+            const timestamp = data.Date
             const timeAgo = moment(timestamp).fromNow();
 
+            message.delete()
             message.channel.send(
                 `${mentionedMember.user.username} is currently afk (${timeAgo})\nReason: ${reason}`
             );
         }
-    }
 
-    const getData = afk.get(message.author.id);
-    if (getData) {
-        afk.delete(message.author.id);
-        message.channel.send(`${message.member} afk has been removed`);
+     })
     }
+    
+
+    
+  await afkschema.findOne({Guild:message.guild.id}, async(err,data) => {
+    if(!data) return;
+    const getData = data.User;
+    if (message.author.id == getData) {
+        const user = client.users.fetch(data.User)
+        message.channel.send(`<@${data.User}> afk has been removed`);
+        data.delete()
+    }
+})
 
     const settings = await guildSchema.findOne(
         {
@@ -579,6 +591,10 @@ client.on("messageDelete", async (message) => {
  })
 
 });
+
+client.on('clickButton', async(button) => {
+    
+})
 
 const voiceCollection = new Discord.Collection();
 
