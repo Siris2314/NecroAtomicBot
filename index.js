@@ -384,7 +384,7 @@ client.on("message", async (message) => {
 
         if(!data) return;
 
-        if (data) {
+        if (data.User == mentionedMember.id) {
             const reason = data.Reason
             const timestamp = data.Date
             const timeAgo = moment(timestamp).fromNow();
