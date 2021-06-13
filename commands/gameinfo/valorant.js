@@ -1,6 +1,6 @@
 const val = require('valorant-api-com')
 const Discord = require('discord.js')
-const uuid = require('./uuid.json')
+const uuid = require('../gameinfo/uuid.json')
 
 module.exports = {
     name:'valorant',
@@ -29,10 +29,13 @@ module.exports = {
            .addField('Role Description: ',`${allAgents.data.role.description}`,false)
            .addField('Developer Name: ', `${allAgents.data.developerName}`,false)
            .addField("Ability 1: ", `${allAgents.data.abilities[0].displayName} - ${allAgents.data.abilities[0].description}`, false)
+           .addField("Ability 2: ",`${allAgents.data.abilities[1].displayName} - ${allAgents.data.abilities[1].description}`, false)
+           .addField("Grenade: ",`${allAgents.data.abilities[2].displayName} - ${allAgents.data.abilities[2].description}`, false)
+           .addField("Ultimate: ",`${allAgents.data.abilities[3].displayName} - ${allAgents.data.abilities[3].description}`, false)
            .setThumbnail(allAgents.data.displayIcon)
 
-        // console.log(allWeapons);
+        console.log(allWeapons);
         
-        message.channel.send(embed)
+        return message.channel.send(embed)
     }
 }
