@@ -1,6 +1,7 @@
 const val = require('valorant-api-com')
 const Discord = require('discord.js')
-const uuid = require('../gameinfo/uuid.json')
+const agents = require('../gameinfo/agents.json')
+const weapons = require('../gameinfo/weapons.json')
 
 module.exports = {
     name:'valorant',
@@ -11,16 +12,19 @@ module.exports = {
         let config = {
             'language':'en-US'
         }
-
-        let agent = args.join(" ");
-
-        agent = uuid[agent]
-
         const valclient = new val(config)
+
+
+    let option = args[0];
+
+     if(option.toLowerCase() == "agent"){ 
+
+        let agent = args.slice(1).join(" ");
+
+        agent = agents[agent]
 
         const allAgents = await valclient.getAgents(agent)
 
-        const allWeapons = await valclient.getWeapons();
 
         const embed = new Discord.MessageEmbed()
            .setTitle(allAgents.data.displayName)
@@ -34,8 +38,38 @@ module.exports = {
            .addField("Ultimate: ",`${allAgents.data.abilities[3].displayName} - ${allAgents.data.abilities[3].description}`, false)
            .setThumbnail(allAgents.data.displayIcon)
 
-        console.log(allWeapons);
+    
         
         return message.channel.send(embed)
+        }
+    else if(option.toLowerCase() == "weapons"){
+            let weapon = args.slice(1).join(" ");
+
+            weapon = weapons[weapon];
+
+        const allWeapons = await valclient.getWeapons(weapon);
+        const embed = new Discord.MessageEmbed()
+           .setTitle(`${allWeapons.data.displayName}`)
+           .addField(`Category: `,`${allWeapons.data.category}`,true)
+           .addField('Fire Rate(Bullets Per Second): ',`${allWeapons.data.weaponStats.fireRate}` , false)
+           .addField('Magazine Size: ',`${allWeapons.data.weaponStats.magazineSize}` , false)
+           .addField('Run Speed Multiplier: ', `${allWeapons.data.weaponStats.runSpeedMultiplier}`,false)
+           .addField('Equip Time(Seconds): ', `${allWeapons.data.weaponStats.equipTimeSeconds}`,false)
+           .addField('Reload Time(Seconds): ', `${allWeapons.data.weaponStats.reloadTimeSeconds}`,false)
+           .addField('First Bullet Accuracy: ', `${allWeapons.data.weaponStats.firstBulletAccuracy}`,false)
+           .addField('Zoom Multiplier: ', `${allWeapons.data.weaponStats.adsStats.zoomMultiplier}`,false)
+           .addField('Fire Rate(ADS): ', `${allWeapons.data.weaponStats.adsStats.fireRate}`,false)
+           .setThumbnail(allWeapons.data.displayIcon)
+
+        return message.channel.send(embed);
+
+
+
+
+
+
+
+
+        }
     }
 }
