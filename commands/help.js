@@ -20,6 +20,8 @@ module.exports = {
                 }
             }
         );
+        const emojiList = ["⬅️", "➡️"]
+        const timeout = 100000
 
         const roleColor =
             message.guild.me.displayHexColor === "#000000"
@@ -90,7 +92,7 @@ module.exports = {
                     }
                 });
                 categories.push(temp);
-                var listOfEmbed = [];
+                let listOfEmbed = [];
                 if (categories.length <= 1) {
                     const a = new MessageEmbed()
                         .setTitle("📬 Need help? Here are all of my commands:")
@@ -128,7 +130,7 @@ module.exports = {
                                 .setColor(roleColor)
                         );
                     }
-                    paginationEmbed(message, listOfEmbed);
+                    paginationEmbed(message, listOfEmbed,emojiList,timeout);
                 }
             } else {
                 const command =

@@ -44,7 +44,7 @@ module.exports = {
     .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
 
 
-    pages =[
+    let pages =[
         embed,
         embed2
       ];
