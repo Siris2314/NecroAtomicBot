@@ -1,7 +1,7 @@
 const Meme = require("memer-api")
 require("dotenv").config();
 const key = process.env.memeapi
-const memer = new Meme()
+const memer = new Meme(key)
 const Discord = require('discord.js')
 
 module.exports = { 

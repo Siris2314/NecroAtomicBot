@@ -17,6 +17,20 @@ module.exports = {
 
     let option = args[0];
 
+    if(!option){
+        const embed = new Discord.MessageEmbed()
+              .setTitle('Welcome To Necro Valorant')
+              .setDescription('The One Place For All Your Valorant Information')
+              .addField("**Accessible: **", `\`Look Up Information Right As You Game \``, false)
+              .addField("**Features: **", `\`Search Information on Agents, Weapons, Maps, and Skins\``, false)
+              .addField("**Usage: **", `\`<prefix> valorant weapons/agents (name of weapon/agent)\``, false)
+              .setColor("RED")
+              .setImage("https://daily.upcomer.com/wp-content/uploads/2020/12/Valorant-Header-Image.jpg")
+        return message.channel.send(embed)
+
+    }
+    
+
      if(option.toLowerCase() == "agent"){ 
 
         let agent = args.slice(1).join(" ");
@@ -71,5 +85,6 @@ module.exports = {
 
 
         }
+
     }
 }
