@@ -31,7 +31,6 @@ client.snipes.reverse().forEach(msg => {
     if (i >= 5) return;
     var endDate = new Date()
     var time = (endDate.getTime() - msg.date.getTime()) / 1000;
-    console.log(msg.content);
     if(msg.image){
       image = msg.image;
     }
