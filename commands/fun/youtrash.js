@@ -1,6 +1,9 @@
 const Meme = require("memer-api");
-const memer = new Meme();
+require("dotenv").config();
+const key = process.env.memeapi
+const memer = new Meme(key);
 const Discord = require('discord.js')
+
 
 module.exports = {
     name:'youtrash',
@@ -12,9 +15,10 @@ module.exports = {
         const username = message.author.username;
 
         memer.youtube(avatar, username, text).then(image => {
+            
             const attachment = new Discord.MessageAttachment(image, "youtube.png");
             message.channel.send(attachment)
-        })
+        }) 
 
 
     }
