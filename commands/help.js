@@ -20,6 +20,8 @@ module.exports = {
                 }
             }
         );
+        const emojiList = ["⬅️", "➡️"]
+        const timeout = 100000
 
         const roleColor =
             message.guild.me.displayHexColor === "#000000"
@@ -63,6 +65,10 @@ module.exports = {
                         {
                             name: "✂ Work in Progress",
                             value: "```" + prefix + " help wip```",
+                        },
+                        {
+                            name: "GameInfo",
+                            value: "```" + prefix + " help gameinfo```",
                         }
                     )
                     .setDescription(
@@ -90,7 +96,7 @@ module.exports = {
                     }
                 });
                 categories.push(temp);
-                var listOfEmbed = [];
+                listOfEmbed = [];
                 if (categories.length <= 1) {
                     const a = new MessageEmbed()
                         .setTitle("📬 Need help? Here are all of my commands:")
@@ -128,7 +134,7 @@ module.exports = {
                                 .setColor(roleColor)
                         );
                     }
-                    paginationEmbed(message, listOfEmbed);
+                    paginationEmbed(message, listOfEmbed,emojiList,timeout);
                 }
             } else {
                 const command =

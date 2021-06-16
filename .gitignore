@@ -1,9 +1,10 @@
 botconfig.json
 /node_modules
-eval.js
 commands-enable.js
 command-disable.js
 .env
+./commands/gameinfo/agents.json
+
 /commands/add-balance.js
 /commands/amongus.js
 /commands/audio.js
@@ -19,3 +20,4 @@ command-disable.js
 /commands/pay.js
 /commands/poke.js
 /commands/set-lang.js
+node_modules

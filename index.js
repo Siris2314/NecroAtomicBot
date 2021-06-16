@@ -7,6 +7,7 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require('colors');
 const logger = require('./logger')
+const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
@@ -32,6 +33,7 @@ Levels.setURL(mongoPath);
 
 const search = require("youtube-search");
 const DisTube = require("distube");
+const afkschema = require('./schemas/afk');
 const music = new DisTube(client,  { searchSongs: 0,
     emitNewSongOnly: false,
     highWaterMark: 1024*1024*64,
@@ -44,7 +46,7 @@ const music = new DisTube(client,  { searchSongs: 0,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
 const { getPokemon } = require("./commands/fun/pokemon");
-client.snipes = []
+client.snipes = new Discord.Collection();
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
@@ -60,14 +62,13 @@ const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server")
 const inviteschema = require("./schemas/anti-invite")
-const antijoin = new Discord.Collection();
 const blacklistedWords = new Discord.Collection();
 const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 
-module.exports = { antijoin, blacklistedWords, afk, starboardcollection };
+module.exports = { blacklistedWords, afk, starboardcollection };
 
 const status = (queue) =>
     `Volume: \`${queue.volume}%\` | Loop: \`${
@@ -379,24 +380,35 @@ client.on("message", async (message) => {
     const mentionedMember = message.mentions.members.first();
 
     if (mentionedMember) {
-        const data = afk.get(mentionedMember.id);
+        await afkschema.findOne({Guild:message.guild.id}, async(err,data)=>{
 
-        if (data) {
-            await message.delete();
-            const [timestamp, reason] = data;
+        if(!data) return;
+
+        if (data.User == mentionedMember.id) {
+            const reason = data.Reason
+            const timestamp = data.Date
             const timeAgo = moment(timestamp).fromNow();
 
+            message.delete()
             message.channel.send(
                 `${mentionedMember.user.username} is currently afk (${timeAgo})\nReason: ${reason}`
             );
         }
-    }
 
-    const getData = afk.get(message.author.id);
-    if (getData) {
-        afk.delete(message.author.id);
-        message.channel.send(`${message.member} afk has been removed`);
+     })
     }
+    
+
+    
+  await afkschema.findOne({Guild:message.guild.id}, async(err,data) => {
+    if(!data) return;
+    const getData = data.User;
+    if (message.author.id == getData) {
+        const user = client.users.fetch(data.User)
+        message.channel.send(`<@${data.User}> afk has been removed`);
+        data.delete()
+    }
+})
 
     const settings = await guildSchema.findOne(
         {
@@ -507,6 +519,28 @@ client.on("guildMemberAdd", async (member) => {
 
     })
 
+    antiraid.findOne({Guild:member.guild.id}, async(err,data)=>{
+        const kickReason = 'Anti-raidmode activated';
+		if (!data) return;
+		if (data) {
+            try {
+                member.send(
+                    new Discord.MessageEmbed()
+                        .setTitle(`Server Under Lockdown`)
+                        .setDescription(
+                            `You have been kicked from **${
+                                member.guild.name
+                            }** with reason: **${kickReason}**`
+                        )
+                        .setColor('RED')
+                );
+            } catch(e){
+                throw e
+            }
+			member.kick(kickReason);
+		}
+    })
+
 
     altschema.findOne({Guild:member.guild.id}, async(err,data)=>{
         if(!data) return;
@@ -544,24 +578,23 @@ client.on("guildMemberAdd", async (member) => {
 
     })
 
-    const getCollection = antijoin.get(member.guild.id);
-    if (!getCollection) return;
-    if (!getCollection.includes(member.user)) {
-        getCollection.push(member.user);
-    }
-    member.kick({ reason: "Antijoin was enabled" });
+  
 });
 
 client.on("messageDelete", async (message) => {
-    client.snipes.push({
-        channel: message.channel,
-        content: message.content,
-        author: message.author,
-        image: message.attachments.first() ? message.attachments.first().url : null,
-        date: new Date()
- })
+    let snipes = client.snipes.get(message.channel.id) || []
+    if(snipes.length > 5) snipes = snipes.slice(0,4)
+    snipes.unshift({
+        msg: message,
+        image: message.attachments.first()?.proxyURL || null,
+        time: Date.now()
+    })
+
+    client.snipes.set(message.channel.id, snipes)
+  
 
 });
+
 
 const voiceCollection = new Discord.Collection();
 

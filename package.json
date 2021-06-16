@@ -1,4 +1,5 @@
 {
+
   "name": "necroatomicbot",
   "version": "1.0.0",
   "description": "Discord bot",
@@ -104,4 +105,6 @@
     "url": "https://github.com/Siris2314/NecroAtomicBot/issues"
   },
   "homepage": "https://github.com/Siris2314/NecroAtomicBot#readme"
+
+   
 }
