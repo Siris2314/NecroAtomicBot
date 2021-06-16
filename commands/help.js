@@ -65,6 +65,10 @@ module.exports = {
                         {
                             name: "✂ Work in Progress",
                             value: "```" + prefix + " help wip```",
+                        },
+                        {
+                            name: "GameInfo",
+                            value: "```" + prefix + " help gameinfo```",
                         }
                     )
                     .setDescription(
@@ -92,7 +96,7 @@ module.exports = {
                     }
                 });
                 categories.push(temp);
-                let listOfEmbed = [];
+                listOfEmbed = [];
                 if (categories.length <= 1) {
                     const a = new MessageEmbed()
                         .setTitle("📬 Need help? Here are all of my commands:")

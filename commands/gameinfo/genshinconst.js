@@ -11,10 +11,8 @@ module.exports = {
     const input = args.join(" ")
     const char = genshin.constellations(input)
     const char2 = genshin.characters(input)
-    const emojiList = ["⬅️", "➡️"]
-    const timeout = 100000
+    
 
-    console.log(char)
 
 
     try{
@@ -31,6 +29,7 @@ module.exports = {
       )
 
     const embed2 = new Discord.MessageEmbed()
+     
     .setTitle(`${char.name}'s Constellations(4-6)`)
     .setThumbnail(char2.images.image)
     .setColor("RANDOM")
@@ -44,10 +43,12 @@ module.exports = {
     .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
 
 
-    let pages =[
+    pages = [
         embed,
         embed2
       ];
+    const emojiList = ["⬅️", "➡️"]
+    const timeout = "100000"
     paginationEmbed(message,pages,emojiList,timeout);
 
     } catch(err){

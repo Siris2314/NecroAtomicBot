@@ -46,7 +46,7 @@ const music = new DisTube(client,  { searchSongs: 0,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
 const { getPokemon } = require("./commands/fun/pokemon");
-client.snipes = []
+client.snipes = new Discord.Collection();
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
@@ -582,19 +582,19 @@ client.on("guildMemberAdd", async (member) => {
 });
 
 client.on("messageDelete", async (message) => {
-    client.snipes.push({
-        channel: message.channel,
-        content: message.content,
-        author: message.author,
-        image: message.attachments.first() ? message.attachments.first().url : null,
-        date: new Date()
- })
+    let snipes = client.snipes.get(message.channel.id) || []
+    if(snipes.length > 5) snipes = snipes.slice(0,4)
+    snipes.unshift({
+        msg: message,
+        image: message.attachments.first()?.proxyURL || null,
+        time: Date.now()
+    })
+
+    client.snipes.set(message.channel.id, snipes)
+  
 
 });
 
-client.on('clickButton', async(button) => {
-    
-})
 
 const voiceCollection = new Discord.Collection();
 
