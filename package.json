@@ -17,8 +17,6 @@
     "camelcase": "^6.2.0",
     "canvacord": "^5.1.0",
     "canvas": "^2.7.0",
-    "chart.js": "^3.0.1",
-    "chartjs": "^0.3.24",
     "chartjs-node-canvas": "^3.1.0",
     "cheerio": "^1.0.0-rc.5",
     "child_process": "^1.0.2",
