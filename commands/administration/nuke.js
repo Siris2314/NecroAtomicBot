@@ -1,42 +1,36 @@
+const Discord = require('discord.js');
+
 module.exports = {
-  name:'nuke',
-  description:'nukes a channel',
-  async execute(message, args,client) {
-      if(!message.member.hasPermission('MANAGE_CHANNELS') || !message.member.hasPermission('ADMINISTRATOR')) {
-          message.reply(`You can\'t use this command you need \`MANAGE_CHANNELS\` permission.`)
-          return;
-      }
-      
-      if(!message.guild.me.hasPermission('MANAGE_CHANNELS') || !message.guild.me.hasPermission('ADMINISTRATOR')) {
-          message.reply('I need \`MANAGE_CHANNELS\` permission to run this command.')
-          return
-      }
+    name: 'nuke',
+    description: "Nukes a channel",
+    async execute(message, args,client){
+        if (!message.member.permissions.has('ADMINISTRATOR'))
+            return message.channel.send('Perms Denied');
+        let clearchannel = message.channel || message.channel.mentions.first()
+        const filter = m => m.author.id === message.author.id
+        message.channel.send("Are sure you want to nuke this channel? Type: `yes` or `no`. You have 10 seconds...").then(r => r.delete(10000))
+        message.channel.awaitMessages(filter, {
+            max: 1,
+            time: 10000
+        }).then(collected => {
 
-
-      const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
-  
-      let position = channel.position
-      try {
-      
-          await channel.clone().then((ch) => {
-             
-              ch.setPosition(position)
-             
-              channel.delete().catch(err => {
-
-                  ch.delete()
-                 
-                  message.channel.send(`I can't nuke the channel due error: \`Undefined\``)
-                  return
-              })
-
-          
-  
-              ch.send("https://i.pinimg.com/originals/06/c3/92/06c392b847166a9a671bfcd590d8fff7.gif")
-              })
-
-      } catch(err) {
-          message.channel.send(`I can't nuke the channel due error: \`Undefined\``)
-      }
-  }
+            if (collected.first().content === "no") {
+                return message.reply("I have cancelled the nuke!")
+            }
+            if (collected.first().content === "yes") {
+                
+                const embed = new Discord.MessageEmbed()
+                    .setColor('RED')
+                    .setTitle('Nuked!')
+                    .setDescription(`Channel has been nuked`)
+                    .setFooter(message.author.username)
+                    .setImage('https://media.discordapp.net/attachments/772390491303575582/819086461739335720/tenor_5.gif?width=560&height=472')
+                    .setTimestamp()
+                clearchannel.clone().then(clearchannel => clearchannel.send(embed))
+                clearchannel.delete()
+            }
+        }).catch(err => {
+            message.channel.send("Your Time is over...")
+        })
+    }
 }
