@@ -1,5 +1,4 @@
 module.exports = {
-    //get a member lol
     getMember: function(message, toFind = "") {
       try{
         toFind = toFind.toLowerCase();

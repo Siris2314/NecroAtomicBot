@@ -499,7 +499,7 @@ client.on("guildMemberAdd", async (member) => {
             .setColor("message-box", "#2063E9")
             .setColor("title", "#2063E9")
             .setColor("avatar", "#2063E9")
-            .setBackground("./background.jpg")
+            .setBackground("./assets/background.jpg")
             .toAttachment();
  
     const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
