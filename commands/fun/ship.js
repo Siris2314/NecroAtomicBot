@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const Canvas = require('canvas');
 const fs = require("fs");
+const heart = require("../../assets/heart.png")
 module.exports = {
 
   name: "ship",
@@ -13,7 +14,7 @@ module.exports = {
         let chance = parseInt(c);
         const canvas = Canvas.createCanvas(700, 250);
 	      const ctx = canvas.getContext('2d');
-        const background = await Canvas.loadImage("./heart.png"); 
+        const background = await Canvas.loadImage(heart); 
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 	      const avatar1 = await Canvas.loadImage(user1.displayAvatarURL({format: 'jpg' }));
 	      const avatar2 = await Canvas.loadImage(user2.displayAvatarURL({format: 'jpg' }));
