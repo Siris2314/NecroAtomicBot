@@ -148,14 +148,11 @@ client.giveawaysManager = new GiveawaysManager(client, {
     },
 });
 
-function embedbuilder(client, message, color, title, description) {
-    let embed = new Discord.MessageEmbed()
-        .setColor(color)
-        .setFooter(client.user.username, client.user.displayAvatarURL());
-    if (title) embed.setTitle(title);
-    if (description) embed.setDescription(description);
-    return message.channel.send(embed);
-}
+
+client.embed = async(message, options) => {
+    const embed = new Discord.MessageEmbed(options);
+    message.channel.send(embed)
+  }
 
 client.on("ready", async () => {
     console.log(botname);
@@ -390,9 +387,16 @@ client.on("message", async (message) => {
             const timeAgo = moment(timestamp).fromNow();
 
             message.delete()
-            message.channel.send(
-                `${mentionedMember.user.username} is currently afk (${timeAgo})\nReason: ${reason}`
-            );
+           await client.embed(message, {
+                title:`AFK System`,
+                color:'RANDOM',
+                description: `${mentionedMember.user.username} is currently afk \n(${timeAgo})\nReason: ${reason}`,
+                footer: {
+                    text: `${message.author.username}`,
+                    iconURL: `${message.author.displayAvatarURL({dynamic: true})}`
+                }
+             })
+            
         }
 
      })
@@ -405,7 +409,15 @@ client.on("message", async (message) => {
     const getData = data.User;
     if (message.author.id == getData) {
         const user = client.users.fetch(data.User)
-        message.channel.send(`<@${data.User}> afk has been removed`);
+       await client.embed(message,{ 
+
+            title:'AFK Removed',
+            description:`<@${data.User}> AFK has been removed`,
+            color:'RANDOM',
+
+
+        })
+            
         data.delete()
     }
 })
@@ -483,6 +495,8 @@ client.on("message", async (message) => {
 
 });
 
+
+
 client.on("guildMemberAdd", async (member) => {
     Schema.findOne({ Guild: member.guild.id }, async (e, data) => {
         if (!data) return;
@@ -499,7 +513,7 @@ client.on("guildMemberAdd", async (member) => {
             .setColor("message-box", "#2063E9")
             .setColor("title", "#2063E9")
             .setColor("avatar", "#2063E9")
-            .setBackground("./assets/background.jpg")
+            .setBackground("./background.jpg")
             .toAttachment();
  
     const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
