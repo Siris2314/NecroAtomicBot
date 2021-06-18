@@ -62,6 +62,8 @@
 
     "discord-giveaways": "^4.4.3",
 
+    "discord-rpc": "^4.0.1",
+
     "discord-together": "^1.1.14",
 
     "discord-xp": "^1.1.14",
