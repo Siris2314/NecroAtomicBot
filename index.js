@@ -217,24 +217,24 @@ client.once("disconnect", () => {
 });
 
 
-rpc.on('ready', () => {
-    rpc.setActivity({
-        details: 'Messing Around With Stuff', 
-        state: 'Working on stuff', 
-        startTimestamp: new Date(), 
-        largeImageKey: 'large-key', 
-        largeImageText: 'Doing Stuff Over Summer', 
-        smallImageKey: 'small-key', 
-        smallImageText: 'Chilling', 
-        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Instagram', url : 'https://www.instagram.com/triponari/'}] // you con delete the buttons 
-    });
+// rpc.on('ready', () => {
+//     rpc.setActivity({
+//         details: 'Messing Around With Stuff', 
+//         state: 'Working on stuff', 
+//         startTimestamp: new Date(), 
+//         largeImageKey: 'large-key', 
+//         largeImageText: 'Doing Stuff Over Summer', 
+//         smallImageKey: 'small-key', 
+//         smallImageText: 'Chilling', 
+//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Instagram', url : 'https://www.instagram.com/triponari/'}] // you con delete the buttons 
+//     });
 
-    console.log('RPC online');
-});
+//     console.log('RPC online');
+// });
 
-rpc.login({
-    clientId: rpctoken 
-});
+// rpc.login({
+//     clientId: rpctoken 
+// });
 
 
 
