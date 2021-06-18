@@ -58,6 +58,10 @@ client.discordTogether = new DiscordTogether(client, {
     token: token
 });
 const disbut = require('discord-buttons')(client)
+const rpctoken = process.env.rpc
+const RPC = require('discord-rpc'); 
+const rpc = new RPC.Client({transport: 'ipc'});
+
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server")
@@ -209,6 +213,25 @@ client.on("ready", async () => {
 
 client.once("disconnect", () => {
     console.log("Disconnect");
+});
+
+rpc.on('ready', () => {
+    rpc.setActivity({
+        details: 'Messing Around With Stuff', 
+        state: 'Working on stuff', 
+        startTimestamp: new Date(), 
+        largeImageKey: 'large-key', 
+        largeImageText: 'Doing Stuff Over Summer', 
+        smallImageKey: 'small-key', 
+        smallImageText: 'Chilling', 
+        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Instagram', url : 'https://www.instagram.com/triponari/'}] // you con delete the buttons 
+    });
+
+    console.log('RPC online');
+});
+
+rpc.login({
+    clientId: rpctoken 
 });
 
 
@@ -386,7 +409,7 @@ client.on("message", async (message) => {
             const timestamp = data.Date
             const timeAgo = moment(timestamp).fromNow();
 
-            message.delete()
+           message.delete()
            await client.embed(message, {
                 title:`AFK System`,
                 color:'RANDOM',
@@ -408,15 +431,21 @@ client.on("message", async (message) => {
     if(!data) return;
     const getData = data.User;
     if (message.author.id == getData) {
-        const user = client.users.fetch(data.User)
+       const user = await client.users.fetch(data.User).then(async (u) => {
+       const image = u.displayAvatarURL({dynamic:true})
+       
        await client.embed(message,{ 
 
             title:'AFK Removed',
             description:`<@${data.User}> AFK has been removed`,
             color:'RANDOM',
+            thumbnail:{
+                url: image
+            }
 
 
         })
+    })
             
         data.delete()
     }

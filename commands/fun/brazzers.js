@@ -10,9 +10,13 @@ module.exports = {
 
     async execute(message,args,client){
         
-        const avatar = message.mentions.members.first() || message.author;
+        let pinged = message.mentions.users.first();
 
-        memer.brazzers(avatar).then(image => {
+        if(!pinged){
+            pinged = message.author
+        }
+
+        memer.brazzers(pinged.displayAvatarURL({dynamic:true})).then(image => {
             
             const attachment = new Discord.MessageAttachment(image, "brazzers.png");
              message.channel.send(attachment)
