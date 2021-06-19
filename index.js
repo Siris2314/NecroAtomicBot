@@ -633,6 +633,7 @@ client.on("messageDelete", async (message) => {
     if(snipes.length > 5) snipes = snipes.slice(0,4)
     snipes.unshift({
         msg: message,
+        author:message.author,
         image: message.attachments.first()?.proxyURL || null,
         time: Date.now()
     })
