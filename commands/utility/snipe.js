@@ -17,11 +17,11 @@ async execute(message,args,client){
 
   if(!target) return message.channel.send(`There is only ${snipes.length} messages`);
 
-  const {msg, time, image} = target;
+  const {msg, time, image,author} = target;
 
   message.channel.send(
     new Discord.MessageEmbed()
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor(author.tag, author.displayAvatarURL())
       .setImage(image)
       .setDescription(msg.content)
       .setFooter(`${moment(time).fromNow()} | ${snipe + 1}/${snipes.length}`)
