@@ -58,6 +58,7 @@ client.discordTogether = new DiscordTogether(client, {
     token: token
 });
 const disbut = require('discord-buttons')(client)
+require('discord-slider')(client);
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});

@@ -1,6 +1,6 @@
 const genshin = require('genshin-db');
 const Discord = require('discord.js');
-const paginationEmbed = require('discord.js-pagination');
+
 
 module.exports = {
   name:'genshinconst',
@@ -48,8 +48,8 @@ module.exports = {
         embed2
       ];
     const emojiList = ["⬅️", "➡️"]
-    const timeout = "100000"
-    paginationEmbed(message,pages,emojiList,timeout);
+    const timeout = "300000"
+    message.channel.createSlider(message.author.id, pages,emojiList[1], emojiList[0])
 
     } catch(err){
       message.channel.send("Character not in database")

@@ -4,7 +4,7 @@ require("dotenv").config();
 const schema = require("../schemas/Guilds");
 const token = process.env.token;
 let prefix = process.env.prefix;
-const paginationEmbed = require("discord.js-pagination");
+
 
 module.exports = {
     name: "help",
@@ -96,7 +96,7 @@ module.exports = {
                     }
                 });
                 categories.push(temp);
-                listOfEmbed = [];
+                var  listOfEmbed = [];
                 if (categories.length <= 1) {
                     const a = new MessageEmbed()
                         .setTitle("📬 Need help? Here are all of my commands:")
@@ -134,7 +134,7 @@ module.exports = {
                                 .setColor(roleColor)
                         );
                     }
-                    paginationEmbed(message, listOfEmbed,emojiList,timeout);
+                    message.channel.createSlider(message.author.id, listOfEmbed,emojiList[1], emojiList[0])
                 }
             } else {
                 const command =

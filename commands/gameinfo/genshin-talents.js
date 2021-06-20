@@ -1,6 +1,6 @@
 const genshin = require('genshin-db');
 const Discord = require('discord.js');
-const paginationEmbed = require('discord.js-pagination');
+
 
 
 module.exports = {
@@ -48,7 +48,7 @@ module.exports = {
           embed,
           embed2
         ];
-      paginationEmbed(message,pages,emojiList,timeout);
+        message.channel.createSlider(message.author.id,pages,emojiList[1], emojiList[0])
 
 
     } catch(err){
