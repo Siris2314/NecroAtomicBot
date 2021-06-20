@@ -60,9 +60,13 @@
 
     "discord-canvas": "^1.4.1",
 
+    "discord-epagination": "^1.2.1",
+
     "discord-giveaways": "^4.4.3",
 
     "discord-rpc": "^4.0.1",
+
+    "discord-slider": "^1.1.6",
 
     "discord-together": "^1.1.14",
 
@@ -109,6 +113,8 @@
     "moment": "^2.29.1",
 
     "moment-duration-format": "^2.3.2",
+
+    "moment-timezone": "^0.5.33",
 
     "mongoose": "^5.12.3",
 
