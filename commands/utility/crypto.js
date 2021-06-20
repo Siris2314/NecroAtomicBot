@@ -20,15 +20,44 @@ module.exports = {
         const {body} = await request.get(url)
 
 
+
         const res = JSON.parse(JSON.stringify(body))
 
+
+        const time = moment(res.timestamp).fromNow();
 
         const cryptoprice = res.rates
         
 
         const rates = JSON.parse(JSON.stringify(cryptoprice))
 
-        console.log(rates);
+        const stats = rates[crypto.toUpperCase()]
+
+
+        client.embed(message,{
+            title: `${currency.toUpperCase()} to ${crypto.toUpperCase()}`,
+            description: `
+               1 ${crypto.toUpperCase()} - ${stats.rate} ${currency.toUpperCase()}
+               \nLow Price - ${stats.low} ${currency.toUpperCase()}
+               \nHigh Price - ${stats.high} ${currency.toUpperCase()}
+               \nMarket Volume - ${stats.vol} ${currency.toUpperCase()}
+               \nMarket Cap - ${stats.cap} ${currency.toUpperCase()}
+               \nPercent Change(As of Today) ${stats.change_pct * 100}
+
+
+            `,
+            color:'RANDOM',
+            image:{
+                url: 'https://coincentral.com/wp-content/uploads/2018/04/bitcoin-mining.png'
+            },
+            footer: {
+                text: `${message.author.username}`,
+                iconURL: `${message.author.displayAvatarURL({dynamic: true})}`
+            },
+            timestamp: Date.now()
+        })
+
+
         
       
 
