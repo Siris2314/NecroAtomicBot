@@ -12,6 +12,8 @@ module.exports = {
 
     async execute(message,args,client){
 
+    try{
+
         const currency = args[0];
         const crypto = args[1];
         const url = `http://api.coinlayer.com/live?access_key=${token}&target=${currency}&symbols=${crypto}&expand=1`
@@ -61,7 +63,9 @@ module.exports = {
         
       
 
-        
+    } catch(err){
+        message.channel.send('Please enter in a valid currency/coin')
+    }
 
             
 

@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 
 module.exports = {
 
-    name:'set-channel',
+    name:'setwelcome',
     description:'sets a welcome channel',
 
     async execute(message,args,client){
