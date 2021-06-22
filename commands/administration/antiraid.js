@@ -4,6 +4,7 @@ const schema = require('../../schemas/antiraid')
 module.exports = {
     name: 'antiraid',
     description: 'Enables anti-raid, allowing to counter raids by instantly kicking members who join',
+    usage:'<prefix> antiraid enable/disable',
     async execute(message, args,client){
         if(!message.member.hasPermission('ADMINISTRATOR')) return message.reply('You do not have the permission \`ADMINISTRATOR\`')
         if(!message.guild.me.hasPermission('KICK_MEMBERS')) return message.reply('I do not have the permission \`KICK_MEMBERS\`')

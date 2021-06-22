@@ -5,6 +5,7 @@ module.exports = {
 
     name:'antialt',
     description:'Enables/Disables Anti Alt Account System',
+    usage:'<prefix> anti-invite enable/disable',
 
     async execute(message,args,client){
 

@@ -42,6 +42,8 @@
 
     "child_process": "^1.0.2",
 
+    "coinlayer-wrapper": "^1.0.5",
+
     "colors": "^1.4.0",
 
     "common-tags": "^1.8.0",
@@ -91,6 +93,8 @@
     "figlet": "^1.5.0",
 
     "genshin-db": "^3.5.0",
+
+    "gif-encoder-2": "^1.0.5",
 
     "glob": "^7.1.6",
 

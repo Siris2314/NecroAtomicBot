@@ -5,6 +5,7 @@ const schema = require('../../schemas/anti-invite')
 module.exports = {
     name:'anti-invite',
     description: 'Sets Anti Invite System for Server',
+    usage:'<prefix> anti-invite',
 
     async execute(message, args,client){
 
