@@ -1,8 +1,9 @@
 const discord = require('discord.js');
 
 module.exports = {
-  name:"clear",
-  description: "clears messages",
+  name:"purge",
+  description: "clears user messages in a channel",
+  usage:'<prefix> (amount) or (user) amount(limit = 100)',
 
   async execute(message,args, client) {
 
