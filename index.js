@@ -68,6 +68,8 @@ const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server")
 const inviteschema = require("./schemas/anti-invite")
 const blacklistedWords = new Discord.Collection();
+const ghostpingschema = require("./schemas/ghostping")
+const Pings = new Discord.Collection()
 const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const blacklistSchema = require("./schemas/blacklist");
@@ -374,6 +376,24 @@ client.on("message", async (message) => {
         }
     });
 
+
+    await ghostpingschema.findOne({Guild:message.guild.id}, async(err,data)=>{
+        if(!data || data.Guild == null) return;
+        if(!message.mentions.members.first()) return;
+        if(message.mentions.members.first().id === message.author.id) return;
+        const time = 50000;
+
+     
+      if(message.guild.id === data.Guild){
+        Pings.set(`pinged:${message.mentions.members.first().id}`,Date.now() + time)
+
+        setTimeout(() => {
+            Pings.delete(`pinged:${message.mentions.members.first().id}`)
+        },time)
+        }
+
+    })
+
     await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
         if (!data) return;
 
@@ -409,7 +429,7 @@ client.on("message", async (message) => {
 
         if(!data) return;
 
-        if (data.User == mentionedMember.id) {
+        if (data.User === mentionedMember.id) {
             const reason = data.Reason
             const timestamp = data.Date
             const timeAgo = moment(timestamp).fromNow();
@@ -640,6 +660,29 @@ client.on("messageDelete", async (message) => {
     })
 
     client.snipes.set(message.channel.id, snipes)
+
+
+    await ghostpingschema.findOne({Guild:message.guild.id}, async(err,data) =>{
+        if(!data) return
+
+        if(!message.mentions.members.first()) return;
+
+        console.log("Mentioned")
+
+        if(Pings.has(`pinged:${message.mentions.members.first().id}`)){
+
+            const embed = new Discord.MessageEmbed()
+                .setTitle('Ghost Ping Detected')
+                .addField('Author', message.author.username, false)
+                .addField('Content', message.content, true)
+                .setColor('RANDOM')
+                .setFooter(message.author.username,`${message.author.displayAvatarURL({dynamic: true})}`)
+                .setTimestamp()
+
+            message.channel.send(embed)
+            
+        }
+    })
   
 
 });

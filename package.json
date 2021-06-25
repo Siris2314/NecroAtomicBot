@@ -94,7 +94,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.5.0",
+    "genshin-db": "^3.7.1",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -175,8 +175,6 @@
     "sqlite3": "^5.0.2",
 
     "twemoji-parser": "^13.0.0",
-
-    "valorant-api-com": "^1.0.0",
 
     "weather-js": "^2.0.0",
 
