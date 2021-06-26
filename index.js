@@ -220,24 +220,24 @@ client.once("disconnect", () => {
 });
 
 
-// rpc.on('ready', () => {
-//     rpc.setActivity({
-//         details: 'Messing Around With Stuff', 
-//         state: 'Working on stuff', 
-//         startTimestamp: new Date(), 
-//         largeImageKey: 'large-key', 
-//         largeImageText: 'Doing Stuff Over Summer', 
-//         smallImageKey: 'small-key', 
-//         smallImageText: 'Chilling', 
-//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Instagram', url : 'https://www.instagram.com/triponari/'}] // you con delete the buttons 
-//     });
+rpc.on('ready', () => {
+    rpc.setActivity({
+        details: 'Messing Around With Stuff', 
+        state: 'Working on stuff', 
+        startTimestamp: new Date(), 
+        largeImageKey: 'large-key', 
+        largeImageText: 'Doing Stuff Over Summer', 
+        smallImageKey: 'small-key', 
+        smallImageText: 'Chilling', 
+        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'NPM', url : 'https://www.npmjs.com/~ari.dev'}] // you con delete the buttons 
+    });
 
-//     console.log('RPC online');
-// });
+    console.log('RPC online');
+});
 
-// rpc.login({
-//     clientId: rpctoken 
-// });
+rpc.login({
+    clientId: rpctoken 
+});
 
 
 
@@ -422,59 +422,57 @@ client.on("message", async (message) => {
         channel.send(res.cnt);
     });
 
-    const mentionedMember = message.mentions.members.first();
+   if(await afkschema.findOne({user: message.author.id})){
+       let afkProfile = await afkschema.findOne({user: message.author.id})
+       if(afkProfile.user === message.author.id){
+        const user = await client.users.fetch(afkProfile.user).then(async (u) => {
+            const image = u.displayAvatarURL({dynamic:true})
+            
+            await client.embed(message,{ 
+     
+                 title:'AFK Removed',
+                 description:`<@${afkProfile.user}> AFK has been removed`,
+                 color:'RANDOM',
+                 thumbnail:{
+                     url: image
+                 }
+     
+     
+             })
+         })
+       }
 
-    if (mentionedMember) {
-        await afkschema.findOne({Guild:message.guild.id}, async(err,data)=>{
+       afkProfile.delete()
+       
+   }
 
-        if(!data) return;
+   if(message.mentions.members.first()){
+       await message.mentions.members.forEach(async (member) => {
+           let afkProfile = await afkschema.findOne({user:member.user.id});
 
-        if (data.User === mentionedMember.id) {
-            const reason = data.Reason
-            const timestamp = data.Date
+           if(afkProfile) 
+           {
+            const reason = afkProfile.reason
+            const timestamp = afkProfile.date
             const timeAgo = moment(timestamp).fromNow();
 
            message.delete()
            await client.embed(message, {
                 title:`AFK System`,
                 color:'RANDOM',
-                description: `${mentionedMember.user.username} is currently afk \n(${timeAgo})\nReason: ${reason}`,
+                description: `${member.user.username} is currently afk \n(${timeAgo})\nReason: ${reason}`,
                 footer: {
                     text: `${message.author.username}`,
                     iconURL: `${message.author.displayAvatarURL({dynamic: true})}`
                 }
              })
             
-        }
-
-     })
-    }
-    
-
-    
-  await afkschema.findOne({Guild:message.guild.id}, async(err,data) => {
-    if(!data) return;
-    const getData = data.User;
-    if (message.author.id == getData) {
-       const user = await client.users.fetch(data.User).then(async (u) => {
-       const image = u.displayAvatarURL({dynamic:true})
-       
-       await client.embed(message,{ 
-
-            title:'AFK Removed',
-            description:`<@${data.User}> AFK has been removed`,
-            color:'RANDOM',
-            thumbnail:{
-                url: image
-            }
-
-
+        }   
         })
-    })
-            
-        data.delete()
-    }
-})
+       }
+
+
+   
 
     const settings = await guildSchema.findOne(
         {
@@ -686,6 +684,10 @@ client.on("messageDelete", async (message) => {
   
 
 });
+
+client.on("guildCreate", async(guild) => {
+    
+})
 
 
 const voiceCollection = new Discord.Collection();

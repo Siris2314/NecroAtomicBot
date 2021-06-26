@@ -1,5 +1,6 @@
 const {Client, Message, MessageEmbed} = require('discord.js');
-const Schema = require('../../schemas/afk')
+const afkSchema = require('../../schemas/afk')
+const mongoose = require('mongoose')
 
 
 module.exports = {
@@ -10,18 +11,23 @@ module.exports = {
 
         const reason = args.join(' ') || 'No Reason'
 
+        let afkProfile = await afkSchema.findOne({user:message.author.id});
 
-        await Schema.findOne({Guild:message.guild.id}, async(err,data)=>{
-            
-            new Schema({
-                Guild:message.guild.id,
-                User: message.author.id,
-                Reason:reason,
-                Date: message.createdTimestamp
+        if(!afkProfile){
+            afkProfile = await new afkSchema({
+                _id:mongoose.Types.ObjectId(),
+                user:message.author.id,
+                reason:reason,
+                date:message.createdTimestamp
             }).save()
-        })
 
-        message.channel.send(`You are now afk \`${reason}\``)
+            message.channel.send(`You are now afk \`${reason}\``)
+        }
+        else{
+            message.channel.send("You were already AFK")
+        }
+
+        
 
     }
 }
