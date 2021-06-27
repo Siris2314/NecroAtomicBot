@@ -422,9 +422,11 @@ client.on("message", async (message) => {
         channel.send(res.cnt);
     });
 
-   if(await afkschema.findOne({user: message.author.id})){
+   if(await afkschema.findOne({Guild:message.guild.id},{user: message.author.id})){
        let afkProfile = await afkschema.findOne({user: message.author.id})
-       if(afkProfile.user === message.author.id){
+
+       if(afkProfile){
+      
         const user = await client.users.fetch(afkProfile.user).then(async (u) => {
             const image = u.displayAvatarURL({dynamic:true})
             
@@ -440,16 +442,20 @@ client.on("message", async (message) => {
      
              })
          })
-       }
+         afkProfile.delete()
+        }
+       
 
-       afkProfile.delete()
+       
        
    }
 
    if(message.mentions.members.first()){
        await message.mentions.members.forEach(async (member) => {
-           let afkProfile = await afkschema.findOne({user:member.user.id});
+        
+           let afkProfile = await afkschema.findOne({Guild:message.guild.id},{user:member.user.id});
 
+        
            if(afkProfile) 
            {
             const reason = afkProfile.reason

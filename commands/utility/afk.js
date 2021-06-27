@@ -16,6 +16,7 @@ module.exports = {
         if(!afkProfile){
             afkProfile = await new afkSchema({
                 _id:mongoose.Types.ObjectId(),
+                Guild:message.guild.id,
                 user:message.author.id,
                 reason:reason,
                 date:message.createdTimestamp
