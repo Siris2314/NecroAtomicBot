@@ -9,6 +9,11 @@ module.exports = {
     async execute(message,args,client){
         if(message.author.id != ownerid) return;
 
+
+
+
         client.emit('guildMemberAdd', message.member);
+
+        message.channel.send('Simulated Join Success')
     }
 }

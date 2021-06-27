@@ -5,13 +5,13 @@ module.exports = {
 
     name:'antialt',
     description:'Enables/Disables Anti Alt Account System',
-    usage:'<prefix> anti-invite enable/disable',
+    usage:'<prefix> anti-invite enable/disable, if enable you need to mention the days,ban/kick,channel to send ban/kick/warn log to, these must be done in the order given',
 
     async execute(message,args,client){
 
-        if(!message.member.hasPermission('ADMINISTRATOR')) return;
-        let option = args[0]
-        if(!option) {
+    if(!message.member.hasPermission('ADMINISTRATOR')) return;
+    let option = args[0]
+    if(!option) {
             const embed = new MessageEmbed()
             .setTitle("Options for anti alt system")
             .setDescription("`<prefix> antialt enable` To enable the anti-alt system\n`<prefix> antialt disable` To disable the anti-alt system")
@@ -19,22 +19,32 @@ module.exports = {
             return message.channel.send(embed)
         }
 
-        if(option.toLowerCase() === 'enable') {
+    if(option.toLowerCase() === 'enable') {
 
-        let logsChannel = message.mentions.channels.first()
-        let days = args[2];
+        let days = args[1];
+        let choice = args[2];
+        let channel = message.mentions.channels.first();
 
 
-        if(!logsChannel) return message.channel.send('Please provide channel for the alt system to display users');
+        if(!choice) return message.channel.send("Please provide the action to take when alt detected, **ban** or **kick** or **warn** ")
+
+        if(!channel) return message.channel.send("Please provide a channel for me to give a log of the alt account")
+
+        console.log(args[0])
+        console.log(args[1])
+        console.log(args[2])
+        // if((choice.toLowerCase() !== 'kick') || (choice.toLowerCase() !== 'ban') || (choice.toLowerCase() !== 'warn')){
+        //     return message.channel.send("Please provide a valid choice: **ban** or **kick** or **warn**")
+        // }
         if(!days) return message.channel.send("Please tell me the minimum age/days requirement of the account")
         if(isNaN(days)) return message.channel.send("Please enter only numbers for the days")
         schema.findOne({Guild:message.guild.id}, async(err, data) =>{
-            if(data) return message.channel.send(new MessageEmbed() .setTitle('System Already Enabled')
-            .setDescription('Anti Alt System is already turned on') .setColor('BLUE'));
+            if(data) data.delete()
 
             new schema({
                 Guild:message.guild.id,
-                Channel:logsChannel.id,
+                Option:choice,
+                Channel: channel.id,
                 Days: days,
 
             }).save()

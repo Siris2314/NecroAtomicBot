@@ -27,7 +27,7 @@ const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
-const alt = require('discord-anti-alt')
+
 
 Levels.setURL(mongoPath);
 
@@ -618,30 +618,65 @@ client.on("guildMemberAdd", async (member) => {
         if(!data) return;
 
         const days = data.Days;
-        const altchannel = data.Channel;
+        const option = data.Option
 
-        const account = new alt.config({
-            days: parseInt(days),
-            options:'kick'
-        })
+        const channel = member.guild.channels.cache.get(data.Channel); 
 
-        let running = account.run(member);
-        let profile = alt.profile(member);
 
-        if(running){
+
+        const timeSpan = ms(`${days} days`)
+
+        const createdAt = new Date(member.user.createdAt).getTime()
+        const difference = Date.now() - createdAt;
+
+        if(difference < timeSpan){
+            member.send('Alt Account Detected')
+
+            if(option.toLowerCase() == 'kick'){
+
+                const id = member.id;
+                await member.kick();
+
+                channel.send(
+                    new Discord.MessageEmbed()
+                     .setTitle('Alt Account Detected(Kick Option)')
+                     .setDescription(`Member ${id}, Kicked due to detection of alt account - Account Age: ${createdAt}`)
+                     .setColor("RANDOM")
+                     .setTimestamp()
+                )
+
+            }
+            else if(option.toLowerCase() == 'ban'){
+                const id = member.id;
+                member.ban()
+
+                channel.send(
+                    new Discord.MessageEmbed()
+                     .setTitle('Alt Account Detected(Ban Option)')
+                     .setDescription(`Member ${id}, Ban due to detection of alt account - Account Age: ${createdAt}`)
+                     .setColor("RANDOM")
+                     .setTimestamp()
+                )
+            }
+            else{
+                channel.send(
+                    new Discord.MessageEmbed()
+                     .setTitle('Alt Account Detected(Warning)')
+                     .setDescription(`:warning: Alt Account has been detected - Account Age: ${createdAt}`)
+                     .setColor("RANDOM")
+                     .setTimestamp()
+                )
+
+            }
+
             
-            const embed = new Discord.MessageEmbed()
-                .setTitle('Alt Account Detector')
-                .setDescription(`${member.user.tag}`)
-                .setThumbnail(`${member.user.displayAvatarURL({dynamic: true})}`)
-                .setColor("RANDOM")
-                .addField("Account's Age: ",profile.userAge,true)
-                .addField("Minimum Age required: ",days,true)
-                .addField("Account was created at: ",profile.date.userDateCreated,true)
-        return member.guild.channels.cache.get(altchannel).send(embed)
-        
         }
 
+
+
+
+
+    
 
 
 
