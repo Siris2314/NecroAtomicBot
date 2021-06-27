@@ -150,6 +150,8 @@
 
     "querystring": "^0.2.1",
 
+    "random": "^3.0.6",
+
     "random-puppy": "^1.1.0",
 
     "random-words": "^1.1.1",
