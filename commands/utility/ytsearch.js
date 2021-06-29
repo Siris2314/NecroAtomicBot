@@ -1,5 +1,5 @@
-const { MessageEmbed, Util } = require('discord.js')
-const YouTube = require("youtube-sr").default;
+const Discord = require('discord.js')
+const ytsr = require('ytsr')
 
 module.exports = {
     name: 'ytsearch',
@@ -7,35 +7,24 @@ module.exports = {
 
     async execute(message, args, client) {
 
-        const video = args.join(' ')
-        if(!video) return message.reply(`Which Video Do You Want To Search For?`) 
-
-        function getVideo(title, url, duration, thumbnail, views, uploadedAt, description) { 
-            const result = {
-                "title": title, 
-                "url": url, 
-                "duration": duration, 
-                "thumbnail": thumbnail, 
-                "views": views, 
-                "description": description, 
-                "uploadedAt": uploadedAt 
-            }
-            return result
-        }
-
-        let videoInfo = await YouTube.searchOne(video) 
-        if(!videoInfo) return message.reply(`No Video Found With **${video}**`)
-
-        videodetail = getVideo(Util.escapeMarkdown(videoInfo.title), videoInfo.url, videoInfo.durationFormatted, videoInfo.thumbnail.url, videoInfo.uploadedAt, videoInfo.views, videoInfo.description)
-
-        const youtubeembed = new MessageEmbed()
-        .setTitle(videodetail.title)
-        .setURL(videoInfo.url)
-        .setTimestamp()
-        .setThumbnail(videodetail.thumbnail)
-        .setColor('RANDOM')
-        .setDescription(`Duration: ${videodetail.duration} \nViews: ${videodetail.views} \nUploaded: ${videodetail.uploadedAt}`)
-        .setFooter(`Video Requested By ${message.author.username}`)
-        return message.channel.send(youtubeembed)
+        const query = args.join(' ');
+        if (!query) return message.channel.send("Provide a search for me to search YouTube!");
+    
+        const res = await ytsr(query).catch(e => message.channel.send(`No results found for ${query}`));
+        const video = res.items.filter(i => i.type === 'video')[0];
+        const embed = new Discord.MessageEmbed()
+          .setTitle(video.title)
+          .setURL(video.url)
+          .setImage(video.bestThumbnail.url)
+          .setColor("RANDOM")
+          .setDescription(video.description ? video.description : "No Description")
+          .addField(`Song Information`,
+                `**Creator**: [${video.author.name}](${video.author.url}) ${video.author.verified ? ":white_check_mark: (Verified)" : "Not-Verified"}
+                **Length**: ${video.duration} minute(s)
+                **Uploaded**: ${video.uploadedAt}
+                **Views**: ${video.views.toLocaleString()}`,false
+          )
+          .setThumbnail(video.author.bestAvatar.url)
+        message.channel.send(embed);
     }
 }
