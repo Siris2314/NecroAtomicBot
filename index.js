@@ -72,6 +72,7 @@ const ghostpingschema = require("./schemas/ghostping")
 const Pings = new Discord.Collection()
 const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
+const muteschema = require("./schemas/mute")
 const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 
@@ -580,6 +581,16 @@ client.on("guildMemberAdd", async (member) => {
     channel.send(attachment);
 
     });
+
+    const data = await muteschema.findOne({Guild:member.guild.id});
+    if(!data) return 
+    const user = data.User.findIndex((prop) => prop === Member.id)
+    if(user == -1 ) return;
+    const role = member.guild.roles.cache.find(
+        (role) => role.name.toLowerCase() === "muted"
+    )
+    member.roles.add(role.id)
+
 
 
     autoroleschema.findOne({Guild:member.guild.id}, async(err, data)=>{

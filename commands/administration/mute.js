@@ -1,5 +1,5 @@
 const {Message, MessageEmbed}= require('discord.js')
-const ms = require('ms')
+const Schema = require('../../schemas/mute')
 
 module.exports = {
     name : 'mute',
@@ -33,6 +33,17 @@ module.exports = {
         let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
         if(Member.roles.cache.has(role2.id)) return message.channel.send(`${Member.displayName} has already been muted.`)
         await Member.roles.add(role2)
+        Schema.findOne({Guild:message.guild.id}, async(err,data)=>{
+            if(!data){
+                new Schema({
+                    Guild:message.guild.id,
+                    Users:Member.id
+                }).save()
+            } else{
+                data.Users.push(Member.id)
+                data.save()
+            }
+        })
 
         message.channel.send(`${Member.displayName} is now muted.`)
     }
