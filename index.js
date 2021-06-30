@@ -403,7 +403,7 @@ client.on("message", async (message) => {
         const master = await nekoyasui.search.user(message, ownerID);
         const channel = await nekoyasui.search.channel(message, data.Channel);
         if (!channel) return;
-        if (!master) console.log("Oh! noooooo.. where r u master!");
+        if (!master) console.log("Rip Bozo");
         const bot = {
             name: message.client.user.username,
             birthdate: "10/24/2001",

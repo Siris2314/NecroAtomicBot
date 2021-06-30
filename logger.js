@@ -212,6 +212,9 @@ module.exports = c => {
             }
     
         })
+        c.on("guildUpdate", function(oldGuild, newGuild){
+            
+        })
 
         
 

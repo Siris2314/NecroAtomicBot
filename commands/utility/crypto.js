@@ -64,6 +64,7 @@ module.exports = {
       
 
     } catch(err){
+        console.log(err)
         message.channel.send('Please enter in a valid currency/coin')
     }
 
