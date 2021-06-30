@@ -42,7 +42,7 @@
 
     "child_process": "^1.0.2",
 
-    "coinlayer-wrapper": "^1.0.6",
+    "coinlayer-wrapper": "^1.0.91",
 
     "colors": "^1.4.0",
 
