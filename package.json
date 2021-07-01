@@ -54,6 +54,8 @@
 
     "dayjs": "^1.10.5",
 
+    "decancer": "^1.0.2",
+
     "discord-anti-alt": "^1.1.0",
 
     "discord-backup": "^2.5.0",
@@ -94,7 +96,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.7.1",
+    "genshin-db": "^3.7.3",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -175,6 +177,8 @@
     "spotify-url-info": "^2.2.0",
 
     "sqlite3": "^5.0.2",
+
+    "string-toolkit": "^1.4.0",
 
     "twemoji-parser": "^13.0.0",
 

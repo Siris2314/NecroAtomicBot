@@ -16,9 +16,7 @@ module.exports = {
         const neededXp = Levels.xpFor(parseInt(user.level) + 1)
 
         var img = "https://cdn.discordapp.com/attachments/779452147326648360/803042845363011624/unknown.png";
-        if(message.guild.id === '798700075517870120'){
-            img = './Background.png'
-        }
+       
 
         const rank = new canvacord.Rank()
             .setAvatar(target.displayAvatarURL({dynamic: false, format:'png'}))
