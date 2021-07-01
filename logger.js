@@ -213,7 +213,17 @@ module.exports = c => {
     
         })
         c.on("guildUpdate", function(oldGuild, newGuild){
-            
+            if(oldGuild.premiumSubscriptionCount < newGuild.premiumSubscriptionCount){
+                const difference = newGuild.premiumSubscriptionCount - oldGuild.premiumSubscriptionCount;
+
+                send_log(c, oldGuild, "BLUE", `Server Boosts Increase`,`Your boosts have increased by ${difference} boosts`)
+            }
+            else if(oldGuild.premiumSubscriptionCount > newGuild.premiumSubscriptionCount){
+                const difference = oldGuild.premiumSubscriptionCount - newGuild.premiumSubscriptionCount;
+
+                send_log(c, oldGuild, "RED", `Server Boosts Decrease`,`Your boosts have decreased by ${difference} boosts`)
+
+            }
         })
 
         

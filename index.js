@@ -3,6 +3,7 @@ const token = process.env.token;
 const mongoPath = process.env.mongoPath;
 const mongoose = require("mongoose");
 const nekoyasui = require("nekoyasui");
+const background = './assets/background.jpg'
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require('colors');
@@ -213,7 +214,54 @@ client.on("ready", async () => {
         client.user.setActivity(status);
         index++;
     }, 5000);
+
+    client.api.applications(client.user.id).commands.post({
+        data:{
+            name:"help",
+            description:"Replies with help command",
+
+            options: [
+                {
+                name:"content",
+                description:"The Default Prefix is !necro, if you would like to access my commands use <prefix> help",
+                type:3,
+                }
+            ]
+        }
+    })
+
+    client.ws.on('INTERACTION_CREATE', async interaction => {
+        const command = interaction.data.name.toLowerCase()
+        const args = interaction.data.options
+        
+
+        if(command == "help"){
+            const embed = new Discord.MessageEmbed()
+                .setTitle('Welcome to NecroAtomicBot')
+                .setDescription('The Default Prefix is !necro, if you would like to access my commands use <prefix> help')
+                .setColor("RANDOM")
+                .setTimestamp()
+
+            client.api.interactions(interaction.id, interaction.token).callback.post({
+                data:{
+                    type:4,
+                    data: await createAPIMessage(interaction, embed)
+                }
+            })
+        }
+
+    })
+
+
 });
+
+async function createAPIMessage(interaction,content){
+    const apiMessage = await Discord.APIMessage.create(client.channels.resolve(interaction.channel_id), content)
+        .resolveData()
+        .resolveFiles()
+
+    return  {...apiMessage.data};;
+}
 
 
 client.once("disconnect", () => {
@@ -572,7 +620,7 @@ client.on("guildMemberAdd", async (member) => {
             .setColor("message-box", "#2063E9")
             .setColor("title", "#2063E9")
             .setColor("avatar", "#2063E9")
-            .setBackground("./background.jpg")
+            .setBackground(background)
             .toAttachment();
  
     const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
