@@ -17,10 +17,11 @@ module.exports = {
 
 
         const translatedEmbed = new MessageEmbed()
-         .setTitle(`${message.author.username} translatation`)
+         .setTitle(`${message.author.username}'s Translation`)
          .addFields(
             { name: `Original Text`, value: `\`\`\`${input}\`\`\``, inline:true},
-            { name: `Translated Text`, value: `\`\`\`${translated.text}\`\`\``, inline:true}
+            { name: `Language`, value:`\`\`\`${option}\`\`\``, inline:false},
+            { name: `Translated Text`, value: `\`\`\`${translated.text}\`\`\``, inline:false}
         )
          .setColor("RANDOM")
          .setTimestamp()

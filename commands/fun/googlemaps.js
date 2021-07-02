@@ -9,7 +9,7 @@ module.exports = {
   async execute(message, args,client) {
    
    const sit = args.join("_")
-  if (!args.length) return message.reply("Provide a valid location")
+  if (!args.length) return message.channel.send("Provide a valid location")
     const site = `https://maps.google.com/?q=${args.join("+")}`
     try {
       const msg = await message.channel.send('**Please wait...** This may take up to 10 seconds.')

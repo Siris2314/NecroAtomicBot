@@ -21,6 +21,7 @@ const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
+    restTimeOffset: 0
 });
 const fs = require("fs");
 const { GiveawaysManager } = require("discord-giveaways");
@@ -32,7 +33,7 @@ const glob = require("glob");
 
 Levels.setURL(mongoPath);
 
-const search = require("youtube-search");
+
 const DisTube = require("distube");
 const afkschema = require('./schemas/afk');
 const music = new DisTube(client,  { searchSongs: 0,
@@ -215,53 +216,10 @@ client.on("ready", async () => {
         index++;
     }, 5000);
 
-    client.api.applications(client.user.id).commands.post({
-        data:{
-            name:"help",
-            description:"Replies with help command",
-
-            options: [
-                {
-                name:"content",
-                description:"The Default Prefix is !necro, if you would like to access my commands use <prefix> help",
-                type:3,
-                }
-            ]
-        }
-    })
-
-    client.ws.on('INTERACTION_CREATE', async interaction => {
-        const command = interaction.data.name.toLowerCase()
-        const args = interaction.data.options
-        
-
-        if(command == "help"){
-            const embed = new Discord.MessageEmbed()
-                .setTitle('Welcome to NecroAtomicBot')
-                .setDescription('The Default Prefix is !necro, if you would like to access my commands use <prefix> help')
-                .setColor("RANDOM")
-                .setTimestamp()
-
-            client.api.interactions(interaction.id, interaction.token).callback.post({
-                data:{
-                    type:4,
-                    data: await createAPIMessage(interaction, embed)
-                }
-            })
-        }
-
-    })
 
 
 });
 
-async function createAPIMessage(interaction,content){
-    const apiMessage = await Discord.APIMessage.create(client.channels.resolve(interaction.channel_id), content)
-        .resolveData()
-        .resolveFiles()
-
-    return  {...apiMessage.data};;
-}
 
 
 client.once("disconnect", () => {
@@ -632,7 +590,7 @@ client.on("guildMemberAdd", async (member) => {
 
     const data = await muteschema.findOne({Guild:member.guild.id});
     if(!data) return 
-    const user = data.User.findIndex((prop) => prop === Member.id)
+    const user = data.Users.findIndex((prop) => prop === member.id)
     if(user == -1 ) return;
     const role = member.guild.roles.cache.find(
         (role) => role.name.toLowerCase() === "muted"
@@ -786,6 +744,9 @@ client.on("messageDelete", async (message) => {
 });
 
 client.on("guildCreate", async(guild) => {
+
+    let 
+
     
 })
 

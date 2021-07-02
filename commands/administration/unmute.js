@@ -20,11 +20,11 @@ module.exports = {
         async(err, data) => {
             if(!data) return message.channel.send("Member was not muted")
 
-            const user = data.User.findIndex((prop) => prop === Member.id)
+            const user = data.Users.findIndex((prop) => prop === Member.id)
 
             if(user == -1 ) return message.channel.send("Member is not muted")
 
-            data.Users.splices(user,1);
+            data.Users.splice(user,1);
 
             data.save()
             await Member.roles.remove(role)
