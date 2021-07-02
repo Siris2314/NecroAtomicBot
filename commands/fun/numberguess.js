@@ -25,6 +25,7 @@ module.exports = {
     let rand = random.int(1, difficulties[args[0].toLowerCase()]);
     let tries = 0;
     collector.on("collect", async (msg) => {
+      if(message.author.bot) return;
       if (!parseInt(msg.content))
         return msg.channel.send("Not a number")
       let embed = new MessageEmbed().setTitle(`Guess the number`);

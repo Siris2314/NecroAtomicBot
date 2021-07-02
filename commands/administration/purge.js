@@ -42,13 +42,12 @@ module.exports = {
         )
         .addField(
           "Usage",
-          `\`${prefix} purge <amount>\` - Delete a number of messages.\n\`${prefix} purge <amount> --${commands.join(
-            `\n\`${prefix} purge <amount> --`
+          `\`${prefix} purge <amount>\` - Delete a number of messages.\n\`${prefix} purge <amount> ${commands.join(
+            `\n\`${prefix} purge <amount> `
           )}`
         )
-        .setFooter(
-          `${prefix} purge, ${prefix} clear, ${prefix} delete, ${prefix} prune`
-        );
+        .setFooter(message.author.username, message.author.displayAvatarURL({dynamic:true}))
+        .setTimestamp()
 
       if (!args[0] || !args.length) return message.channel.send(embd);
       let amount = Number(args[0], 10) || parseInt(args[0]);
@@ -117,7 +116,7 @@ module.exports = {
             }
 
             break;
-          case "--humans":
+          case "humans":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -148,7 +147,7 @@ module.exports = {
             }
 
             break;
-          case "--embeds":
+          case "embeds":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -179,7 +178,7 @@ module.exports = {
             }
 
             break;
-          case "--files":
+          case "files":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -210,7 +209,7 @@ module.exports = {
             }
 
             break;
-          case "--text":
+          case "text":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -242,7 +241,7 @@ module.exports = {
             }
 
             break;
-          case "--mentions":
+          case "mentions":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -280,7 +279,7 @@ module.exports = {
             }
 
             break;
-          case "--pins":
+          case "pins":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -311,7 +310,7 @@ module.exports = {
             }
 
             break;
-          case "--match":
+          case "match":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -344,7 +343,7 @@ module.exports = {
             }
 
             break;
-          case "--not":
+          case "not":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -377,7 +376,7 @@ module.exports = {
             }
 
             break;
-          case "--startswith":
+          case "startswith":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -413,7 +412,7 @@ module.exports = {
             }
 
             break;
-          case "--endswith":
+          case "endswith":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
