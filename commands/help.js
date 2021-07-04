@@ -67,6 +67,10 @@ module.exports = {
                             value: "```" + prefix + " help wip```",
                         },
                         {
+                            name: ":frame_photo: Images",
+                            value: "```" + prefix + " help images```",
+                        },
+                        {
                             name: ":video_game: GameInfo",
                             value: "```" + prefix + " help gameinfo```",
                         }
