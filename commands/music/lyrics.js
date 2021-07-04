@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { requestLyricsFor, requestTitleFor } = require("solenolyrics");
+const { requestLyricsFor, requestTitleFor, requestAuthorFor } = require("solenolyrics");
 
 
 module.exports = {
@@ -12,59 +12,25 @@ module.exports = {
 
         let lyrics = await requestLyricsFor(cursong.name)
         let title = await requestTitleFor(cursong.name)
+        let author = await requestAuthorFor(cursong.name)
         if(!lyrics) return message.channel.send('Could not find lyrics for this song')
 
-        let embed1 = new Discord.MessageEmbed()
-            .setTitle(`Lyrics for ${title}`)
+        let embed = new Discord.MessageEmbed()
+            .setTitle(`Lyrics for ${title} - ${author}`)
             .setDescription(lyrics)
             .setColor("#2F3136");
 
-       let description = " "
-       if (embed1.description.length >= 2048){
-            description = `${embed1.description.substr(0, 2045)} `;
-       }
+        
+        if (embed.description.length >= 2048)
+            embed.description = `${embed.description.substr(0, 2045)}`;
 
-       let embed2 = new Discord.MessageEmbed()
-            .setTitle(`Lyrics for ${title}`)
-            .setDescription(description)
-            .setColor("#2F3136");
-
-       
-
-       if (embed2.description.length >= 2048){
-                description = `${embed2.description.substr(0, 2045)} `;
-       }
-
-
-       
-     let embed3 = new Discord.MessageEmbed()
-           .setTitle(`Lyrics for ${title}`)
-           .setDescription(description)
-           .setColor("#2F3136");
+       return message.channel.send(embed)
 
 
      
-
-     if (embed3.description.length >= 2048){
-        description = `${embed3.description.substr(0, 2045)} `;
-
-         
-    let embed4 = new Discord.MessageEmbed()
-        .setTitle(`Lyrics for ${title}`)
-        .setDescription(description)
-        .setColor("#2F3136");
-
-    message.channel.createSlider(message.author.id, [embed1, embed2, embed3, embed4])
+}
 }
 
 
     
 
-
-
-
-
-   
-    }
-
-}

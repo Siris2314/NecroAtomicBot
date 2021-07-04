@@ -75,6 +75,7 @@ const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const muteschema = require("./schemas/mute")
 const blacklistSchema = require("./schemas/blacklist");
+const { ClientUser } = require("discord.js");
 const starboardcollection = new Discord.Collection();
 
 module.exports = { blacklistedWords, afk, starboardcollection };
@@ -254,6 +255,7 @@ client.on("message", async (message) => {
         return;
     }
 
+    
     function Check(str) {
         if (
             client.emojis.cache.find((emoji) => emoji.name === str) ||
@@ -516,6 +518,30 @@ client.on("message", async (message) => {
 
     const prefix = settings.prefix;
 
+
+ try{
+
+    if(message.mentions.users.first().id === client.user.id){
+        client.embed(message, {
+            title: `Greetings ${message.author.username}`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
+            color:'BLUE',
+            thumbnail:{
+                url:message.author.client.user.displayAvatarURL({dynamic:true})
+            },
+            footer: {
+                text:`${message.author.username}`,
+                iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
+            },
+            timestamp: Date.now()
+
+
+        })
+    }
+} catch(err){
+
+}
+  
     if (!message.content.startsWith(prefix)) return;
 
 
