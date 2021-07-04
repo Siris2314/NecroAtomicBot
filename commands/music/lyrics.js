@@ -1,60 +1,70 @@
 const Discord = require('discord.js');
-const lyricsFinder = require('lyrics-finder');
+const { requestLyricsFor, requestTitleFor } = require("solenolyrics");
 
 
 module.exports = {
     name : 'lyrics',
     description:'Returns Lyrics of a song',
     async execute(message, args,client){
-    if (args.length < 1)
-        return message.channel.send("Please enter the artist name first. <prefix> lyrics <Artist Name>")
-    
-    let artist = args.join(" ");
-    let songName = '';
-    let pages = [];
-    let currentPage = 0;
+        let queue = client.music.getQueue(message)
+        let cursong = queue.songs[0];
 
-    const messageFilter = m => m.author.id === message.author.id;
-    const reactionFilter = (reaction, user) => ['⬅️', '➡️'].includes(reaction.emoji.name) && (message.author.id === user.id)
 
-    message.channel.send("Please enter the song name now");
-    await message.channel.awaitMessages(messageFilter, { max: 1, time: 15000 }).then(async collected => {
-        songName = collected.first().content;
-        await finder (artist, songName, message, pages)
-    })
+        let lyrics = await requestLyricsFor(cursong.name)
+        let title = await requestTitleFor(cursong.name)
+        if(!lyrics) return message.channel.send('Could not find lyrics for this song')
 
-    const lyricEmbed = await message.channel.send(`Lyrics page: ${currentPage+1}/${pages.length}`, pages[currentPage])
-    await lyricEmbed.react('⬅️');
-    await lyricEmbed.react('➡️');
+        let embed1 = new Discord.MessageEmbed()
+            .setTitle(`Lyrics for ${title}`)
+            .setDescription(lyrics)
+            .setColor("#2F3136");
 
-    const collector = lyricEmbed.createReactionCollector(reactionFilter);
+       let description = " "
+       if (embed1.description.length >= 2048){
+            description = `${embed1.description.substr(0, 2045)} `;
+       }
 
-    collector.on('collect', (reaction, user) => {
-        if(reaction.emoji.name === '➡️'){
-            if(currentPage < pages.length-1){
-                currentPage+=1;
-                lyricEmbed.edit(`Lyrics page: ${currentPage+1}/${pages.length}`, pages[currentPage]);
-                message.reactions.resolve(reaction).users.remove(user)
-            }
-        }else if(reaction.emoji.name === '⬅️'){
-            if (currentPage !== 0){
-                currentPage -= 1;
-                lyricEmbed.edit(`Lyrics page: ${currentPage+1}/${pages.length}`, pages[currentPage])
-                message.reactions.resolve(reaction).users.remove(user)
-            }
-        }
-    })
+       let embed2 = new Discord.MessageEmbed()
+            .setTitle(`Lyrics for ${title}`)
+            .setDescription(description)
+            .setColor("#2F3136");
 
-    async function finder(artist, songName, message, pages){
-        let fullLyrics = await lyricsFinder(artist, songName) || "Not Found!";
-    
-        for (let i = 0; i < fullLyrics.length; i += 2048){
-            const lyric = fullLyrics.substring(i, Math.min(fullLyrics.length, i + 2048));
-            const msg = new Discord.MessageEmbed()
-                .setDescription(lyric)
-            pages.push(msg);
-        }
-    }
+       
+
+       if (embed2.description.length >= 2048){
+                description = `${embed2.description.substr(0, 2045)} `;
+       }
+
+
+       
+     let embed3 = new Discord.MessageEmbed()
+           .setTitle(`Lyrics for ${title}`)
+           .setDescription(description)
+           .setColor("#2F3136");
+
+
+     
+
+     if (embed3.description.length >= 2048){
+        description = `${embed3.description.substr(0, 2045)} `;
+
+         
+    let embed4 = new Discord.MessageEmbed()
+        .setTitle(`Lyrics for ${title}`)
+        .setDescription(description)
+        .setColor("#2F3136");
+
+    message.channel.createSlider(message.author.id, [embed1, embed2, embed3, embed4])
 }
+
+
+    
+
+
+
+
+
+   
+    }
 
 }

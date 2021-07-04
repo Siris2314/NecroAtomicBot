@@ -41,9 +41,8 @@ const music = new DisTube(client,  { searchSongs: 0,
     highWaterMark: 1024*1024*64,
     leaveOnEmpty: false,
     leaveOnFinish: false,
-    leaveOnStop: true,
+    leaveOnStop: false,
     plugins: [new SpotifyPlugin({ parallel: true })],
-    // youtubeCookie --> prevents ERRORCODE: "429"
     youtubeDL: true,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
