@@ -8,7 +8,7 @@ module.exports = {
   name: "deep",
   description: "deep frys image",
 
-  async execute(message,args){
+  async execute(message,args,client){
 
     let image = message.attachments.array();
     if(image.length == 0 ){

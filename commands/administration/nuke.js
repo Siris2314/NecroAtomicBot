@@ -8,14 +8,14 @@ module.exports = {
             return message.channel.send('Perms Denied');
         let clearchannel = message.channel || message.channel.mentions.first()
         const filter = m => m.author.id === message.author.id
-        message.channel.send("Are sure you want to nuke this channel? Type: `yes` or `no`. You have 10 seconds...").then(r => r.delete(10000))
+        message.channel.send("Are sure you want to nuke this channel? Type: `yes` or `no`. You have 10 seconds to answer").then(r => r.delete(10000))
         message.channel.awaitMessages(filter, {
             max: 1,
             time: 10000
         }).then(collected => {
 
             if (collected.first().content === "no") {
-                return message.reply("I have cancelled the nuke!")
+                return message.channel.send("Nuke Cancelled")
             }
             if (collected.first().content === "yes") {
                 
@@ -30,7 +30,7 @@ module.exports = {
                 clearchannel.delete()
             }
         }).catch(err => {
-            message.channel.send("Your Time is over...")
+            message.channel.send("Ran out of time, process stopped")
         })
     }
 }

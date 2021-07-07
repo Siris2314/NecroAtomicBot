@@ -1,7 +1,7 @@
 const Discord = require('discord.js') 
 const moment = require('moment')
 module.exports = {
-      name: 'userinfo',
+      name: 'whois',
       description: 'Displays info for a user',
       async execute(message, args,client){
         
@@ -29,14 +29,23 @@ module.exports = {
             return arr;
         }
 
-        const member = message.mentions.members.first() || message.member;
+        const member = message.mentions.members.first()  || message.guild.members.cache.get(args[0]) || message.member;
         const user = message.mentions.users.first() || message.author;
         const roles = member.roles.cache 
             .sort((a,b) => b.position - a.position)
             .map(role => role.toString())
             .slice(0,-1)
 
-        const userFlags = member.user.flags.toArray();
+
+        let userflags = [];
+        if(member.user.flags === null){
+            userflags = [];
+        }
+        else{
+            userflags = member.user.flags.toArray();
+        }
+        
+
         const devices = user.presence?.clientStatus  || {};
         const embeduserinfo = new Discord.MessageEmbed()
             .setThumbnail(member.user.displayAvatarURL({dynamic: true, size:512}))
@@ -45,15 +54,16 @@ module.exports = {
             .addField('**Username:**', `\`${member.user.username}#${member.user.discriminator}\``,true)
             .addField('**ID:**',`\`${member.id}\``,true)
             .addField('**Avatar:**',`[\`Link to avatar\`](${member.user.displayAvatarURL({dynamic: true})})`,true)
-            .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).fromNow()} \``, true)
-            .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
-            .addField('**Flags:**',`\`${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
-            .addField('**Status:**',`\`${member.user.presence.status}\``,true)
+            .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
+            .addField('**Date Joined Server:**',`\`  ${moment(member.joinedAt).format('LL LTS')}\``,true)
+            .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
+            .addField('**Status:**',`\`${member.user.presence.status.toUpperCase()}\``,true)
             .addField('Devices: ',`${Object.entries(devices).length}`)
             .addField('**Game**:',`\`${member.user.presence.game || 'Not Currently Playing a Game.'}\``,true)
             .addField('**Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
             .addField(`\`${roles.length}\` **Roles:**`,`${roles.length < 10 ? roles.join(', '): roles.length > 10 ? trimArray(roles): 'None'}`)
             .setFooter(message.author.username, message.author.displayAvatarURL({dynamic: true}))
+            .setColor("RANDOM")
             .setTimestamp()
 
 
