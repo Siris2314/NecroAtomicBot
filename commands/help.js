@@ -139,7 +139,7 @@ module.exports = {
                                 .setColor("#2F3136")
                         );
                     }
-                    message.channel.createSlider(message.author.id, listOfEmbed)
+                    message.channel.createSlider(message.author.id, listOfEmbed,'>>','<<')
                 }
             } else {
                 const command =

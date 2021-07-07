@@ -770,9 +770,17 @@ client.on("messageDelete", async (message) => {
 
 client.on("guildCreate", async(guild) => {
 
-    let 
+    
 
     
+})
+
+client.on("guildDelete", async(guild) => {
+
+ await guildSchema.findOne({guildID: guild.id}, async(err,data) => {
+     if(!data) return;
+     data.delete()
+     })
 })
 
 

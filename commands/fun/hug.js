@@ -1,4 +1,4 @@
-const discord = require("discord.js");
+const Discord = require("discord.js");
 const { Random } = require("something-random-on-discord");
 
 module.exports = {
@@ -10,13 +10,11 @@ module.exports = {
     
     let data = await Random.getAnimeImgURL("hug");
 
-    let reason = args.slice(0).join(" ");
-
     if(!target){
-      return message.reply("Who Will U Hug? 💗")
+      return message.channel.send("Who Will U Hug? 💗")
     }
     
-    let embed = new discord.MessageEmbed()
+    let embed = new Discord.MessageEmbed()
         .setImage(data)
         .setColor("#2F3136")
         .setTitle(`${message.author.username} Hugs ${target.user.username} \ 💖`)
