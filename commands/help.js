@@ -6,6 +6,7 @@ const token = process.env.token;
 let prefix = process.env.prefix;
 
 
+
 module.exports = {
     name: "help",
     description: "Shows all available bot commands.",
@@ -139,7 +140,7 @@ module.exports = {
                                 .setColor("#2F3136")
                         );
                     }
-                    message.channel.createSlider(message.author.id, listOfEmbed,'>>','<<')
+            
                 }
             } else {
                 const command =

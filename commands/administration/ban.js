@@ -9,7 +9,7 @@ module.exports = {
 
     if(!message.member.hasPermission('BAN_MEMBERS')) return message.channel.send('Perms Denied')
 
-    const member = message.mentions.members.first()
+    const member = message.mentions.members.first() || message.guild.members.cache.get(args[0])
 
     if(!member) return message.channel.send('Please specify a member to ban')
 

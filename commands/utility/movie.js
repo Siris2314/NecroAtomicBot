@@ -35,19 +35,22 @@ module.exports = {
 
         const embed = new Discord.MessageEmbed()
           .setTitle(`${movie.title}`)
+          .setDescription(`Summary:\n` + `**${movie.plot}**`)
           .addField('**Year:**',`\`${movie.year}\``, true)
           .addField('**Parental Rating:**',`\`${movie.rated}\``, true)
           .addField('**Release Date:**',`\`${movie.released}\``, true)
           .addField('**Runtime:**',`\`${movie.runtime}\``, true)
           .addField('**Rating(Rotten Tomatoes):**',`\`${movie.ratings[1].value}\``, true)
+          .addField('**Rating(Metacritic):**',`\`${movie.ratings[2].value}\``, true)
           .addField('**Genre:**',`\`${movie.genre}\``, true)
           .addField('**Director:**',`\`${movie.director}\``, true)
           .addField('**Writers:**',`\`${movie.writer}\``, true)
-          .addField('**Summary:**',`\`${movie.plot}\``, true)
           .addField('**Actors:**',`\`${movie.actors}\``, true)
           .addField('**Language:**',`\`${movie.language}\``, true)
           .addField('**Country of Origin:**',`\`${movie.country}\``, true)
+          .addField('**Country of Origin:**',`\`${movie.country}\``, true)
           .setImage(movie.poster)
+          .setColor("RANDOM")
 
         message.channel.send(embed)
 

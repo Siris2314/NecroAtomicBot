@@ -20,6 +20,8 @@
 
     "@reconlx/discord.js": "^1.1.101",
 
+    "@weky/inlinereply": "^0.0.0",
+
     "aki-api": "^5.2.1",
 
     "alexa-bot-api": "^0.2.1",
@@ -61,6 +63,8 @@
     "discord-anti-alt": "^1.1.0",
 
     "discord-backup": "^2.5.0",
+
+    "discord-button-pagination": "^1.0.4",
 
     "discord-buttons": "^4.0.0",
 
@@ -190,7 +194,7 @@
 
     "weather-js": "^2.0.0",
 
-    "weky": "^2.1.0",
+    "weky": "^3.0.5",
 
     "youtube-search": "^1.1.6",
 

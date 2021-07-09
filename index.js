@@ -16,9 +16,15 @@ const counterSchema = require("./schemas/count");
 const key1 = process.env.key1;
 const Discord = require("discord.js");
 const path = require("path");
+const nsfwschema = require('./schemas/nsfw')
+const deepai = require('deepai')
+require('dotenv').config()
+const nsfwtoken = process.env.nsfw
+deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
 const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
+require('@weky/inlinereply')
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
     restTimeOffset: 0
@@ -75,7 +81,6 @@ const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const muteschema = require("./schemas/mute")
 const blacklistSchema = require("./schemas/blacklist");
-const { ClientUser } = require("discord.js");
 const starboardcollection = new Discord.Collection();
 
 module.exports = { blacklistedWords, afk, starboardcollection };
@@ -189,7 +194,6 @@ client.on("ready", async () => {
                 const guild = client.guilds.cache.get(value.Guild);
                 const memberCount = guild.memberCount;
                 if (value.Member != memberCount) {
-                    console.log("Member count differs");
                     const channel = guild.channels.cache.get(value.Channel);
 
                     channel.setName(`Members: ${memberCount}`);
@@ -334,6 +338,8 @@ client.on("message", async (message) => {
         }
     })
 
+    
+
     const splittedMsgs = message.content.split(" ");
 
     let deleting = false;
@@ -402,6 +408,30 @@ client.on("message", async (message) => {
 
     })
 
+    await nsfwschema.findOne({Server:message.guild.id}, async(err,data)=>{
+        if(!data || !data.Server == null) return;
+
+        const image = message.attachments.first().url
+
+        let response = await deepai.callStandardApi("nsfw-detector", {
+            image:image,
+        })
+        const score = response.output.nsfw_score
+        
+        if(score + .2 >= .5){
+            message.delete()
+            message.channel.send('NO NSFW Images allowed')
+        }
+
+
+
+
+
+
+
+
+    })
+
     await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
         if (!data) return;
 
@@ -429,6 +459,7 @@ client.on("message", async (message) => {
         const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
         channel.send(res.cnt);
     });
+
 
    if(await afkschema.findOne({Guild:message.guild.id},{user: message.author.id})){
        let afkProfile = await afkschema.findOne({user: message.author.id})
@@ -790,7 +821,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     const user = await client.users.fetch(newState.id);
     const member = newState.guild.member(user);
     await voiceSchema.findOne({ Guild: oldState.guild.id }, async (e, data) => {
-        if(data == null) return;
+        if(!data) return;
         if (!oldState.channel && newState.channel.id === data.Channel) {
             const channel = await newState.guild.channels.create(user.tag, {
                 type: "voice",
