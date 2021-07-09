@@ -67,10 +67,6 @@ module.exports = {
         });
         collector.on("collect", async (reaction, user) => {
             switch (reaction.emoji.name) {
-                case "❌":
-                    await collector.stop();
-                    return mainMessage.delete();
-                    break;
                 case "⏪":
                     if (evaled.length === 1 || page === 0) return;
                     page = 0;
@@ -82,13 +78,6 @@ module.exports = {
                     } else {
                         page -= 1;
                     }
-                    break;
-                case "⏹️":
-                    await collector.stop();
-                    for (let reaction of mainMessage.reactions.cache.array()) {
-                        await reaction.users.remove(client.user.id);
-                    }
-                    return;
                     break;
                 case "▶️":
                     if (evaled.length === 1) return;

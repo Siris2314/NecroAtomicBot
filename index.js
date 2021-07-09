@@ -3,6 +3,7 @@ const token = process.env.token;
 const mongoPath = process.env.mongoPath;
 const mongoose = require("mongoose");
 const nekoyasui = require("nekoyasui");
+const background = './assets/background.jpg'
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require('colors');
@@ -15,11 +16,18 @@ const counterSchema = require("./schemas/count");
 const key1 = process.env.key1;
 const Discord = require("discord.js");
 const path = require("path");
+const nsfwschema = require('./schemas/nsfw')
+const deepai = require('deepai')
+require('dotenv').config()
+const nsfwtoken = process.env.nsfw
+deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
 const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
+require('@weky/inlinereply')
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
+    restTimeOffset: 0
 });
 const fs = require("fs");
 const { GiveawaysManager } = require("discord-giveaways");
@@ -31,7 +39,7 @@ const glob = require("glob");
 
 Levels.setURL(mongoPath);
 
-const search = require("youtube-search");
+
 const DisTube = require("distube");
 const afkschema = require('./schemas/afk');
 const music = new DisTube(client,  { searchSongs: 0,
@@ -39,9 +47,8 @@ const music = new DisTube(client,  { searchSongs: 0,
     highWaterMark: 1024*1024*64,
     leaveOnEmpty: false,
     leaveOnFinish: false,
-    leaveOnStop: true,
+    leaveOnStop: false,
     plugins: [new SpotifyPlugin({ parallel: true })],
-    // youtubeCookie --> prevents ERRORCODE: "429"
     youtubeDL: true,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
@@ -187,7 +194,6 @@ client.on("ready", async () => {
                 const guild = client.guilds.cache.get(value.Guild);
                 const memberCount = guild.memberCount;
                 if (value.Member != memberCount) {
-                    console.log("Member count differs");
                     const channel = guild.channels.cache.get(value.Channel);
 
                     channel.setName(`Members: ${memberCount}`);
@@ -213,7 +219,11 @@ client.on("ready", async () => {
         client.user.setActivity(status);
         index++;
     }, 5000);
+
+
+
 });
+
 
 
 client.once("disconnect", () => {
@@ -249,6 +259,7 @@ client.on("message", async (message) => {
         return;
     }
 
+    
     function Check(str) {
         if (
             client.emojis.cache.find((emoji) => emoji.name === str) ||
@@ -327,6 +338,8 @@ client.on("message", async (message) => {
         }
     })
 
+    
+
     const splittedMsgs = message.content.split(" ");
 
     let deleting = false;
@@ -395,6 +408,30 @@ client.on("message", async (message) => {
 
     })
 
+    await nsfwschema.findOne({Server:message.guild.id}, async(err,data)=>{
+        if(!data || !data.Server == null) return;
+
+        const image = message.attachments.first().url
+
+        let response = await deepai.callStandardApi("nsfw-detector", {
+            image:image,
+        })
+        const score = response.output.nsfw_score
+        
+        if(score + .2 >= .5){
+            message.delete()
+            message.channel.send('NO NSFW Images allowed')
+        }
+
+
+
+
+
+
+
+
+    })
+
     await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
         if (!data) return;
 
@@ -422,6 +459,7 @@ client.on("message", async (message) => {
         const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
         channel.send(res.cnt);
     });
+
 
    if(await afkschema.findOne({Guild:message.guild.id},{user: message.author.id})){
        let afkProfile = await afkschema.findOne({user: message.author.id})
@@ -511,6 +549,30 @@ client.on("message", async (message) => {
 
     const prefix = settings.prefix;
 
+
+ try{
+
+    if(message.mentions.users.first().id === client.user.id){
+        client.embed(message, {
+            title: `Greetings ${message.author.username}`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
+            color:'BLUE',
+            thumbnail:{
+                url:message.author.client.user.displayAvatarURL({dynamic:true})
+            },
+            footer: {
+                text:`${message.author.username}`,
+                iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
+            },
+            timestamp: Date.now()
+
+
+        })
+    }
+} catch(err){
+
+}
+  
     if (!message.content.startsWith(prefix)) return;
 
 
@@ -572,7 +634,7 @@ client.on("guildMemberAdd", async (member) => {
             .setColor("message-box", "#2063E9")
             .setColor("title", "#2063E9")
             .setColor("avatar", "#2063E9")
-            .setBackground("./background.jpg")
+            .setBackground(background)
             .toAttachment();
  
     const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
@@ -584,7 +646,7 @@ client.on("guildMemberAdd", async (member) => {
 
     const data = await muteschema.findOne({Guild:member.guild.id});
     if(!data) return 
-    const user = data.User.findIndex((prop) => prop === Member.id)
+    const user = data.Users.findIndex((prop) => prop === member.id)
     if(user == -1 ) return;
     const role = member.guild.roles.cache.find(
         (role) => role.name.toLowerCase() === "muted"
@@ -738,7 +800,18 @@ client.on("messageDelete", async (message) => {
 });
 
 client.on("guildCreate", async(guild) => {
+
     
+
+    
+})
+
+client.on("guildDelete", async(guild) => {
+
+ await guildSchema.findOne({guildID: guild.id}, async(err,data) => {
+     if(!data) return;
+     data.delete()
+     })
 })
 
 
@@ -748,7 +821,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     const user = await client.users.fetch(newState.id);
     const member = newState.guild.member(user);
     await voiceSchema.findOne({ Guild: oldState.guild.id }, async (e, data) => {
-        if(data == null) return;
+        if(!data) return;
         if (!oldState.channel && newState.channel.id === data.Channel) {
             const channel = await newState.guild.channels.create(user.tag, {
                 type: "voice",

@@ -6,6 +6,7 @@ const token = process.env.token;
 let prefix = process.env.prefix;
 
 
+
 module.exports = {
     name: "help",
     description: "Shows all available bot commands.",
@@ -67,15 +68,20 @@ module.exports = {
                             value: "```" + prefix + " help wip```",
                         },
                         {
-                            name: "GameInfo",
+                            name: ":frame_photo: Images",
+                            value: "```" + prefix + " help images```",
+                        },
+                        {
+                            name: ":video_game: GameInfo",
                             value: "```" + prefix + " help gameinfo```",
                         }
                     )
                     .setDescription(
                         `Use \`${prefix} help\` followed by a command name to get more additional information on a command. For example: \`${prefix} help ban\`.`
                     )
+                    .setFooter(message.author.username, message.author.displayAvatarURL({dynamic:true}))
                     .setTimestamp()
-                    .setColor(roleColor)
+                    .setColor("#2F3136")
             );
         } else {
             if (commands[args[0]] != undefined) {
@@ -111,7 +117,7 @@ module.exports = {
                             })
                         )
                         .setTimestamp()
-                        .setColor(roleColor);
+                        .setColor("#2F3136")
                     message.channel.send(a);
                 } else {
                     for (var i = 0; i < categories.length; i++) {
@@ -131,10 +137,10 @@ module.exports = {
                                     })
                                 )
                                 .setTimestamp()
-                                .setColor(roleColor)
+                                .setColor("#2F3136")
                         );
                     }
-                    message.channel.createSlider(message.author.id, listOfEmbed,emojiList[1], emojiList[0])
+            
                 }
             } else {
                 const command =
@@ -186,7 +192,7 @@ module.exports = {
                         message.author.displayAvatarURL({ dynamic: true })
                     )
                     .setTimestamp()
-                    .setColor(roleColor);
+                    .setColor("#2F3136")
                 return message.channel.send(embed);
             }
         }

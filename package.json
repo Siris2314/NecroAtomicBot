@@ -20,6 +20,8 @@
 
     "@reconlx/discord.js": "^1.1.101",
 
+    "@weky/inlinereply": "^0.0.0",
+
     "aki-api": "^5.2.1",
 
     "alexa-bot-api": "^0.2.1",
@@ -54,11 +56,17 @@
 
     "dayjs": "^1.10.5",
 
+    "decancer": "^1.0.2",
+
+    "deepai": "^1.0.17",
+
     "discord-anti-alt": "^1.1.0",
 
     "discord-backup": "^2.5.0",
 
-    "discord-buttons": "^3.2.1",
+    "discord-button-pagination": "^1.0.4",
+
+    "discord-buttons": "^4.0.0",
 
     "discord-canvas": "^1.4.1",
 
@@ -94,11 +102,13 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.7.1",
+    "genshin-db": "^3.7.3",
 
     "gif-encoder-2": "^1.0.5",
 
     "glob": "^7.1.6",
+
+    "imdb-api": "^4.4.1",
 
     "jumble-words": "^1.0.1",
 
@@ -126,7 +136,7 @@
 
     "ms": "^2.1.3",
 
-    "nekoyasui": "^1.2.8",
+    "nekoyasui": "^1.3.2",
 
     "node-addon-api": "^3.1.0",
 
@@ -168,6 +178,8 @@
 
     "scraper-instagram": "^1.0.17",
 
+    "solenolyrics": "^5.0.0",
+
     "something-random-on-discord": "^3.4.4",
 
     "sourcebin": "^4.1.3",
@@ -176,11 +188,13 @@
 
     "sqlite3": "^5.0.2",
 
+    "string-toolkit": "^1.4.0",
+
     "twemoji-parser": "^13.0.0",
 
     "weather-js": "^2.0.0",
 
-    "weky": "^2.0.9",
+    "weky": "^3.0.5",
 
     "youtube-search": "^1.1.6",
 
@@ -208,9 +222,9 @@
 
   "engines": {
 
-    "node": ">=14.0.0",
+    "node": "14.x",
 
-    "npm": ">=6.0.0"
+    "npm": "6.x"
 
   },
 

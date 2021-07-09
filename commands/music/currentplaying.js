@@ -1,3 +1,4 @@
+const image = './assets/current.png'
 const Discord = require('discord.js');
 const Canvas = require('canvas');
 
@@ -48,7 +49,7 @@ module.exports = {
         let oftime = `${queue.formattedCurrentTime}/${cursong.formattedDuration}`
         const canvas = Canvas.createCanvas(800, 200);
         const ctx = canvas.getContext('2d');
-        const background = await Canvas.loadImage('./current.png');
+        const background = await Canvas.loadImage(image);
 
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         const url = `https://img.youtube.com/vi/${cursong.id}/mqdefault.jpg`

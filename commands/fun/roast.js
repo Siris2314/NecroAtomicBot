@@ -2,6 +2,8 @@ const fetch = require('node-fetch')
 const Discord = require('discord.js')
 
 module.exports = {
+    name:"roast",
+    description:"Roast Another User",
     async execute(message,args,client){
         if(!args[0]) return message.channel.send('Invalid Format');
 
@@ -13,7 +15,12 @@ module.exports = {
             .then(res => res.json())
             .then(json => {
                 const roastEmbed = new Discord.MessageEmbed()
-                    .setTitle(mentionedUser.user.tag + '')
+                    .setTitle(`${message.author.tag}'s roast to ` + mentionedUser.tag)
+                    .setDescription(json.insult)
+                    .setTimestamp()
+                    .setFooter('Evil Insult API')
+
+                message.channel.send(roastEmbed)
 
             })
     }
