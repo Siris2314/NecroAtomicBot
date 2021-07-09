@@ -408,6 +408,7 @@ client.on("message", async (message) => {
 
     })
 
+  if(message.attachments.first()){
     await nsfwschema.findOne({Server:message.guild.id}, async(err,data)=>{
         if(!data || !data.Server == null) return;
 
@@ -431,6 +432,7 @@ client.on("message", async (message) => {
 
 
     })
+  }
 
     await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
         if (!data) return;
