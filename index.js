@@ -24,7 +24,7 @@ deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
 const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
-require('@weky/inlinereply')
+// require('@weky/inlinereply')
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
     restTimeOffset: 0
