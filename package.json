@@ -20,8 +20,6 @@
 
     "@reconlx/discord.js": "^1.1.101",
 
-    "@weky/inlinereply": "^0.0.0",
-
     "aki-api": "^5.2.1",
 
     "alexa-bot-api": "^0.2.1",
@@ -70,10 +68,6 @@
 
     "discord-canvas": "^1.4.1",
 
-    "discord-epagination": "^1.2.1",
-
-    "discord-giveaways": "^4.4.3",
-
     "discord-rpc": "^4.0.1",
 
     "discord-slider": "^1.1.6",
@@ -85,8 +79,6 @@
     "discord-ytdl-core": "^5.0.2",
 
     "discord.js": "^12.5.3",
-
-    "discord.js-pagination": "^1.0.3",
 
     "distube": "^3.0.0-beta.32",
 
@@ -102,7 +94,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.7.3",
+    "genshin-db": "^3.7.4",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -145,8 +137,6 @@
     "node-os-utils": "^1.3.5",
 
     "node-superfetch": "^0.1.11",
-
-    "node-valorant-api": "^0.5.0",
 
     "numeral": "^2.0.6",
 
