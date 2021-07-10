@@ -11,6 +11,7 @@ module.exports = {
 
         if(!message.guild.me.hasPermission("BAN_MEMBERS")) return message.channel.send("I do not have perms")
 
+        const reason = args.slice(1).join(" ") || "No reason provided";
         const id = args.join(' ')
         if(!id) return message.channel.send("Please provide ID of member to ban")
 
@@ -19,7 +20,7 @@ module.exports = {
 
         const banEmbed = new MessageEmbed()
         .setTitle('Banned Member(Outside of Server Ban)!')
-        .setDescription(`${member} was successfully banned.`)
+        .setDescription(`${member.username} was successfully banned.`)
         .addField('Moderator', message.member, true)
         .addField('Member', member, true)
         .setColor("RANDOM")

@@ -30,7 +30,6 @@ const client = new Discord.Client({
     restTimeOffset: 0
 });
 const fs = require("fs");
-const { GiveawaysManager } = require("discord-giveaways");
 const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
@@ -152,16 +151,7 @@ client.music = music;
 
 
 client.commands = new Discord.Collection();
-client.giveawaysManager = new GiveawaysManager(client, {
-    storage: "./giveaways.json",
-    updateCountdownEvery: 5000,
-    default: {
-        botsCanWin: false,
-        exemptPermission: ["MANAGE_MESSAGES", "ADMINSTRATOR"],
-        embedColor: "RANDOM",
-        reaction: "🎁",
-    },
-});
+
 
 
 client.embed = async(message, options) => {
@@ -555,6 +545,7 @@ client.on("message", async (message) => {
  try{
 
     if(message.mentions.users.first().id === client.user.id){
+        console.log(message.mentions.users.first())
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
             description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
