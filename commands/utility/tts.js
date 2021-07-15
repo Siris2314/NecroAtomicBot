@@ -6,29 +6,36 @@ module.exports = {
  async execute(message, args,client){
         if (!args[0])
             return message.channel.send(
-                "**Please Enter Something To Convert To Speech!**"
+                "Please enter text to speak"
             );
         let text = args.join(" ");
 
         if (text.length > 1024)
             return message.channel.send(
-                "**Please Enter Text Between 0 And 1024 Characters!**"
+                "Length of text must be in between 0 and 1024 characters"
             );
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel)
-            return message.channel.send("**Please Join A Voice Channel First!**");
+            return message.channel.send("Must Join VC to use this command");
         if (
             !voiceChannel
                 .permissionsFor(message.client.user)
                 .has(["CONNECT", "SPEAK"])
         ) {
-            return message.channel.send(
-                "**Missing Permissions For The Voice Channel! - [CONNECT, SPEAK]**"
-            );
+           client.embed(message, {
+                title:'Missing Permissions',
+                description:'Missing Perms For The Voice Channel - [CONNECT, SPEAK], please provide to proceed',
+                timestamp:Date.now()
+           })
         }
 
-        if (client.voice.connections.has(voiceChannel.guild.id))
-            return message.channel.send("**I Am Already Converting TTS!**");
+        if (client.voice.connections.has(voiceChannel.guild.id)){
+          client.embed(message, {
+            title:'Already Converting Text',
+            description:'Please Be Patience',
+            timestamp: Date.now()
+        })
+    }
         try {
             const connection = await voiceChannel.join();
             const { url } = await request
@@ -41,9 +48,11 @@ module.exports = {
         } catch (err) {
             voiceChannel.leave();
             console.log(err)
-            return message.channel.send(
-                `**Oh No, An Error Occurred: Try Again Later!**`
-            );
+            client.embed(message, {
+                title:'An Error Has Occured',
+                description:'Please Try Again Later',
+                timestamp: Date.now()
+            })
         }
     }
 };
