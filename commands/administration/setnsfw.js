@@ -10,6 +10,22 @@ module.exports = {
 
         if(!message.member.hasPermission('ADMINISTRATOR')) return message.channel.send('Invalid permissions')
 
+        if(!option){
+            client.embed(message, {
+                title:'No Option Provided',
+                description:`Please provide an option either on or off`,
+                color:'#2F3136',
+                thumbnail: {
+                    url:message.guild.iconURL({dynamic:true})
+                },
+                timestamp: Date.now(),
+                
+            }) 
+
+
+        }
+     else{
+
         if(option.toLowerCase() === 'on'){
             await Schema.findOne({Server:message.guild.id}, async(err,data)=>{
                 if(!data){
@@ -75,9 +91,13 @@ module.exports = {
 
         }
 
+     }
+
     }
 
 
 
 
+
 }
+
