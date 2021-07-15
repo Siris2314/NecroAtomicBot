@@ -196,9 +196,8 @@ client.on("ready", async () => {
     }, ms("15 Minutes"));
 
     const arrayOfStatus = [
-        `${client.guilds.cache.size} servers`,
-        `${client.channels.cache.size} channels`,
-        `${client.users.cache.size} users`,
+        `Multi-Purpose Bot`,
+        `Watching Over Everyone`,
         `run !necro`,
     ];
 

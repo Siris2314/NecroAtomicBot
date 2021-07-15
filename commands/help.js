@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
+const pagination = require("discord-epagination");
 require("dotenv").config();
 const schema = require("../schemas/Guilds");
 const token = process.env.token;
@@ -22,7 +23,7 @@ module.exports = {
             }
         );
         const emojiList = ["⬅️", "➡️"]
-        const timeout = 100000
+        const timeout = 600000
 
         const roleColor =
             message.guild.me.displayHexColor === "#000000"
@@ -140,6 +141,12 @@ module.exports = {
                                 .setColor("#2F3136")
                         );
                     }
+                    pagination.createSimpleSlider(
+                        message,
+                        listOfEmbed,
+                        ["◀️", "▶️"],
+                        30000
+                      );
             
                 }
             } else {

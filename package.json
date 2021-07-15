@@ -68,6 +68,8 @@
 
     "discord-canvas": "^1.4.1",
 
+    "discord-epagination": "^1.2.6-1",
+
     "discord-rpc": "^4.0.1",
 
     "discord-slider": "^1.1.6",
@@ -141,6 +143,8 @@
     "node-superfetch": "^0.1.11",
 
     "numeral": "^2.0.6",
+
+    "opusscript": "^0.0.8",
 
     "path": "^0.12.7",
 
