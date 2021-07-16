@@ -103,7 +103,7 @@ music
                 )}`
             )
             .setColor("RANDOM")
-            .setThumbnail(song.thumbnail);
+            .setImage(song.thumbnail);
         queue.textChannel.send(embed);
     })
     .on("addSong", (queue, song) => {

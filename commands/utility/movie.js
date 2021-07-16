@@ -48,7 +48,6 @@ module.exports = {
           .addField('**Actors:**',`\`${movie.actors}\``, true)
           .addField('**Language:**',`\`${movie.language}\``, true)
           .addField('**Country of Origin:**',`\`${movie.country}\``, true)
-          .addField('**Country of Origin:**',`\`${movie.country}\``, true)
           .setImage(movie.poster)
           .setColor("RANDOM")
 
