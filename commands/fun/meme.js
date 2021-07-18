@@ -5,7 +5,7 @@ name: "meme",
 description:'Meme command to retrieve memes',
 async execute(message, args,client) {
  const res = await fetch(`http://api.popcatdev.repl.co/meme`)
-    const meme = await res.json()
+ const meme = await res.json()
 
     client.embed(message,{
         title: meme.title,

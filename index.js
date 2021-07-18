@@ -27,6 +27,7 @@ const voiceSchema = require("./schemas/customvoice");
 // require('@weky/inlinereply')
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
+    intents: Discord.Intents.ALL,
     restTimeOffset: 0
 });
 const fs = require("fs");
@@ -34,8 +35,17 @@ const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+const {VoiceClient} = require('djs-voice');
 
+const voiceClient = new VoiceClient({
+    allowBots:false,
+    client:client,
+    debug:false,
+    mongooseConnectionString:mongoPath,
 
+})
+
+client.vcclient = voiceClient;
 Levels.setURL(mongoPath);
 
 
@@ -810,6 +820,8 @@ client.on("guildDelete", async(guild) => {
 const voiceCollection = new Discord.Collection();
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
+
+    voiceClient.startListener(oldState,newState);
     const user = await client.users.fetch(newState.id);
     const member = newState.guild.member(user);
     await voiceSchema.findOne({ Guild: oldState.guild.id }, async (e, data) => {
