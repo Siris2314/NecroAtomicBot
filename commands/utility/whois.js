@@ -20,6 +20,13 @@ module.exports = {
             VERIFIED_DEVELOPER: 'Verified Bot Developer'
         };
 
+        const status = {
+            online: "Online",
+            idle: "Idle",
+            dnd: "Do Not Disturb",
+            offline: "Offline/Invisible"
+        };
+
         function trimArray(arr, maxLen = 10){
             if(arr.length > maxLen){
                 const len = arr.length - maxLen;
@@ -55,9 +62,9 @@ module.exports = {
             .addField('**ID:**',`\`${member.id}\``,true)
             .addField('**Avatar:**',`[\`Link to avatar\`](${member.user.displayAvatarURL({dynamic: true})})`,true)
             .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
-            .addField('**Date Joined Server:**',`\`  ${moment(member.joinedAt).format('LL LTS')}\``,true)
+            .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
             .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
-            .addField('**Status:**',`\`${member.user.presence.status.toUpperCase()}\``,true)
+            .addField('**Status:**',`\`${status[member.user.presence.status]}\``,true)
             .addField('Devices: ',`${Object.entries(devices).length}`)
             .addField('**Game**:',`\`${member.user.presence.game || 'Not Currently Playing a Game.'}\``,true)
             .addField('**Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
