@@ -28,6 +28,8 @@
 
 ### Invite Link for The Bot: https://dsc.gg/necroatomic
 
+### If you have any questions or concerns about the Bot, feel free to join the support server: https://discord.gg/jY8Esuxfh9
+
 
 
 
