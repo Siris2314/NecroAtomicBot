@@ -19,7 +19,7 @@
 
 # Necro is currently being hosted on Google Cloud, any changes to hosting will be listed on this GitHub Repository
 
-![image](https://user-images.githubusercontent.com/25334323/126578237-ecf7b4d1-f4b3-46a0-9af5-0d4cd5358a30.png)
+![image](https://user-images.githubusercontent.com/25334323/126578291-99fee6bb-a889-4da1-9ebe-2a8b11e53067.png)
 
 
 
