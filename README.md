@@ -3,7 +3,7 @@
 # **Welcome to the All-New NecroAtomic Bot**
 
 
-   ### NecroAtomic Bot is a multipurpose bot made to cut the plethora of bots that exist on discord servers, it encapsulates a ton of features into one powerful bot        made by a user for users. Currently their exists nine category of commands:
+   ### NecroAtomic Bot is a multipurpose bot made to cut the plethora of bots that exist on discord servers, it encapsulates a ton of features into one powerful bot made by a user for users. Currently their exists nine category of commands:
                
                - Moderation: Server Moderation and Setup Commands(Will be split into a new category called Server Setup at a later date)
                - Fun: Fun commands that users can play around with
