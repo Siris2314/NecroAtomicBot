@@ -21,6 +21,8 @@
 
 ![image](https://user-images.githubusercontent.com/25334323/126578291-99fee6bb-a889-4da1-9ebe-2a8b11e53067.png)
 
+### To any bot developers - Google Cloud is offering one year of hosting for free and so far it has been a great host for the bot
+
 
 
 
