@@ -1,30 +1,29 @@
-const Canvas = require('canvas');
-const Discord = require('discord.js')
+const Discord = require("discord.js");
+const { createCanvas, loadImage } = require('canvas')
 
 module.exports = {
+  name: "amogus",
+  description: "Amogus Image Command",
+ async execute(message, args, client) {
 
-  name:'amogus',
-  description:'Amogus Avatar Command',
+    let user = message.mentions.users.first() || client.users.cache.get(args[0]) || message.author
 
-async execute(message, args,client) {
-    const member = message.mentions.members.first() || message.member;
-    const canvas = Canvas.createCanvas(867, 892);
+    const avatar = await loadImage(
+      user.displayAvatarURL({ format: "png" })
+    );
+    const canvas = createCanvas(867, 892);
     const ctx = canvas.getContext("2d");
-    const background = await Canvas.loadImage(
-      "https://i.imgur.com/OopLtL2.jpeg",
+    const background = await loadImage(
+      "https://cdn.discordapp.com/attachments/802613142751805471/829448447303221327/amogus_rap_editado.png"
     );
+    ctx.drawImage(avatar, 270, 100, 270, 250);
+
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    const avatar = await Canvas.loadImage(
-      member.user.displayAvatarURL({ format: "jpg" }),
-    );
-
-    ctx.drawImage(avatar, 350, 350, 300, 300);
     const attachment = new Discord.MessageAttachment(
       canvas.toBuffer(),
-      `amogus${member.user.username}.jpg`,
+      'Amogus'
     );
     message.channel.send(attachment);
-  },
 
+  }
 }

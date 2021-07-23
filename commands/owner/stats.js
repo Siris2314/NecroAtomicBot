@@ -33,6 +33,7 @@ module.exports = {
                 .addField(`Memory Used`, `\`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} / ${(os.totalmem() / 1024 /1024).toFixed(2)} MB\``, false)
                 .addField(`Websocket Latency`, `\`${client.ws.ping}MS\``, false)
                 .addField("Users", `\`${users} Users\``, false)
+                .addField("Created at ", `\`${client.user.createdAt}\``,false)
                 .addField("Servers", `\`${guilds} Servers\``,false)
                 .addField("Channels", `\`${channels} Channels\``,false)
                 .addField("Discord Dev Version", `\`v${version}\``, false)

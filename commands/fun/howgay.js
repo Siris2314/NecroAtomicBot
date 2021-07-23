@@ -1,32 +1,43 @@
 const Discord = require("discord.js")
+const fetch = require("node-fetch");
 
 module.exports = {
     name: 'howgay',
-    description: 'Sends you your gay rate',
+    description: 'Gay Rate Command',
     async execute(message, args,client){
-        const taggedUser = message.mentions.users.first();
+        const member = message.mentions.users.first() || message.author;
+        const user = member.displayAvatarURL({dynamic:false})
         let gayrate = Math.floor(Math.random() * 101)
 
-    if(!taggedUser) {
-        const user = message.author
-        let gayrateEmbed = new Discord.MessageEmbed()
-                .setTitle("Gayrate Machine")
-                .setColor("#000000")
-                .setDescription(`${user.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
-                .setFooter(message.client.user.username, message.client.user.avatarURL())
-        message.channel.send(gayrateEmbed).catch(e => {
-        console.log(e)
-    });
+       let image = " ";
 
-    } else {
-        let argsEmbed = new Discord.MessageEmbed()
+     image = await fetch(`https://api.cool-img-api.ml/gay/?image=${user}`)
+            .then(response => 
+                image = response.url
+        )
+
+        if(gayrate >=70){
+
+         let embed = new Discord.MessageEmbed()
             .setTitle("Gayrate Machine")
             .setColor("#000000")
-            .setDescription(`${taggedUser.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
+            .setImage(image)
+            .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
             .setFooter(message.client.user.username, message.client.user.avatarURL())
-        message.channel.send(argsEmbed).catch(e => {
-        console.log(e)
-                    })
-                }
-    }
+            message.channel.send(embed)
+
+
+        }
+    else{
+            
+    
+        let embed = new Discord.MessageEmbed()
+            .setTitle("Gayrate Machine")
+            .setColor("RANDOM")
+            .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
+            .setFooter(message.client.user.username, message.client.user.avatarURL())
+        message.channel.send(embed)
+     }
+    
+}
 }

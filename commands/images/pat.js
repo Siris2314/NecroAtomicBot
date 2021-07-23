@@ -1,6 +1,4 @@
-const fetch = require('node-fetch')
-require('dotenv').config() 
-const token = process.env.monkedev
+const {image} = require('nekoyasui');
 const Discord = require('discord.js')
 
 module.exports = {
@@ -11,14 +9,15 @@ module.exports = {
 
         const member = message.mentions.members.first()  || message.guild.members.cache.get(args[0]) || message.member;
 
-       await fetch(`https://api.monkedev.com/canvas/petpet?imgUrl=${member.user.displayAvatarURL({dynamic: false})}&key=${token}`)
-            .then(response => {
+        const petpet = await image.petpet(member.user.displayAvatarURL({ size: 4096, format: "png" }), {
+            frames: 40, 
+            better: true 
+        });
+    
+        return message.channel.send(new Discord.MessageAttachment(petpet, `pat.gif`));
 
-                const attachment = new Discord.MessageAttachment(response.body, 'pat.gif');
-
-                message.channel.send(attachment);
-            })
-
+        
+    
     }
 
 }
