@@ -5,6 +5,7 @@ require("dotenv").config();
 const schema = require("../schemas/Guilds");
 const token = process.env.token;
 let prefix = process.env.prefix;
+const image = `https://cdn.discordapp.com/attachments/867151384703795241/867465639262027776/bot_long_banner.png`
 
 
 
@@ -80,8 +81,7 @@ module.exports = {
                     .setDescription(
                         `Use \`${prefix} help\` followed by a command name to get more additional information on a command. For example: \`${prefix} help ban\`.`
                     )
-                    .setFooter(message.author.username, message.author.displayAvatarURL({dynamic:true}))
-                    .setTimestamp()
+                    .setImage(image)
                     .setColor("#2F3136")
             );
         } else {

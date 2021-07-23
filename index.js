@@ -7,6 +7,7 @@ const background = './assets/background.jpg'
 const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require('colors');
+const fetch = require('node-fetch');
 const logger = require('./logger')
 const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
@@ -61,7 +62,6 @@ const music = new DisTube(client,  { searchSongs: 0,
     youtubeDL: true,
     updateYouTubeDL: true, });
 const { MessageAttachment } = require("discord.js");
-const { getPokemon } = require("./commands/fun/pokemon");
 client.snipes = new Discord.Collection();
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
@@ -314,6 +314,16 @@ client.on("message", async (message) => {
     const randomXP = Math.floor(Math.random() * 29) + 1;
     const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP);
 
+
+    if(message.content.includes("https://twitter.com/")){
+        message.delete()
+        let str = message.content.replace("https://twitter.com/","")
+        let newstr = `https://fxtwitter.com/${str}`
+
+        message.channel.send(newstr);
+    
+    } 
+
     await inviteschema.findOne({Server: message.guild.id}, async(err, data) => {
         if(!data) return;
         if(data.Server === message.guild.id){
@@ -438,27 +448,13 @@ client.on("message", async (message) => {
 
         if (message.channel.id !== data.Channel) return;
 
-        const master = await nekoyasui.search.user(message, ownerID);
-        const channel = await nekoyasui.search.channel(message, data.Channel);
-        if (!channel) return;
-        if (!master) console.log("Rip Bozo");
-        const bot = {
-            name: message.client.user.username,
-            birthdate: "10/24/2001",
-            prefix: message.client.prefix,
-            gender: "Genderless",
-            description: "Omnipotent Bot",
-            country: "Latveria",
-            city: "Doomstadt",
-        };
-        const owner = {
-            id: master.id,
-            username: master.username,
-            discriminator: master.discriminator,
-            invite: "",
-        };
-        const res = await nekoyasui.chat(String(message.content), message.author.id, bot, owner);
-        channel.send(res.cnt);
+        const text = String(message.content);
+        const res = await fetch(`http://luminabot.xyz/api/chatbot?text=${encodeURIComponent(text)}&uid=${message.author.id}`)
+        const out = await res.json()
+
+        message.channel.send(out.response.cnt)
+
+        
     });
 
 
@@ -553,8 +549,7 @@ client.on("message", async (message) => {
 
  try{
 
-    if(message.mentions.users.first().id === client.user.id){
-        console.log(message.mentions.users.first())
+    if(message.mentions.has(client.user.id)){
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
             description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
