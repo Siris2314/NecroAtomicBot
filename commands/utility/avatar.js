@@ -11,7 +11,11 @@ module.exports = {
           args.join(" ") || u.user.tag.toLowerCase() === args.join(" ")
         )
       ) ||
-      message.member;
+      message.member ||  message.guild.members.cache.find((u) =>
+      u.user.username.toUpperCase().includes(
+        args.join(" ") || u.user.tag.toLowerCase() === args.join(" ")
+      )
+    )
     const pngFormat = user.user.displayAvatarURL({ format: "png" });
     const jpgFormat = user.user.displayAvatarURL({ format: "jpg" });
     const webpFormat = user.user.displayAvatarURL();
@@ -22,7 +26,7 @@ module.exports = {
         .setDescription(
           `[png](${pngFormat}) | [jpg](${jpgFormat}) | [webp](${webpFormat})`
         )
-        .setImage(avatar)
+        .setThumbnail(avatar)
     );
   },
 };
