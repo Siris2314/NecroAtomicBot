@@ -45,6 +45,10 @@ const voiceClient = new VoiceClient({
     mongooseConnectionString:mongoPath,
 
 })
+const YoutubePoster = require("discord-youtube");
+
+const alexa = require("alexa-bot-api-v3");
+const ai = new alexa();
 
 client.vcclient = voiceClient;
 Levels.setURL(mongoPath);
@@ -75,6 +79,7 @@ client.discordTogether = new DiscordTogether(client, {
 });
 const disbut = require('discord-buttons')(client)
 require('discord-slider')(client);
+const JoshMongo = require("@joshdb/mongo");
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});
@@ -86,7 +91,6 @@ const inviteschema = require("./schemas/anti-invite")
 const blacklistedWords = new Discord.Collection();
 const ghostpingschema = require("./schemas/ghostping")
 const Pings = new Discord.Collection()
-const { chatBot } = require("reconlx");
 const chatschema = require("./schemas/chatbot-channel");
 const muteschema = require("./schemas/mute")
 const blacklistSchema = require("./schemas/blacklist");
@@ -172,7 +176,20 @@ client.embed = async(message, options) => {
 client.on("ready", async () => {
     console.log(botname);
     console.log("Heroku Connected");
+    const options = {
+        loop_delays_in_min: 5,
+        defaults: {
+          Notification:
+            "<@{discorduser}> Posted: **{videotitle}**, as `{videoauthorname}`\n{videourl}",
+        },
+        provider: JoshMongo,
+        providerOptions: {
+          collection: "YoutubePoster",
+          url: mongoPath,
+        },
+      };
 
+    client.YTP = new YoutubePoster(client,options);
 
 
     await mongoose
@@ -448,11 +465,11 @@ client.on("message", async (message) => {
 
         if (message.channel.id !== data.Channel) return;
 
-        const text = String(message.content);
-        const res = await fetch(`http://luminabot.xyz/api/chatbot?text=${encodeURIComponent(text)}&uid=${message.author.id}`)
-        const out = await res.json()
-
-        message.channel.send(out.response.cnt)
+        let context = []
+        ai.getReply(message.content, context, 'english','OwO').then(reply => {
+            message.channel.send(reply); 
+            context.push(reply);
+        });
 
         
     });

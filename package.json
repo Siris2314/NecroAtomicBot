@@ -12,17 +12,17 @@
 
     "@discordjs/opus": "^0.5.0",
 
-    "@distube/spotify": "^0.3.0",
+    "@distube/spotify": "^0.4.0",
 
     "@iamtraction/google-translate": "^1.1.2",
 
-    "@ksoft/api": "^3.1.9",
+    "@joshdb/mongo": "^1.1.6",
 
     "@reconlx/discord.js": "^1.1.101",
 
-    "aki-api": "^5.2.1",
+    "aki-api": "^6.0.5",
 
-    "alexa-bot-api": "^0.2.1",
+    "alexa-bot-api-v3": "^3.0.7",
 
     "anime-scraper": "^3.1.3",
 
@@ -72,9 +72,11 @@
 
     "discord-slider": "^1.1.6",
 
-    "discord-together": "^1.1.14",
+    "discord-together": "^1.1.31",
 
     "discord-xp": "^1.1.14",
+
+    "discord-youtube": "^1.1.1",
 
     "discord-ytdl-core": "^5.0.2",
 
@@ -86,7 +88,7 @@
 
     "djs-games": "^1.4.6",
 
-    "djs-voice": "^1.0.6",
+    "djs-voice": "^1.1.1",
 
     "dotenv": "^8.2.0",
 
@@ -98,7 +100,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.7.4",
+    "genshin-db": "^3.8.2",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -118,7 +120,7 @@
 
     "mathjs": "^9.3.0",
 
-    "memer-api": "^3.0.2",
+    "memer-api": "^3.0.6",
 
     "merge-options": "^3.0.4",
 
@@ -143,6 +145,8 @@
     "node-os-utils": "^1.3.5",
 
     "node-superfetch": "^0.1.11",
+
+    "npm-check": "^5.9.2",
 
     "numeral": "^2.0.6",
 
@@ -198,7 +202,7 @@
 
     "youtube-sr": "^4.1.1",
 
-    "ytdl-core": "^4.8.3",
+    "ytdl-core": "^4.9.0",
 
     "ytsr": "^3.5.0"
 
@@ -206,7 +210,7 @@
 
   "scripts": {
 
-    "test": "hello"
+    "start": "node index.js"
 
   },
 
