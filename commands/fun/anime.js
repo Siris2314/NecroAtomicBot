@@ -6,6 +6,11 @@ module.exports = {
   description: "Get advanced info about an anime",
   async execute (message, args,client) {
     
+
+  if(!message.channel.nsfw){
+        return message.channel.send(`Can only run this command in a NSFW channel`);
+  }
+   else{
     const query = `${args}`;
     if (!query)
       return message.reply('Please add a search query!');
@@ -15,7 +20,7 @@ module.exports = {
         const malEmbed = new Discord.MessageEmbed()
           .setAuthor(`My Anime List search result for ${args}`.split(',').join(' '))
           .setThumbnail(data.picture)
-          .setColor('RANDOM') //What ever u want color!
+          .setColor('RANDOM') 
           .addField('Premiered', `\`${data.premiered}\``, true)
           .addField('Broadcast', `\`${data.broadcast}\``, true)
           .addField('Genres', `\`${data.genres}\``, true)
@@ -44,5 +49,6 @@ module.exports = {
         message.channel.send(malEmbed);
 
       })
+    }
   }
-};
+}
