@@ -180,7 +180,7 @@ client.on("ready", async () => {
         loop_delays_in_min: 5,
         defaults: {
           Notification:
-            "<@{discorduser}> Posted: **{videotitle}**, as `{videoauthorname}`\n{videourl}",
+            "`{videoauthorname}`, Posted: **{videotitle}**, as \n{videourl}",
         },
         provider: JoshMongo,
         providerOptions: {

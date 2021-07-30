@@ -12,11 +12,13 @@ module.exports = {
             color:'#2F3136',
             thumbnail:message.guild.iconURL({dynamic:true}),
             title:`Leaderboard for ${message.guild.name}`,
-            top:10
+            top:8
 
         })
+
+        console.log(embed)
         
-        return message.channel.send(embed)
+        return message.channel.send({embed})
     }
 
 
