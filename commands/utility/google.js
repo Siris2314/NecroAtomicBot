@@ -8,7 +8,7 @@ module.exports = {
   name:"google",
   descriptions:"searches on google",
 
-  async execute(message,args){
+  async execute(message,args,client){
 
   let googleKey = google;
   let csx = "e07debb6d8725ce79";

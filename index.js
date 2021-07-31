@@ -53,6 +53,9 @@ const ai = new alexa();
 client.vcclient = voiceClient;
 Levels.setURL(mongoPath);
 
+const antispamschema = require('./schemas/anti-spam')
+
+
 
 const DisTube = require("distube");
 const afkschema = require('./schemas/afk');
@@ -83,6 +86,8 @@ const JoshMongo = require("@joshdb/mongo");
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});
+
+const AntiSpam = require('discord-anti-spam');
 
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
@@ -240,6 +245,28 @@ client.on("ready", async () => {
 
 });
 
+const antiSpam = new AntiSpam({
+    warnThreshold: 3, 
+    muteThreshold: 10, 
+    kickThreshold: 50, 
+    banThreshold: 100, 
+    maxInterval: 2000, 
+    warnMessage: 'Warning Spam Not Allowed',
+    kickMessage: '**{user_tag}** has been kicked for spamming.', 
+    muteMessage: '**{user_tag}** has been muted for spamming.',
+    banMessage: '**{user_tag}** has been banned for spamming.',
+    maxDuplicatesWarning: 6, 
+    maxDuplicatesKick: 10, 
+    maxDuplicatesBan: 12,
+    maxDuplicatesMute: 8,
+    ignoredPermissions: [ 'ADMINISTRATOR'], 
+    ignoreBots: true, 
+    verbose: true, 
+    ignoredMembers: [], 
+    muteRoleName: "Muted", 
+    removeMessages: true 
+});
+
 
 
 client.once("disconnect", () => {
@@ -340,6 +367,14 @@ client.on("message", async (message) => {
         message.channel.send(newstr);
     
     } 
+
+    await antispamschema.findOne({ Guild: message.guild.id }, async (err, data) => {
+        if(!data) return
+        antiSpam.message(message); 
+
+
+
+    })
 
     await inviteschema.findOne({Server: message.guild.id}, async(err, data) => {
         if(!data) return;
