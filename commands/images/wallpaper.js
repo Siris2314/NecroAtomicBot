@@ -16,10 +16,13 @@ module.exports = {
         const image = await hdqwalls(query);
 
 
+        const num = Math.floor((Math.random()) * 20);
+
         const embed = new Discord.MessageEmbed()
+            .setURL(image[num])
             .setTitle('Here is your wallpaper')
             .setColor("RANDOM")
-            .setImage(image[0])
+            .setImage(image[num])
 
         message.channel.send(embed)
         

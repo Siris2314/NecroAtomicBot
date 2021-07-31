@@ -13,22 +13,19 @@ module.exports = {
         if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
             return message.channel.send("Invalid Perms");
         }
-
-        const bans = message.guild.fetchBans();
-
-        const mapMember = (await bans)
-            .map((member) => member.user.tag)
-            .join(", ");
-
-        const embed = new Discord.MessageEmbed() 
-            .setTitle(`List of Banned Members ${message.guild.name}`)
-            .setDescription(mapMember + "\n") 
-            .setColor("RANDOM") 
-            .setThumbnail(message.guild.iconURL({dynamic: true}))
-            .setFooter(message.author.username, message.author.displayAvatarURL({dynamic: true})) 
-            .setTimestamp()
-
-        return message.channel.send(embed)
+       
+        var amount = 1;
+        const fetchBans = message.guild.fetchBans();
+        const bannedMembers = (await fetchBans)
+            .map((member) => `${amount++} **${member.user.username}** | (*${member.user.id}*)`)
+            .join("\n");
+        const bansEmbed = new Discord.MessageEmbed()
+        .setAuthor(`Bans for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+        .setDescription(`${bannedMembers}`)
+        .setFooter(`Amount: ${amount - 1}`)
+        .setTimestamp()
+        .setColor("RANDOM")
+        message.channel.send(bansEmbed)
 
         
 
