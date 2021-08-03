@@ -18,8 +18,6 @@ module.exports = {
             const data = await axios.get(`https://luminabot.xyz/api/twitch-info?username=${user}`)
            
             const info = data.data;
-            console.log(info);
-
             const embed = new Discord.MessageEmbed()
                 .setTitle(`Twitch Stats for **${info.displayname}**`)
                 .addField('Description: ',`${info.description}`, true)
@@ -41,6 +39,7 @@ module.exports = {
             
 
         } catch(err){
+            console.log(err);
             return message.channel.send('Twitch Profile Does not exist');
         }
     }
