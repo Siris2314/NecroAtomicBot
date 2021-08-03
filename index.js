@@ -2,7 +2,6 @@ require("dotenv").config();
 const token = process.env.token;
 const mongoPath = process.env.mongoPath;
 const mongoose = require("mongoose");
-const nekoyasui = require("nekoyasui");
 const background = './assets/background.jpg'
 const youtube = process.env.youtube;
 const botname = process.env.botname;
@@ -14,7 +13,6 @@ const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
 const counterSchema = require("./schemas/count");
-const key1 = process.env.key1;
 const Discord = require("discord.js");
 const path = require("path");
 const nsfwschema = require('./schemas/nsfw')
@@ -25,7 +23,6 @@ deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
 const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
-// require('@weky/inlinereply')
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
     intents: Discord.Intents.ALL,
@@ -185,7 +182,7 @@ client.on("ready", async () => {
         loop_delays_in_min: 5,
         defaults: {
           Notification:
-            "`{videoauthorname}`, Posted: **{videotitle}**, as \n{videourl}",
+            "`{videoauthorname}`, posted: **{videotitle}**, Link to Video \n{videourl}",
         },
         provider: JoshMongo,
         providerOptions: {
@@ -250,7 +247,7 @@ const antiSpam = new AntiSpam({
     muteThreshold: 10, 
     kickThreshold: 50, 
     banThreshold: 100, 
-    maxInterval: 2000, 
+    maxInterval: 10000, 
     warnMessage: 'Warning Spam Not Allowed',
     kickMessage: '**{user_tag}** has been kicked for spamming.', 
     muteMessage: '**{user_tag}** has been muted for spamming.',
@@ -263,7 +260,7 @@ const antiSpam = new AntiSpam({
     ignoreBots: true, 
     verbose: true, 
     ignoredMembers: [], 
-    muteRoleName: "Muted", 
+    muteRoleName: "muted", 
     removeMessages: true 
 });
 
@@ -276,14 +273,14 @@ client.once("disconnect", () => {
 
 // rpc.on('ready', () => {
 //     rpc.setActivity({
-//         details: 'Messing Around With Stuff', 
+//         details: 'Working', 
 //         state: 'Working on stuff', 
 //         startTimestamp: new Date(), 
 //         largeImageKey: 'large-key', 
 //         largeImageText: 'Doing Stuff Over Summer', 
 //         smallImageKey: 'small-key', 
 //         smallImageText: 'Chilling', 
-//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'NPM', url : 'https://www.npmjs.com/~ari.dev'}] // you con delete the buttons 
+//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
 //     });
 
 //     console.log('RPC online');
@@ -368,7 +365,7 @@ client.on("message", async (message) => {
     
     } 
 
-    await antispamschema.findOne({ Guild: message.guild.id }, async (err, data) => {
+    await antispamschema.findOne({ Server: message.guild.id }, async (err, data) => {
         if(!data) return
         antiSpam.message(message); 
 

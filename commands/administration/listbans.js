@@ -11,7 +11,7 @@ module.exports = {
             return message.channel.send("Invalid Perms");
           }
         if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
-            return message.channel.send("Invalid Perms");
+            return message.channel.send("I do not have permission to access this command");
         }
        
         var amount = 1;
@@ -20,7 +20,7 @@ module.exports = {
             .map((member) => `${amount++} **${member.user.username}** | (*${member.user.id}*)`)
             .join("\n");
         const bansEmbed = new Discord.MessageEmbed()
-        .setAuthor(`Bans for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+        .setAuthor(`Banned Members in ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
         .setDescription(`${bannedMembers}`)
         .setFooter(`Amount: ${amount - 1}`)
         .setTimestamp()

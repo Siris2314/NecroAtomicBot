@@ -1,28 +1,28 @@
 module.exports = {
     name: "voicekick",
     description:"Kicks a member out of a voice channel",
-    async execte(message, args,client){
+    async execute(message, args,client){
+
       if (!message.guild.me.hasPermission(["ADMINISTRATOR"]))
         return message.channel.send(
-          "I Don't Have Proper Permissions To Use This Command!"
-        );
-        if (!message.guild.member.hasPermission(["MOVE_MEMBERS"]))
+          "Invalid perms to run command"
+        ).then(m => m.delete({timeout: 10000}));
+    if (!message.member.hasPermission(["MOVE_MEMBERS"])) return message.channel.send("You cannot use this command due to invalid perms").then(m => m.delete({timeout: 10000}));
+
+      let user = message.mentions.members.first()
+  
+      if (!user)
         return message.channel.send(
-          "You Don't Have Proper Permissions To Use This Command!"
-        );
+          `Please mention user to kick from VC`
+        ).then(m => m.delete({timeout: 10000}));
+        
+     
+      let { channel } = user.voice;
   
-      if (!message.mentions.members.first())
-        return message.channel.send(
-          `Please Mention User That You Want To Kick From Voice Channel!`
-        );
+      if (!channel) return message.channel.send(`User Is Not In Any Voice Channel!`);
   
-      let { channel } = message.mentions.members.first().voice;
-  
-      if (!channel)
-        return message.channel.send(`User Is Not In Any Voice Channel!`);
-  
-      message.mentions.members.first().voice.kick();
+      user.voice.kick();
       
-      message.channel.send(`User Has Been Kicked From Voice Channel!`)
+      message.channel.send(`${user.user.username} has been kicked from ${channel}`).then(m => m.delete({timeout: 10000}));
     }
   };

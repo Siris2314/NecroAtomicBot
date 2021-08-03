@@ -16,7 +16,7 @@ module.exports = {
      if(option.toLowerCase() === 'enable'){
 
 
-            await Schema.findOne({Guild: message.guild.id}, async(err, data) => {
+            await Schema.findOne({Server: message.guild.id}, async(err, data) => {
                 if(data) return message.channel.send('Anti-Spam System Already Enabled')
 
                 new Schema({
@@ -39,7 +39,7 @@ module.exports = {
         }
         else if(option.toLowerCase() === 'disable'){
 
-            await Schema.findOne({Guild: message.guild.id}, async(err, data) => {
+            await Schema.findOne({Server: message.guild.id}, async(err, data) => {
                 if(!data) return message.channel.send('Anti-Spam System Was Never Enabled')
 
                 data.delete()
