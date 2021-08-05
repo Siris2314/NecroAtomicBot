@@ -17,6 +17,16 @@ module.exports = {
             singapore: '🇸🇬',
             southafrica: '🇿🇦',
             sydney: '🇦🇺',
+            'us-east': 'US - East 🇺🇸',
+            'us-west': 'US - West 🇺🇸',
+            'us-south': 'US - South 🇺🇸'
+        };
+
+           const status = {
+            online: "Online",
+            idle: "Idle",
+            dnd: "Do Not Disturb",
+            offline: "Offline/Invisible"
         };
 
         const verificationLevels = {
@@ -46,6 +56,7 @@ module.exports = {
 
         const embed = new Discord.MessageEmbed()
             .setTitle(`Server stats for ${message.guild.name}`)
+            .setThumbnail(message.guild.iconURL({ dynamic: true}))
             .addFields(
 
                 {name:'Owner', value:message.guild.owner.user.username, inline: true},
@@ -59,6 +70,21 @@ module.exports = {
 
 
             )
+            .addField(`${mem} Member Status`, `${online}  ${members.filter(member => member.presence.status === 'online').size}  ${dnd}: ${members.filter(member => member.presence.status === 'dnd').size}  ${idle}: ${members.filter(member => member.presence.status === 'idle').size}   ${offline}: ${members.filter(member => member.presence.status === 'offline').size}`)
+            .addField(
+                { name: 'Bots ', value: `${members.filter(member => member.user.bot).size}`, inline: true },
+            )
+            .addFields(
+                { name: 'Roles', value: `${roles.length}`, inline: true },
+                { name: 'Emoji Count', value: `${emojis.size}`, inline: true },
+            )
+            .addField('Channels', `${txt} Channels : ${channels.filter(channel => channel.type === 'text').size} 
+             ${ch} Channels : ${channels.filter(channel => channel.type === 'voice').size}`,
+            )
+
+
+            
+
 
 
         message.channel.send(embed);

@@ -1,5 +1,6 @@
 require("dotenv").config();
 const token = process.env.token;
+const pingChart = require('./schemas/pingschema');
 const mongoPath = process.env.mongoPath;
 const mongoose = require("mongoose");
 const background = './assets/background.jpg'
@@ -65,8 +66,11 @@ const music = new DisTube(client,  { searchSongs: 0,
     plugins: [new SpotifyPlugin({ parallel: true })],
     youtubeDL: true,
     updateYouTubeDL: true, });
-const { MessageAttachment } = require("discord.js");
+
 client.snipes = new Discord.Collection();
+const Canvas = require('canvas');
+
+
 const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
@@ -175,9 +179,31 @@ client.embed = async(message, options) => {
     message.channel.send(embed)
   }
 
+
+ 
+    
+
 client.on("ready", async () => {
     console.log(botname);
     console.log("Heroku Connected");
+
+    // async function pingGraph() {
+    //     while (true) {
+    //         await new Promise(resolve => setTimeout(resolve, 15000));
+    //         let msg = await client.channels.cache.get('854611069943021610').send('\u200b');
+    //         msg.delete().catch(()=>{});
+    //         const msgPing = Date.now()-msg.createdTimestamp;
+    //         const result = await pingChart.find({});
+    //         const allTimes = result.map(r=>r.time);
+    //         for(let i=0; i<allTimes.length; i++) {
+    //             if (allTimes[i] < Date.now()-5*1000*60) {
+    //                 await pingChart.findOneAndDelete({time:allTimes[i]});
+    //             }
+    //         }
+    //         await pingChart.findOneAndUpdate({time: Date.now()},{time:Date.now(), ping:Math.round(client.ws.ping),msgPing:msgPing},{upsert:true});
+    //       }
+    // }
+    // await pingGraph();
     const options = {
         loop_delays_in_min: 5,
         defaults: {
@@ -289,6 +315,23 @@ client.once("disconnect", () => {
 // rpc.login({
 //     clientId: rpctoken 
 // });
+
+
+var welcome = {};
+welcome.create = Canvas.createCanvas(1024,500);
+welcome.context = welcome.create.getContext('2d');
+welcome.context.font = '72px sans-serif';
+welcome.context.fillStyle = '#ffffff';
+
+Canvas.loadImage("./assets/background.jpg").then(async(img) => {
+    welcome.context.drawImage(img, 0,0, 1024, 500)
+    welcome.context.fillText("Welcome", 360, 360)
+    welcome.context.beginPath(); 
+    welcome.context.arc(512, 166, 128, 0,Math.PI * 2, true)
+    welcome.context.fill()
+
+
+})
 
 
 
@@ -668,25 +711,45 @@ client.on("guildMemberAdd", async (member) => {
     Schema.findOne({ Guild: member.guild.id }, async (e, data) => {
         if (!data) return;
         const user = member.user;
-        const image = await new canvas.Welcome()
-            .setUsername(user.username)
-            .setDiscriminator(user.discriminator)
-            .setMemberCount(member.guild.memberCount)
-            .setGuildName(member.guild.name)
-            .setAvatar(user.displayAvatarURL({format: 'png'}))
-            .setColor("border", "#08D9FB")
-            .setColor("username-box", "#2063E9")
-            .setColor("discriminator-box", "#2063E9")
-            .setColor("message-box", "#2063E9")
-            .setColor("title", "#2063E9")
-            .setColor("avatar", "#2063E9")
-            .setBackground(background)
-            .toAttachment();
+
+        let canvas = welcome;
+        canvas.context.font = '42px sans-serif',
+        canvas.context.textAlign = 'center',
+        canvas.context.fillText(user.username,512, 410)
+        canvas.context.font = '32px sans-serif'
+        canvas.context.fillText(`The ${member.guild.memberCount}th member to join this server`, 512, 455)
+        canvas.context.beginPath();
+        canvas.context.arc(512, 166, 119, 0, Math.PI * 2, true);
+        canvas.context.closePath()
+        canvas.context.clip() 
+        await Canvas.loadImage(user.displayAvatarURL({dynamic:false,format:'png', size: 1024}))
+            .then(img => {
+                canvas.context.drawImage(img, 393, 47, 238, 238)
+
+            })
+
+            let image = new Discord.MessageAttachment(canvas.create.toBuffer(), `Welcome.png`)
+
+            try{
+
+                const channel = client.channels.cache.get(data.Channel);
+                channel.send(image);
+
+                
+            }catch(err){
+                console.log(err);
+            }
+
+
+
+
+          
+
+
+   
+   
  
-    const attachment = new Discord.MessageAttachment(await image.toBuffer(), "goodbye-image.png");
-    const channel = member.guild.channels.cache.get(data.Channel); 
- 
-    channel.send(attachment);
+    
 
     });
 

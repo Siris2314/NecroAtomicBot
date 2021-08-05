@@ -36,9 +36,9 @@
 
     "canvacord": "^5.1.0",
 
-    "canvas": "^2.7.0",
+    "canvas": "^2.8.0",
 
-    "chartjs-node-canvas": "^3.1.0",
+    "chartjs-node-canvas": "^3.2.0",
 
     "cheerio": "^1.0.0-rc.5",
 
