@@ -14,7 +14,7 @@ module.exports = {
         ctx.drawImage(avatar, 0, 0, 1000, 1000);
        ctx.drawImage(bg, 0, 0, 1000, 1000);
         
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'ARCHIE.jpg');
-    message.channel.send(attachment);
+      const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'ARCHIE.jpg');
+      message.channel.send({files: [attachment]});
    }
 } 

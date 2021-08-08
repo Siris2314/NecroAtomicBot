@@ -18,7 +18,7 @@ module.exports = {
         `https://image.thum.io/get/width/1920/crop/675/noanimate/${site}`
       );
   let att = new Discord.MessageAttachment(body, `${sit}.png`)
-      return message.channel.send(att)
+      return  message.channel.send({files: [att]});
   
     } catch (err) {
       

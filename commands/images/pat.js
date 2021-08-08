@@ -14,7 +14,7 @@ module.exports = {
             better: true 
         });
     
-        return message.channel.send(new Discord.MessageAttachment(petpet, `pat.gif`));
+        return  message.channel.send({files: [petpet]});
 
         
     

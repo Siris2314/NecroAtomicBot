@@ -51,7 +51,7 @@ module.exports = {
         let online = "<:online:869190337216774144>"
         let idle = "<:idle:869190610635087873>"
         let dnd = "<:dnd:869190610962247711>"
-        let offline = "<:ooffline:869190610710581289>"
+        let offline = "<:offline:869190610710581289>"
 
 
         const embed = new Discord.MessageEmbed()
@@ -62,7 +62,7 @@ module.exports = {
                 {name:'Owner', value:message.guild.owner.user.username, inline: true},
                 {name:'Region', value:regions[message.guild.region], inline: true},
                 {name: 'Boost Level', value:`Tier: ${message.guild.premiumTier ? message.guild.premiumTier : 'None'}`  , inline: true},
-                {name: 'Boosts Count', value:`Tier: ${message.guild.premiumSubscriptionCount ? message.guild.premiumSubscriptionCount : 'None'}`  , inline: true},
+                {name: 'Boosts Count', value:`Count: ${message.guild.premiumSubscriptionCount ? message.guild.premiumSubscriptionCount : 'None'}`  , inline: true},
                 {name:'Verification Level', value: `__${verificationLevels[message.guild.verificationLevel]}__`, inline:true},
                 { name: 'Time Created', value: `${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} [${moment(message.guild.createdTimestamp).fromNow()}]` },
 
@@ -70,17 +70,18 @@ module.exports = {
 
 
             )
-            .addField(`${mem} Member Status`, `${online}  ${members.filter(member => member.presence.status === 'online').size}  ${dnd}: ${members.filter(member => member.presence.status === 'dnd').size}  ${idle}: ${members.filter(member => member.presence.status === 'idle').size}   ${offline}: ${members.filter(member => member.presence.status === 'offline').size}`)
+            .addField(`Member Status`, `Online: ${members.filter(member => member.presence.status === 'online').size} DND: ${members.filter(member => member.presence.status === 'dnd').size}  Idle: ${members.filter(member => member.presence.status === 'idle').size}   Offline : ${members.filter(member => member.presence.status === 'offline').size}`)
             .addField(
-                { name: 'Bots ', value: `${members.filter(member => member.user.bot).size}`, inline: true },
+                'Bot Count',`${members.filter(member => member.user.bot).size}`,true
             )
             .addFields(
                 { name: 'Roles', value: `${roles.length}`, inline: true },
                 { name: 'Emoji Count', value: `${emojis.size}`, inline: true },
             )
-            .addField('Channels', `${txt} Channels : ${channels.filter(channel => channel.type === 'text').size} 
-             ${ch} Channels : ${channels.filter(channel => channel.type === 'voice').size}`,
+            .addField('Channels', `Text Channels : ${channels.filter(channel => channel.type === 'text').size} 
+            Voice Channels : ${channels.filter(channel => channel.type === 'voice').size}`,
             )
+            .setTimestamp();
 
 
             

@@ -10,15 +10,11 @@
 
   "dependencies": {
 
-    "@clashperk/quickchart": "github:clashperk/quickchart",
-
     "@discordjs/opus": "^0.5.0",
 
     "@distube/spotify": "^0.4.0",
 
     "@iamtraction/google-translate": "^1.1.2",
-
-    "@joshdb/mongo": "^1.1.6",
 
     "@reconlx/discord.js": "^1.1.101",
 
@@ -78,9 +74,9 @@
 
     "discord-together": "^1.1.31",
 
-    "discord-xp": "^1.1.14",
+    "discord-xp": "^1.1.16",
 
-    "discord-youtube": "^1.1.1",
+    "discord-yt-poster": "^3.1.2",
 
     "discord-ytdl-core": "^5.0.2",
 
@@ -196,8 +192,6 @@
 
     "spotify-url-info": "^2.2.0",
 
-    "sqlite3": "^5.0.2",
-
     "string-toolkit": "^1.4.0",
 
     "twemoji-parser": "^13.0.0",
@@ -232,7 +226,7 @@
 
   "engines": {
 
-    "node": "14.x"
+    "node": "16.x"
 
   },
 

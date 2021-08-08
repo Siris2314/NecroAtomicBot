@@ -17,7 +17,7 @@ module.exports = {
         memer.youtube(avatar, username, text).then(image => {
             
             const attachment = new Discord.MessageAttachment(image, "youtube.png");
-            message.channel.send(attachment)
+            message.channel.send({files: [attachment]});
         }) 
 
 

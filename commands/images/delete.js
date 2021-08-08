@@ -13,7 +13,7 @@ module.exports = {
 
         memer.delete(avatar).then(image => {
             const attachment = new Discord.MessageAttachment(image, "delete.png");
-            message.channel.send(attachment)
+            message.channel.send({files: [attachment]});
         })
     }
 }

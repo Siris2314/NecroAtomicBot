@@ -1,6 +1,5 @@
 require("dotenv").config();
 const token = process.env.token;
-const pingChart = require('./schemas/pingschema');
 const mongoPath = process.env.mongoPath;
 const mongoose = require("mongoose");
 const background = './assets/background.jpg'
@@ -26,7 +25,11 @@ const modlogsSchema = require("./schemas/modlogs");
 const voiceSchema = require("./schemas/customvoice");
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
-    intents: Discord.Intents.ALL,
+    intents:[Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_INVITES, Discord.Intents.FLAGS.GUILD_VOICE_STATES, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING],
+    allowedMentions: {
+        parse: ['users', 'roles'],
+        repliedUser: false
+    },  
     restTimeOffset: 0
 });
 const fs = require("fs");
@@ -43,7 +46,8 @@ const voiceClient = new VoiceClient({
     mongooseConnectionString:mongoPath,
 
 })
-const YoutubePoster = require("discord-youtube");
+const YoutubePoster = require("discord-yt-poster");
+
 
 const alexa = require("alexa-bot-api-v3");
 const ai = new alexa();
@@ -71,7 +75,6 @@ client.snipes = new Discord.Collection();
 const Canvas = require('canvas');
 
 
-const canvas = require("discord-canvas");
 const Schema = require("./schemas/welcomeChannel");
 const guildSchema = require("./schemas/Guilds");
 const reactionSchema = require("./schemas/reaction-roles");
@@ -83,7 +86,6 @@ client.discordTogether = new DiscordTogether(client, {
 });
 const disbut = require('discord-buttons')(client)
 require('discord-slider')(client);
-const JoshMongo = require("@joshdb/mongo");
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});
@@ -176,7 +178,8 @@ client.commands = new Discord.Collection();
 
 client.embed = async(message, options) => {
     const embed = new Discord.MessageEmbed(options);
-    message.channel.send(embed)
+    // message.channel.send({embeds: [embed]})
+    message.channel.send(embed);
   }
 
 
@@ -187,37 +190,17 @@ client.on("ready", async () => {
     console.log(botname);
     console.log("Heroku Connected");
 
-    // async function pingGraph() {
-    //     while (true) {
-    //         await new Promise(resolve => setTimeout(resolve, 15000));
-    //         let msg = await client.channels.cache.get('854611069943021610').send('\u200b');
-    //         msg.delete().catch(()=>{});
-    //         const msgPing = Date.now()-msg.createdTimestamp;
-    //         const result = await pingChart.find({});
-    //         const allTimes = result.map(r=>r.time);
-    //         for(let i=0; i<allTimes.length; i++) {
-    //             if (allTimes[i] < Date.now()-5*1000*60) {
-    //                 await pingChart.findOneAndDelete({time:allTimes[i]});
-    //             }
-    //         }
-    //         await pingChart.findOneAndUpdate({time: Date.now()},{time:Date.now(), ping:Math.round(client.ws.ping),msgPing:msgPing},{upsert:true});
-    //       }
-    // }
-    // await pingGraph();
     const options = {
-        loop_delays_in_min: 5,
+        loop_delays_in_min: 3, 
         defaults: {
-          Notification:
-            "`{videoauthorname}`, posted: **{videotitle}**, Link to Video \n{videourl}",
+            Notification: "{videoauthorname} Posted: **{videotitle}**, as \n{videourl}"
         },
-        provider: JoshMongo,
-        providerOptions: {
-          collection: "YoutubePoster",
-          url: mongoPath,
-        },
-      };
+    };
 
-    client.YTP = new YoutubePoster(client,options);
+
+    client.YTP = new YoutubePoster(client, options);
+
+
 
 
     await mongoose
@@ -297,24 +280,24 @@ client.once("disconnect", () => {
 });
 
 
-// rpc.on('ready', () => {
-//     rpc.setActivity({
-//         details: 'Working', 
-//         state: 'Working on stuff', 
-//         startTimestamp: new Date(), 
-//         largeImageKey: 'large-key', 
-//         largeImageText: 'Doing Stuff Over Summer', 
-//         smallImageKey: 'small-key', 
-//         smallImageText: 'Chilling', 
-//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
-//     });
+rpc.on('ready', () => {
+    rpc.setActivity({
+        details: 'Working', 
+        state: 'Working on stuff', 
+        startTimestamp: new Date(), 
+        largeImageKey: 'large-key', 
+        largeImageText: 'Doing Stuff Over Summer', 
+        smallImageKey: 'small-key', 
+        smallImageText: 'Chilling', 
+        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
+    });
 
-//     console.log('RPC online');
-// });
+    console.log('RPC online');
+});
 
-// rpc.login({
-//     clientId: rpctoken 
-// });
+rpc.login({
+    clientId: rpctoken 
+});
 
 
 var welcome = {};
@@ -404,7 +387,7 @@ client.on("message", async (message) => {
         let str = message.content.replace("https://twitter.com/","")
         let newstr = `https://fxtwitter.com/${str}`
 
-        message.channel.send(newstr);
+        message.channel.send({content: newstr});
     
     } 
 
@@ -432,7 +415,7 @@ client.on("message", async (message) => {
                     }
                     if(!InviteArray.includes(UserCode)){
                         message.delete()
-                        return message.channel.send("Please do not send links to other servers")
+                        return message.channel.send({content:"Please do not send links to other servers"})
                     }
                 })
             }
@@ -467,10 +450,10 @@ client.on("message", async (message) => {
                 message.react("❌");
                 data.UserID = null;
                 await data.save();
-                return message.channel.send(
+                return message.channel.send({content:
                     `${message.author.username} has messed it up, stopped at ${
                         number - 1
-                    } ,resetting game to start at 1`
+                    } ,resetting game to start at 1`}
                 );
             } else {
                 if (number == current + 1) {
@@ -483,8 +466,8 @@ client.on("message", async (message) => {
                     data.UserID = null;
                     await data.save();
                     message.react("❌");
-                    message.channel.send(
-                        `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`
+                    message.channel.send({content:
+                        `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`}
                     );
                 }
             }
@@ -522,7 +505,7 @@ client.on("message", async (message) => {
         
         if(score + .2 >= .5){
             message.delete()
-            message.channel.send('NO NSFW Images allowed')
+            message.channel.send({content:'NO NSFW Images allowed'})
         }
 
 
@@ -542,7 +525,7 @@ client.on("message", async (message) => {
 
         let context = []
         ai.getReply(message.content, context, 'english','OwO').then(reply => {
-            message.channel.send(reply); 
+            message.channel.send({content: reply}); 
             context.push(reply);
         });
 
@@ -628,9 +611,9 @@ client.on("message", async (message) => {
                     .catch((err) => console.error(err));
 
                 return message.channel
-                    .send(
+                    .send({content:
                         "This server was not in our database! We have now added and you should be able to use bot commands."
-                    )
+                    })
                     .then((m) => m.delete({ timeout: 10000 }));
             }
         }
@@ -693,7 +676,7 @@ client.on("message", async (message) => {
         if (command) {
             const blacklisted = await blacklistserver.findOne({Server: message.guild.id})
 
-            if(blacklisted) return message.channel.send("Cannot use commands as owner has blacklisted this server")
+            if(blacklisted) return message.channel.send({content:"Cannot use commands as owner has blacklisted this server"})
             const channel = client.channels.cache.get("800421170301501470");
 
             channel.send(
@@ -733,7 +716,7 @@ client.on("guildMemberAdd", async (member) => {
             try{
 
                 const channel = client.channels.cache.get(data.Channel);
-                channel.send(image);
+                channel.send({files: [image]});
 
                 
             }catch(err){

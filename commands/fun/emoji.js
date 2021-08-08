@@ -38,6 +38,6 @@ module.exports = {
             return character;
         }).join('');
 
-        message.channel.send(text)
+        message.channel.send({content:text})
     }
 }
