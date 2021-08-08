@@ -11,6 +11,6 @@ module.exports = {
         let image = await canva.Canvas.wasted(avatar);
         let wasted = new Discord.MessageAttachment(image, "wasted.png");
 
-        message.channel.send(wasted);
+        message.channel.send({files: [wasted]});
     },
 };

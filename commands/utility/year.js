@@ -35,6 +35,6 @@ module.exports = {
         ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 400, 40); 
         ctx.fillStyle = '#747f8d'; ctx.fillRect(5, 5, 390, 30); 
         ctx.fillStyle = '#43b581'; ctx.fillRect(5, 5, (Math.floor(390/100 * getProgress(date))), 30); 
-        message.channel.send(`**${cy}** is **${round(getProgress(date), 13)}%** complete.`, {files:[ {attachment: cv.toBuffer(), name: 'yearprogress.jpg'} ]});
+        message.channel.send({content:`**${cy}** is **${round(getProgress(date), 13)}%** complete.`}, {files:[ {attachment: cv.toBuffer(), name: 'yearprogress.jpg'} ]});
     }
 }

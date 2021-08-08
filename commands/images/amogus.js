@@ -23,7 +23,7 @@ module.exports = {
       canvas.toBuffer(),
       'Amogus'
     );
-    message.channel.send(attachment);
+    message.channel.send({files: [attachment]});
 
   }
 }

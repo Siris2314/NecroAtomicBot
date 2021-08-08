@@ -15,7 +15,7 @@ module.exports = {
         
         try{
 
-            const data = await axios.get(`https://luminabot.xyz/api/twitch-info?username=${user}`)
+            const data = await axios.get(`https://luminabot.xyz/api/json/twitch-info?username=${user}`)
            
             const info = data.data;
             const embed = new Discord.MessageEmbed()

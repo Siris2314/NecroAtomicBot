@@ -12,6 +12,6 @@ module.exports = {
         let image = await canva.Canvas.spank(avatar, avatar1pic);
         let spank = new Discord.MessageAttachment(image, "spank.png");
 
-        message.channel.send(spank);
+        message.channel.send({files: [spank]});
     },
 };

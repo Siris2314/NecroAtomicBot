@@ -16,8 +16,8 @@ module.exports = {
 
     let image = await canva.Canvas.changemymind(text);
 
-    let changeMyMind = new Discord.MessageAttachment(image, "cmm.png");
+    let attachment = new Discord.MessageAttachment(image, "cmm.png");
 
-    message.channel.send(changeMyMind)
+    message.channel.send({files: [attachment]});
   }
 }

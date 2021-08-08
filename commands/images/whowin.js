@@ -21,7 +21,7 @@ module.exports = {
 
         const attachment = new Discord.MessageAttachment(result.message, 'whowouldwin.png')
 
-        message.channel.send(attachment)
+        message.channel.send({files: [attachment]});
 
         
 
