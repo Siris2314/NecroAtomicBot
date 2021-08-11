@@ -62,15 +62,9 @@
 
     "discord-backup": "^2.5.0",
 
-    "discord-buttons": "^4.0.0",
-
     "discord-canvas": "^1.4.1",
 
-    "discord-epagination": "^1.2.6-1",
-
     "discord-rpc": "^4.0.1",
-
-    "discord-slider": "^1.1.6",
 
     "discord-together": "^1.1.31",
 
@@ -80,9 +74,11 @@
 
     "discord-ytdl-core": "^5.0.2",
 
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.0.1",
 
     "discord.js-pagination": "^1.0.3",
+
+    "discordv13-pagination": "^1.1.0",
 
     "distube": "^3.0.0-beta.32",
 
@@ -100,7 +96,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.8.2",
+    "genshin-db": "^3.9.4",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -197,8 +193,6 @@
     "twemoji-parser": "^13.0.0",
 
     "weather-js": "^2.0.0",
-
-    "weky": "^3.0.5",
 
     "youtube-search": "^1.1.6",
 

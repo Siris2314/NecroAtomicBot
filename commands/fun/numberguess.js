@@ -35,7 +35,7 @@ module.exports = {
           .setDescription(
             `Congratulations! The number you choose, **${msg.content}** is correct! You tried ${tries} times!`
           );
-        return message.channel.send(embed) && collector.stop("correct");
+          return msg.channel.send({embeds:[embed]}) && collector.stop("correct");
       } else {
         if (parseInt(msg.content) < rand) {
           embed.setDescription(
@@ -50,7 +50,7 @@ module.exports = {
           tries++;
         }
       }
-      return msg.channel.send(embed);
+      return msg.channel.send({embeds:[embed]});
     });
     collector.on("end", (collected) => { });
   },

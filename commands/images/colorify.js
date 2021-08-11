@@ -18,6 +18,6 @@ if(!color) return message.reply("Please provide the name of the color with which
         .setColor(color.toUpperCase())
         .setFooter("If the color shown is just grey, it is not supported.")
 
-    message.channel.send(em)
+    return message.channel.send({embeds:[em]});
 }
 }

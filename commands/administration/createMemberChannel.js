@@ -6,7 +6,7 @@ module.exports = {
     description:'creates a member count channel',
 
     async execute(message,args,client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms Denied'})
 
         Schema.findOne({Guild : message.guild.id}, async(err, data) => {
             try{

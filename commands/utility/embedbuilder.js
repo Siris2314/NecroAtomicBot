@@ -9,12 +9,9 @@ module.exports = {
 
             const embed = new MessageEmbed()
 
-            if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Invalid Perms")
-            message.channel.send("Welcome To Necro Embed Builder, which channel would you like to have your embed built in: ");
-            let channel = await message.channel.awaitMessages(msg => msg.author.id == message.author.id, {
-                max:1
-            })
-            message.channel.send("Please provide the title of the embed") 
+         if(!message.member.permissions.has("MANAGE_MESSAGES")) return message.channel.send("Invalid Perms")
+           try{
+            message.channel.send("Welcome to NecroAtomic Embed Builder,Please provide the title of the embed") 
 
             let title = await message.channel.awaitMessages(msg => msg.author.id == message.author.id, {
                     max:1
@@ -22,7 +19,8 @@ module.exports = {
 
             if(title.first().content.toLowerCase() === 'none'){
                 embed.setTitle(" ")
-            } else{
+            } 
+            else{
                 embed.setTitle(title.first().content)
             }
 
@@ -96,11 +94,24 @@ module.exports = {
                 embed.setImage(image.first().content)
             }
 
+            const filter = msg => msg.author.id == message.author.id;
+            const options = {
+                max: 1
+            };
+            message.channel.send("Which channel do you want to send the embed ? Mention channel or specify Channel ID")
+            let Channel = await message.channel.awaitMessages(filter, options);
+            const ch = await Channel.first().mentions.channels.first() || message.guild.channels.cache.get(Channel.first())
+            if(ch) return ch.send({embeds:[embed]})
+            return message.channel.send({embeds:[embed]})
 
-            channel.first().mentions.channels.first().send(embed).catch((err) => {
-                message.channel.send('Empty Embed')
-                console.log(err);
-            })
+
+        } catch(e) {
+            console.log(e);
+            message.channel.send('Empty Embed')
+        }
+
+            
+            
 
 
 

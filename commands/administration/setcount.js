@@ -6,7 +6,7 @@ module.exports = {
 
 
     async execute(message, args,client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return;
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Invalid Perms'})
 
         const channel = message.mentions.channels.first() || message.channel
 
@@ -20,7 +20,7 @@ module.exports = {
             }).save();
         
 
-            message.channel.send(`Saved counting game channel to ${channel}`)
+            message.channel.send({content:`Saved counting game channel to ${channel}`})
         })
 
 

@@ -18,7 +18,7 @@ module.exports = {
 
                 const attachment = new Discord.MessageAttachment(json.message, 'magik.png')
 
-                message.channel.send(attachment);
+                message.channel.send({files: [attachment]});
 
                 
             })

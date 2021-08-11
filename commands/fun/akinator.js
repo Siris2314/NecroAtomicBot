@@ -12,9 +12,9 @@ module.exports = {
 
         let inputAki = args[0].toLowerCase();
         let region;
-        if(inputAki === "person".toLocaleLowerCase()) region = "en";
-        if(inputAki === "object".toLocaleLowerCase()) region = "en_objects";
-        if(inputAki === "animal".toLocaleLowerCase()) region = "en_animals"
+        if (inputAki === 'person'.toLocaleLowerCase()) region = 'en';
+		if (inputAki === 'object'.toLocaleLowerCase()) region = 'en_objects';
+		if (inputAki === 'animal'.toLocaleLowerCase()) region = 'en_animals';
 
         if(!regions.includes(inputAki)) return message.channel.send("Please provide a valid category")
 

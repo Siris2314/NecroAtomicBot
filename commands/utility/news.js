@@ -24,7 +24,7 @@ module.exports = {
              .setTimestamp()
 
 
-            return message.channel.send(optionembed);
+             return message.channel.send({embeds:[optionembed]});
                   
         }
       const response = await fetch(
@@ -47,7 +47,7 @@ module.exports = {
       async function processArray(array) {
         for (const article of array) {
           const msg = await processArticle(article);
-          message.channel.send(msg);
+          message.channel.send({embeds:[msg]});
         }
       }
       await processArray(articleArr);

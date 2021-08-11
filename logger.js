@@ -204,12 +204,15 @@ module.exports = c => {
             if(oldState.channel == null && newState.channel){
                 send_log(c, oldState.guild, "BLUE", `Member connected to VC`, `${newState.member} has connected to ${newState.channel}`)
             }
-            else if(oldState.channel !== newState.channel && (newState.channelID !== null)){
+            else if(oldState.channel !== newState.channel && (newState.channelId !== null)){
+                console.log(newState.channelId);
                 send_log(c, oldState.guild, "BLUE", `Member has switched voice channels`,`${newState.member} switched from ${oldState.channel} => ${newState.channel}`)
             }
-            else if(newState.channelID == null){
+            else if(newState.channelId == null){
                 send_log(c, oldState.guild, "RED", `Member disconnected from VC`, `${oldState.member} has disconnected from ${oldState.channel}`)
             }
+
+
     
         })
         c.on("guildUpdate", function(oldGuild, newGuild){
@@ -224,6 +227,15 @@ module.exports = c => {
                 send_log(c, oldGuild, "RED", `Server Boosts Decrease`,`Your boosts have decreased by ${difference} boosts`)
 
             }
+        })
+        c.on('stickerCreate', function(sticker) {
+
+            console.log(sticker);
+            send_log(c, sticker.guild, "BLUE", 'New Sticker Created', `Sticker ${sticker} \nSticker ID: ${sticker.id} \nSticker Name: ${sticker.name} \nAdded By ${sticker.user}`, sticker.url) 
+
+
+
+
         })
 
         
@@ -245,7 +257,7 @@ async function send_log(client, guild,color, title, description,thumb){
     
      await Schema.findOne({Guild:guild.id}, async(err, data) => {
         if(!data) return;
-        if(!data.Guild) return;
+      
         const logembed = new Discord.MessageEmbed()
             .setColor(color ? color: "RANDOM")
             .setDescription(description ? description.substr(0,2048) : "\u200b")
@@ -254,10 +266,11 @@ async function send_log(client, guild,color, title, description,thumb){
             .setTimestamp()
             .setFooter(guild.name,guild.iconURL({format: "png"}))
         
-       
+
+    
         const logger = await client.channels.cache.get(data.Channel);
-        if(!data.Channel) return;
-        
+       
+
         logger.createWebhook(client.user.username, {
             avatar: client.user.displayAvatarURL({format:'png'})
         }).then(webhook => {

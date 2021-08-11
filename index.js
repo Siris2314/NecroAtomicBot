@@ -37,6 +37,7 @@ const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+
 const {VoiceClient} = require('djs-voice');
 
 const voiceClient = new VoiceClient({
@@ -84,8 +85,6 @@ const { DiscordTogether } = require('discord-together');
 client.discordTogether = new DiscordTogether(client, {
     token: token
 });
-const disbut = require('discord-buttons')(client)
-require('discord-slider')(client);
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});
@@ -178,8 +177,8 @@ client.commands = new Discord.Collection();
 
 client.embed = async(message, options) => {
     const embed = new Discord.MessageEmbed(options);
-    // message.channel.send({embeds: [embed]})
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]})
+    
   }
 
 
@@ -280,24 +279,24 @@ client.once("disconnect", () => {
 });
 
 
-rpc.on('ready', () => {
-    rpc.setActivity({
-        details: 'Working', 
-        state: 'Working on stuff', 
-        startTimestamp: new Date(), 
-        largeImageKey: 'large-key', 
-        largeImageText: 'Doing Stuff Over Summer', 
-        smallImageKey: 'small-key', 
-        smallImageText: 'Chilling', 
-        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
-    });
+// rpc.on('ready', () => {
+//     rpc.setActivity({
+//         details: 'Working', 
+//         state: 'Working on stuff', 
+//         startTimestamp: new Date(), 
+//         largeImageKey: 'large-key', 
+//         largeImageText: 'Doing Stuff Over Summer', 
+//         smallImageKey: 'small-key', 
+//         smallImageText: 'Chilling', 
+//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
+//     });
 
-    console.log('RPC online');
-});
+//     console.log('RPC online');
+// });
 
-rpc.login({
-    clientId: rpctoken 
-});
+// rpc.login({
+//     clientId: rpctoken 
+// });
 
 
 var welcome = {};
@@ -320,7 +319,7 @@ Canvas.loadImage("./assets/background.jpg").then(async(img) => {
 
 
 
-client.on("message", async (message) => {
+client.on("messageCreate", async (message) => {
     if (!message.guild || message.author.bot) {
         return;
     }
@@ -382,7 +381,7 @@ client.on("message", async (message) => {
     const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP);
 
 
-    if(message.content.includes("https://twitter.com/")){
+    if(message.content.includes("https://twitter.com/") && message.guild.id === '684462232679219242'){
         message.delete()
         let str = message.content.replace("https://twitter.com/","")
         let newstr = `https://fxtwitter.com/${str}`
@@ -648,6 +647,7 @@ client.on("message", async (message) => {
     if (!message.content.startsWith(prefix)) return;
 
 
+    
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
     var getDirectories = function (src, callback) {
@@ -687,6 +687,8 @@ client.on("message", async (message) => {
     });
 
 });
+
+
 
 
 
@@ -761,7 +763,7 @@ client.on("guildMemberAdd", async (member) => {
 		if (!data) return;
 		if (data) {
             try {
-                member.send(
+                member.send({embeds: [
                     new Discord.MessageEmbed()
                         .setTitle(`Server Under Lockdown`)
                         .setDescription(
@@ -770,7 +772,7 @@ client.on("guildMemberAdd", async (member) => {
                             }** with reason: **${kickReason}**`
                         )
                         .setColor('RED')
-                );
+                        ]});
             } catch(e){
                 throw e
             }
@@ -802,35 +804,35 @@ client.on("guildMemberAdd", async (member) => {
                 const id = member.id;
                 await member.kick();
 
-                channel.send(
+                channel.send({embeds:[
                     new Discord.MessageEmbed()
                      .setTitle('Alt Account Detected(Kick Option)')
                      .setDescription(`Member ${id}, Kicked due to detection of alt account - Account Age: ${createdAt}`)
                      .setColor("RANDOM")
                      .setTimestamp()
-                )
+                ]})
 
             }
             else if(option.toLowerCase() == 'ban'){
                 const id = member.id;
                 member.ban()
 
-                channel.send(
+                channel.send({embeds:[
                     new Discord.MessageEmbed()
                      .setTitle('Alt Account Detected(Ban Option)')
                      .setDescription(`Member ${id}, Ban due to detection of alt account - Account Age: ${createdAt}`)
                      .setColor("RANDOM")
                      .setTimestamp()
-                )
+                 ]})
             }
             else{
-                channel.send(
+                channel.send({embeds:[
                     new Discord.MessageEmbed()
                      .setTitle('Alt Account Detected(Warning)')
                      .setDescription(`:warning: Alt Account has been detected - Account Age: ${createdAt}`)
                      .setColor("RANDOM")
                      .setTimestamp()
-                )
+                ]})
 
             }
 
@@ -883,7 +885,7 @@ client.on("messageDelete", async (message) => {
                 .setFooter(message.author.username,`${message.author.displayAvatarURL({dynamic: true})}`)
                 .setTimestamp()
 
-            message.channel.send(embed)
+            message.channel.send({embeds: [embed]})
             
         }
     })
@@ -912,23 +914,6 @@ const voiceCollection = new Discord.Collection();
 client.on("voiceStateUpdate", async (oldState, newState) => {
 
     voiceClient.startListener(oldState,newState);
-    const user = await client.users.fetch(newState.id);
-    const member = newState.guild.member(user);
-    await voiceSchema.findOne({ Guild: oldState.guild.id }, async (e, data) => {
-        if(!data) return;
-        if (!oldState.channel && newState.channel.id === data.Channel) {
-            const channel = await newState.guild.channels.create(user.tag, {
-                type: "voice",
-                parent: newState.channel.parent,
-            });
-            member.voice.setChannel(channel);
-            voiceCollection.set(user.id, channel.id);
-        } else if (!newState.channel) {
-            if (oldState.channelID === voiceCollection.get(newState.id)) {
-                return oldState.channel.delete();
-            }
-        }
-    });
 });
 
 client.on("messageReactionAdd", async (reaction, user) => {
@@ -966,7 +951,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
                     embed.setImage(reaction.message.attachments.first().url);
                 }
 
-                if (starboard) starboard.send(`1 - ⭐ | ${reaction.message.channel}`, embed);
+                if (starboard) starboard.send({content:`1 - ⭐ | ${reaction.message.channel}`},{embeds:[ embed]});
             }
         });
     };

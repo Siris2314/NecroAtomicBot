@@ -8,17 +8,17 @@ module.exports = {
 
     async execute(message,args,client){
 
-        if(!message.member.hasPermission('ADMINISTRATOR')) return;
+        if(!message.member.permissions.has('ADMINISTRATOR')) return;
 
         const role = message.mentions.roles.first()
         const rankName = args.slice(1).join(" ");
 
-        if(!role) return message.channel.send('Please specify a role')
-        if(!rankName) return message.channel.send('Please specify a role')
+        if(!role) return message.channel.send({content:'Please specify a role'})
+        if(!rankName) return message.channel.send({content:'Please specify a role'})
        
 
         RankSchema.findOne({Guild: message.guild.id, Rank:rankName}, async(err, data) => {
-            if(data) return message.channel.send('This rank already exists')
+            if(data) return message.channel.send({content:'Rank Already Exists'})
             else{
                 data = new RankSchema({
                     Guild: message.guild.id,
@@ -27,7 +27,7 @@ module.exports = {
                 });
                 data.save();
 
-                message.channel.send(`${role} is new rank -> ${rankName}`)
+                message.channel.send({content:`${role} is new rank -> ${rankName}`})
             }
         })
 

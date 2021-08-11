@@ -1,6 +1,6 @@
 const genshin = require('genshin-db');
 const Discord = require('discord.js');
-
+const reactionMenu = require("discordv13-pagination")
 
 
 module.exports = {
@@ -11,10 +11,8 @@ module.exports = {
     const input = args.join(" ")
     const char = genshin.talents(input)
     const char2 = genshin.characters(input)
-    const emojiList = ["⬅️", "➡️"]
-    const timeout = 100000
+   
 
-    console.log(char)
 
 
     try{
@@ -44,12 +42,7 @@ module.exports = {
       .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
 
 
-      pages =[
-          embed,
-          embed2
-        ];
-        message.channel.createSlider(message.author.id,pages,emojiList[1], emojiList[0])
-
+      reactionMenu(message,[embed, embed2])
 
     } catch(err){
       message.channel.send("Character not in database")

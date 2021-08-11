@@ -25,6 +25,6 @@ module.exports = {
                 **Views**: ${video.views.toLocaleString()}`,false
           )
           .setThumbnail(video.author.bestAvatar.url)
-        message.channel.send(embed);
+        return message.channel.send({embeds:[embed]});
     }
 }

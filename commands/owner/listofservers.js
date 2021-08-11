@@ -33,7 +33,7 @@ module.exports = {
         .setFooter(`Page - ${page}/${Math.ceil(client.guilds.cache.size / 10)}`)
         .setDescription(description);
 
-      let msg = await message.channel.send(embed);
+      let msg = await message.channel.send({embeds:[embed]});
 
       await msg.react("⬅");
       await msg.react("➡");
@@ -120,7 +120,7 @@ module.exports = {
           .setDescription(`Command Destroyed Because Of Reaction: :x:`)
           .setColor("RED");
           msg.delete()
-          message.reply(xembed);
+          message.channel.send({embeds:[xembed]});
         }
 
         

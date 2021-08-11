@@ -22,7 +22,7 @@ module.exports = {
          .setThumbnail(message.guild.iconURL())
          .setDescription(lb.join("\n\n"))
 
-        message.channel.send(embed)
+        message.channel.send({embeds:[embed]})
     }
 
 

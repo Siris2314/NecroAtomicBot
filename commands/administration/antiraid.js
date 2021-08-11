@@ -6,19 +6,19 @@ module.exports = {
     description: 'Enables anti-raid, allowing to counter raids by instantly kicking members who join',
     usage:'<prefix> antiraid enable/disable',
     async execute(message, args,client){
-        if(!message.member.hasPermission('ADMINISTRATOR')) return message.reply('You do not have the permission \`ADMINISTRATOR\`')
-        if(!message.guild.me.hasPermission('KICK_MEMBERS')) return message.reply('I do not have the permission \`KICK_MEMBERS\`')
+        if(!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send({content:'You do not have the permission \`ADMINISTRATOR\`'})
+        if(!message.guild.me.permissions.has('KICK_MEMBERS')) return message.reply({content:'I do not have the permission \`KICK_MEMBERS\`'})
         options = [
             'enable',
             'disable'
         ]
 
-        if (!args.length) return message.reply("Please enter either **enable** or **disable**")
+        if (!args.length) return message.channel.send({content:"Please enter either **enable** or **disable**"})
         const opt = args[0].toLowerCase();
-        if (!opt) return message.reply('Please enter either **enable** or **disable**')
+        if (!opt) return message.channel.send({content:'Please enter either **enable** or **disable**'})
 
 
-        if (!options.includes(opt)) return message.reply('Please enter either **enable** or **disable**')
+        if (!options.includes(opt)) return message.channel.send({content:'Please enter either **enable** or **disable**'})
 
         if(opt === 'enable') {
                 schema.findOne({ Guild: message.guild.id }, async(err, data) => {
@@ -33,9 +33,9 @@ module.exports = {
                          .setDescription(`${message.author.username} has enabled Anti-Raid`)
                          .setFooter(`${message.guild.name}`)
                          .setTimestamp()
-                        return message.channel.send(embed)
+                         return message.channel.send({embeds:[embed]})
                     } else{
-                        message.channel.send(`Anti-raidmode is already enabled`)
+                        message.channel.send({content:`Anti-raidmode is already enabled`})
                     }
                 })
             
@@ -43,7 +43,7 @@ module.exports = {
 
         if(opt === 'disable') {
             schema.findOne({ Guild: message.guild.id}, async(err,data) =>{
-            if(!data) return message.channel.send('The Anti-raidmode has already been disabled')
+            if(!data) return message.channel.send({content:'The Anti-raidmode has already been disabled'})
             data.delete()
             const embed = new MessageEmbed()
             .setTitle(':white_check_mark: Anti-Raid Mode Disabled')
@@ -53,7 +53,7 @@ module.exports = {
             .setTimestamp()
             
             })
-            return message.channel.send(embed)
+            return message.channel.send({embeds:[embed]})
             
         }
     }

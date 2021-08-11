@@ -9,7 +9,7 @@ module.exports = {
 
         const role = message.mentions.roles.first()
         const option = args[1];
-        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms Denied'})
 
         if(!role){
             const error = new Discord.MessageEmbed()
@@ -28,7 +28,7 @@ module.exports = {
             .setTitle("Options for auto-role system")
             .setDescription("`<prefix> autorole enable` To enable the auto-role system\n`<prefix> autorole disable` To disable the auto-role system")
             .setColor('RED')
-            return message.channel.send(embed)
+            return message.channel.send({embeds:[embed]})
         }
 
      if(option.toLowerCase() === 'enable'){
@@ -57,7 +57,7 @@ module.exports = {
     } else if(option.toLowerCase() === 'disable'){
         Schema.findOne({Guild:message.guild.id}, async(err,data) =>{
 
-            if(!data) return message.channel.send('Autorole was never enabled in this server');
+            if(!data) return message.channel.send({content:'Autorole was never enabled in this server'});
 
             data.Delete()
 
@@ -68,7 +68,7 @@ module.exports = {
         .setColor('RED')
         .setDescription(`${message.author.tag} has disabled the autorole system!`)
         .setTimestamp()
-        return message.channel.send(embed)
+        return message.channel.send({embeds:[embed]})
 
 
 
@@ -79,7 +79,7 @@ module.exports = {
         .setColor('RED')
         .setDescription('Not a valid option, please use either <prefix> setautorole enable to enable this system or <prefix> setautrole disabled to disable this system')
         .setTimestamp()
-        return message.channel.send(embed)
+        return message.channel.send({embeds:[embed]})
 
 
     }

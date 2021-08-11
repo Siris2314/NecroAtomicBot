@@ -13,7 +13,7 @@ module.exports = {
       }
       const sp = member.permissions.serialize();
       const channelperm = message.channel.permissionsFor(member).serialize();
-      return message.channel.send(
+      return message.channel.send({embeds:[
         new MessageEmbed()
           .setColor(member.displayColor || "GREY")
           .setTitle(`${member.displayName}'s Permissions`)
@@ -39,6 +39,6 @@ module.exports = {
               "```",
             ].join("\n")
           )
-      );
+           ]});
   },
 };

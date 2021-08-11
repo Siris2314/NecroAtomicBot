@@ -40,7 +40,7 @@ module.exports = {
             .addField('Description', info.description ? info.description : 'No description available', true)
             .setImage(info.image)
 
-        return message.channel.send(embed)
+        return message.channel.send({embeds:[embed]});
 
     }
     else{
@@ -59,6 +59,7 @@ module.exports = {
     }
 
     } catch(e) {
+        console.log(e);
         message.channel.send('Invalid Spotify Track URL')
     }
     } 

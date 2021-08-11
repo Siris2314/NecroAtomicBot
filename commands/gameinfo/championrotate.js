@@ -33,7 +33,7 @@ module.exports = {
                 .addField("Powered by: ", `[developer.riotgames.com](https://developer.riotgames.com/)`)
                 .setTimestamp()
                 .setColor("0x#FF0000")
-                message.channel.send(embed);
+                return message.channel.send({embeds:[embed]});
         
 
 

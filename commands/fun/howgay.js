@@ -6,15 +6,15 @@ module.exports = {
     description: 'Gay Rate Command',
     async execute(message, args,client){
         const member = message.mentions.users.first() || message.author;
-        const user = member.displayAvatarURL({dynamic:false})
+        const user = member.displayAvatarURL({dynamic:false, format:'png'})
         let gayrate = Math.floor(Math.random() * 101)
 
        let image = " ";
 
-     image = await fetch(`https://api.cool-img-api.ml/gay/?image=${user}`)
+     image = await fetch(`https://luminabot.xyz/api/image/gay?image=${user}`)
             .then(response => 
                 image = response.url
-        )
+          )
 
         if(gayrate >=70){
 
@@ -24,8 +24,8 @@ module.exports = {
             .setImage(image)
             .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
             .setFooter(message.client.user.username, message.client.user.avatarURL())
-            message.channel.send(embed)
-
+            message.channel.send({embeds:[embed]})
+            
 
         }
     else{
@@ -36,7 +36,7 @@ module.exports = {
             .setColor("RANDOM")
             .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
             .setFooter(message.client.user.username, message.client.user.avatarURL())
-        message.channel.send(embed)
+        message.channel.send({embeds:[embed]})
      }
     
 }

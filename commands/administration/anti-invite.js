@@ -9,16 +9,16 @@ module.exports = {
 
     async execute(message, args,client){
 
-        if(!message.member.hasPermission('ADMINISTRATOR')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send({content:'Perms Denied'})
         const id = args[0] || message.guild.id;
 
         schema.findOne({Server: id}, async(err, data) =>{
-            if(data) return message.channel.send('Server already has anti-invite on')
+            if(data) return message.channel.send({content:'Server already has anti-invite on'})
 
             new schema({
                 Server: id
             }).save()
-            message.channel.send(`Anti-Invite has been turned on in ${message.guild.name}`)
+            message.channel.send({content:`Anti-Invite has been turned on in ${message.guild.name}`})
         })
         
     }

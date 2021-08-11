@@ -16,7 +16,7 @@ async execute(message, args,client) {
         .setColor("RANDOM");
 
 
-    message.channel.send(embed);
+    return message.channel.send({embeds:[embed]});
 
 
     

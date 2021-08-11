@@ -7,7 +7,7 @@ module.exports = {
     description: 'blacklists words',
 
     async execute(message,args,client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return;
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Admin Only Command'})
 
         const query = args[0]?.toLowerCase();
         const guild = {Guild: message.guild.id}
@@ -15,11 +15,11 @@ module.exports = {
 
         if(query === "add"){
             const word = args[1]?.toLowerCase();
-            if(!word) return message.channel.send('Please specify a word')
+            if(!word) return message.channel.send({content:'Please specify a word'})
 
             Schema.findOne( guild, async(err, data) => {
                 if(data){
-                    if(data.Words.includes(word)) return message.channel.send('Word already in database')
+                    if(data.Words.includes(word)) return message.channel.send({content:'Word already in database'})
                     data.Words.push(word)
                     data.save()
                     const getCollection = blacklistedWords.get(message.guild.id);
@@ -33,16 +33,16 @@ module.exports = {
 
                     blacklistedWords.set(message.guild.id, [word])
                 }
-                message.channel.send(`${word} is now blacklisted`)
+                message.channel.send({content:`${word} is now blacklisted`})
             })
         } else if(query === 'remove'){
             const word = args[1]?.toLowerCase();
-            if(!word) return message.channel.send('Please specify a word')
+            if(!word) return message.channel.send({content:'Please specify a word'})
 
             Schema.findOne( guild, async(err, data) => {
-               if(!data) return message.channel.send('This guild has no data saved in database');
+               if(!data) return message.channel.send({content:'This guild has no data saved in database'});
 
-               if(!data.Words.includes(word)) return message.channel.send('That word is not in the database')
+               if(!data.Words.includes(word)) return message.channel.send({content:'That word is not in the database'})
 
                const filtered  = data.Words.filter((target) => target !== word)
 
@@ -55,12 +55,12 @@ module.exports = {
 
 
                blacklistedWords.get(message.guild.id, filtered)
-               message.channel.send('Word has been removed from blacklist')
+               message.channel.send({content:'Word has been removed from blacklist'})
             })
            
         } else if(query === 'display'){
             Schema.findOne(guild, async(err,data) => {
-                if(!data) return message.channel.send('There is no data in databse')
+                if(!data) return message.channel.send({content:'There are no blacklisted words in database'})
                 message.channel.send(
                     new MessageEmbed()
                         .setTitle('Blacklisted Words')
@@ -71,10 +71,10 @@ module.exports = {
         } else if(query === "collection"){
             const getCollection = blacklistedWords.get(message.guild.id)
 
-            if(getCollection) return message.channel.send(getCollection ,{code: 'js'})
+            if(getCollection) return message.channel.send({content: getCollection },{code: 'js'})
 
             message.channel.send("No data")
-        } else return message.channel.send('Not a valid option')
+        } else return message.channel.send({content:'Not a valid option'})
 
 
     }

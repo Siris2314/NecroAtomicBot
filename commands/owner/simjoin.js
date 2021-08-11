@@ -14,6 +14,6 @@ module.exports = {
 
         client.emit('guildMemberAdd', message.member);
 
-        message.channel.send('Simulated Join Success')
+        message.channel.send({content:'Simulated Join Success'})
     }
 }

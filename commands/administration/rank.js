@@ -9,15 +9,15 @@ module.exports = {
 
 
         const rankName = args.join(" ")
-        if(!rankName) return message.channel.send('Please specify a rank')
+        if(!rankName) return message.channel.send({content:'Please specify a rank'})
 
         RankSchema.findOne({Guild: message.guild.id}, async(err, data) => {
 
-            if(!data) return message.channel.send('Rank does not exist')
+            if(!data) return message.channel.send({content:'Rank does not exist'})
 
             message.member.roles.add(data.Role)
 
-            return message.channel.send(`You have received <@&${data.Role}`)
+            return message.channel.send({content:`You have received <@&${data.Role}`})
             
         })
 

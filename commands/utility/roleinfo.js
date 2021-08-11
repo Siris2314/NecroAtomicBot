@@ -75,7 +75,7 @@ module.exports = {
         .addField('Creation Date', `\`${moment(role.createdAt).format('DD/MMM/YYYY')}\``, true)
         .addField('Permissions', `\`\`\`diff\n${finalPermissions.join('\n')}\`\`\``)
 
-        message.channel.send(embed)
+        return message.channel.send({embeds:[embed]});
 
         
     }

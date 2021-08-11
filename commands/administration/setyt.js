@@ -6,7 +6,7 @@ module.exports = {
 
     async execute(message,args,client){
 
-        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Invalid Perms') 
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Invalid Perms'}) 
 
 
         let ChannelLink = args[0];
@@ -17,7 +17,7 @@ module.exports = {
         if (!ChannelLink || !DiscordChannel || !DiscordUser) return message.channel.send(new MessageEmbed() .setTitle(':x: Command Error') .setDescription('Usage for command is <prefix> setyt <ytchannellink> <discordchannel> <discord user> <Notification>'))
         client.YTP.setChannel(ChannelLink, DiscordChannel, DiscordUser, Notification, preventDuplicates = true)
             .then(ch => {
-                message.channel.send(new MessageEmbed() .setDescription(`Posting Notifications for ${ch.YTchannel} (<@${ch.DiscordUser}>) in <#${ch.DiscordChannel}>\n\nThe Message:\n${ch.message}`))
+                message.channel.send({embeds:[new MessageEmbed() .setDescription(`Posting Notifications for ${ch.YTchannel} (<@${ch.DiscordUser}>) in <#${ch.DiscordChannel}>\n\nThe Message:\n${ch.message}`)]})
 
 
             }).catch((e) => {

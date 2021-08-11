@@ -22,7 +22,7 @@ module.exports = {
                     .setDescription(`${def}`)
 
 
-                return message.channel.send(embed)
+                    message.channel.send({embeds:[embed]});
 
 
 

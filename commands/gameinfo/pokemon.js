@@ -87,6 +87,6 @@ module.exports = {
         { name: `Moves[${n}]`, value: moves, inline: true }
       )
       .setTimestamp();
-    message.channel.send(embed);
+    message.channel.send({embeds:[embed]});
   },
 };

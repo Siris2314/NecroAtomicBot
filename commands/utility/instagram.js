@@ -1,6 +1,6 @@
 const Instagram = require('scraper-instagram')
 const {MessageEmbed} = require('discord.js')
-const paginationEmbed = require('discord.js-pagination')
+const reactionMenu = require("discordv13-pagination")
 const instaID = process.env.instaID
 require('dotenv').config();
 
@@ -18,11 +18,9 @@ module.exports = {
     const InstaClient = new Instagram();
     const yourSessionId = instaID;
 
-    const emojiList = ["⬅️", "➡️"]
-    const timeout = '300000';
     const verified_instagram = '✔️';
 
-    const instagram = await InstaClient.authBySessionId(instaID)
+    const instagram = await InstaClient.authBySessionId(yourSessionId)
       .catch(err => console.error(err))
 
     try {
@@ -31,16 +29,17 @@ module.exports = {
       const profileUrl = `https://www.instagram.com/${Replaced}`;
       const postUrl = 'https://www.instagram.com/p/';
 
+
       const embed = new MessageEmbed()
         .setTitle('\*\*Instagram\*\*')
-        .addField(`\*\*${insta.name} (@${Replaced}) ${insta.verified ? `${verified_instagram}`: ``} ${insta.private ? '🔒' : ''}\*\*`,
+        .addField(`\*\*${insta.name} (@${Replaced}) ${insta.verified ? `${verified_instagram}`: ''} ${insta.private ? '🔒' : ''}\*\*`,
       `${insta.bio} ${profileUrl}`)
         .setColor('RANDOM')
         .setThumbnail(insta.pic)
         .addFields(
-          {name: 'TotalPosts', value: insta.posts, inline:true},
-          {name:'Followers', value: insta.followers, inline:true},
-          {name: 'Followings', value:insta.following, inline:true}
+          {name: 'TotalPosts', value: `${insta.posts ? insta.posts : 0}`, inline:true},
+          {name:'Followers', value: `${insta.followers}`, inline:true},
+          {name: 'Followings', value:`${insta.following}`, inline:true}
         )
         .setTimestamp()
         .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic:true}))
@@ -58,15 +57,18 @@ module.exports = {
 `❤️ : \`${insta.lastPosts[0].likes}\` 📋: \`${insta.lastPosts[0].comments}\``)
           .setThumbnail(insta.lastPosts[0].thumbnail)
           .setTimestamp()
+          
 
           pages =[
             embed,
             post
           ];
-          paginationEmbed(message,pages,emojiList,timeout);
+
+          reactionMenu(message, pages);
+          
 
         } catch(error){
-            message.channel.send(embed)
+            message.channel.send({embeds:[embed]})
         }
 
 

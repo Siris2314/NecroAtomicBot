@@ -20,9 +20,12 @@ module.exports = {
                     )
                     .setDescription(json.insult)
                     .setTimestamp()
-                    .setFooter("Evil Insult API");
 
-                message.channel.send(roastEmbed);
+                    .setFooter('Evil Insult API')
+
+                    return message.channel.send({embeds:[roastEmbed]});
+
+                    
             });
     },
 };

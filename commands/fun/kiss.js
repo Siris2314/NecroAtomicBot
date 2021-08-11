@@ -21,6 +21,6 @@ module.exports = {
         .setTitle(`${message.author.username} kisses ${target.user.username} \ 💖`)
         .setTimestamp()
     
-    return message.channel.send(embed);
-  }
+       return message.channel.send({embeds:[embed]});
+  } 
 };

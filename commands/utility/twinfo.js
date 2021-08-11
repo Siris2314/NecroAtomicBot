@@ -32,7 +32,7 @@ module.exports = {
                 .setURL(info.twitch_profile)
 
 
-            return message.channel.send(embed);
+            return message.channel.send({embeds:[embed]});
 
                 
 

@@ -6,20 +6,20 @@ module.exports = {
     description: 'provides panel for role reaction',
 
     async execute(message,args, client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms Denied'})
     
 
     const channel = message.mentions.channels.first() || message.channel
 
     Schema.findOne({Guild:message.guild.id}, async(err, data) => {
-        if(!data) return message.channel.send('No data in here')
+        if(!data) return message.channel.send({content:'No data in here'})
         const mapped = Object.keys(data.Roles)
             .map((value, index) => {
                 const role = message.guild.roles.cache.get(data.Roles[value][0]);
                 return `${index + 1}) ${data.Roles[value][1].raw} - ${role}`
             }).join("\n\n")
 
-        channel.send(new MessageEmbed().setDescription(mapped)).then((msg) => {
+        channel.send({embeds:[new MessageEmbed().setDescription(mapped)]}).then((msg) => {
             data.Message = msg.id;
             data.save()
 

@@ -6,31 +6,33 @@ module.exports = {
 
     async execute(message,args,client){
 
-        var perms = message.member.hasPermission("BAN_MEMBERS");
-        if(!perms) return message.channel.send("Perms Denied")
+        var perms = message.member.permissions.has("BAN_MEMBERS");
+        if(!perms) return message.channel.send({content:"Perms Denied"})
 
-        if(!message.guild.me.hasPermission("BAN_MEMBERS")) return message.channel.send("I do not have perms")
+        if(!message.guild.me.permissions.has("BAN_MEMBERS")) return message.channel.send({content:"I do not have perms"})
 
         const reason = args.slice(1).join(" ") || "No reason provided";
         const id = args.join(' ')
-        if(!id) return message.channel.send("Please provide ID of member to ban")
+        if(!id) return message.channel.send({content:"Please provide ID of member to ban"})
 
         const member = await client.users.fetch(id);
         message.guild.members.ban(member.id);
 
-        const banEmbed = new MessageEmbed()
-        .setTitle('Banned Member(Outside of Server Ban)!')
-        .setDescription(`${member.username} was successfully banned.`)
-        .addField('Moderator', message.member, true)
-        .addField('Member', member, true)
-        .setColor("RANDOM")
-        .addField('Reason', reason)
-        .setFooter(message.member.displayName, message.author.displayAvatarURL({
-            dynamic: true
-        }))
-        .setTimestamp()
+
+        const banEmbed = new Discord.MessageEmbed()
+            .setTitle('Outside of Server Ban')
+            .setDescription(`${member.username} was successfully banned.`)
+            .addField('Moderator', message.author.username, true)
+            .addField('Member', member.username, true)
+            .setColor("RANDOM")
+            .addField('Reason', reason)
+            .setThumbnail(member.displayAvatarURL({dynamic:true}))
+            .setFooter(message.author.username, message.author.displayAvatarURL({
+                dynamic: true
+            }))
+            .setTimestamp()
 
     
-        return message.channel.send(banEmbed);
+        return message.channel.send({embeds:[banEmbed]})
     }
 }

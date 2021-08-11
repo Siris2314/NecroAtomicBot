@@ -31,9 +31,9 @@ module.exports = {
         const extension = parsedEmoji.animated ? ".gif" : ".png";
         const url = `https://cdn.discordapp.com/emojis/${parsedEmoji.id + extension}`;
         message.guild.emojis.create(url, name)
-          .then((emoji) => message.channel.send(new MessageEmbed() .setTitle('Emoji Added') .setDescription(`Emoji ${name} was added`) .setThumbnail(emoji.url) .setTimestamp() .setColor('RANDOM'),{
+          .then((emoji) => message.channel.send({embeds:[new MessageEmbed() .setTitle('Emoji Added') .setDescription(`Emoji ${name} was added`) .setThumbnail(emoji.url) .setTimestamp() .setColor('RANDOM'),{
             emojiName: emoji.name
-          }))
+          }]}))
       }
     }
   }

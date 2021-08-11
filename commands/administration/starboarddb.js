@@ -6,11 +6,11 @@ module.exports = {
     description: 'Sets a starboard channel',
 
     async execute(message,args,client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return;
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms Denied'})
 
         const channel = message.mentions.channels.first();
 
-        if(!channel) return message.channel.send("Please mention a channel");
+        if(!channel) return message.channel.send({content:"Please mention a channel"});
 
         Schema.findOne({Guild:message.guild.id}, async(err, data) => {
             if(data) data.delete();
@@ -21,7 +21,7 @@ module.exports = {
             }).save();
         
 
-            message.channel.send(`Saved starboard channel to ${channel}`)
+            message.channel.send({content:`Saved starboard channel to ${channel}`})
         })
 
 

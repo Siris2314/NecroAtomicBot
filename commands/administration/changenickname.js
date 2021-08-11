@@ -5,8 +5,8 @@ module.exports = {
   async execute(message, args, client) {
     let user = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     let nickname = args.slice(1).join(" ");
-    if(!user) return message.channel.send(`Specify a valid user or user ID`);
-    if(!nickname) return message.channel.send(`Specify a nickname`);
+    if(!user) return message.channel.send({content:`Specify a valid user or user ID`});
+    if(!nickname) return message.channel.send({content:`Specify a nickname`});
     let member = user;
     user = user.user;
     nickname = nickname.replace("%username%", user.username);
@@ -17,12 +17,12 @@ module.exports = {
     nickname = nickname.replace("%decancer_username%", decancer(user.username));
     nickname = nickname.replace("%decancer_tag%", decancer(user.tag));
     nickname = nickname.replace("%decancer_oldNickname%", decancer(member.nickname ? member.nickname : user.username));
-    if(member.nickname === nickname) return message.channel.send(`**${member.displayName}**'s nickname is already **${nickname}**`)
+    if(member.nickname === nickname) return message.channel.send({content:`**${member.displayName}**'s nickname is already **${nickname}**`})
     try {
       await member.setNickname(nickname);
-      await message.channel.send(`Successfully set **${user.tag}**'s nickname as **${nickname}**`);
+      await message.channel.send({content:`Successfully set **${user.tag}**'s nickname as **${nickname}**`});
     } catch (err) {
-      await message.channel.send(`An error occured trying to set ${user.tag}'s nickname.\n${err.message}`)
+      await message.channel.send({content:`An error occured trying to set ${user.tag}'s nickname.\n${err.message}`})
     }
   }
 }

@@ -1,10 +1,10 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
-const pagination = require("discord-epagination");
 require("dotenv").config();
 const schema = require("../schemas/Guilds");
 const token = process.env.token;
 let prefix = process.env.prefix;
+const reactionMenu = require("discordv13-pagination")
 const image = `https://cdn.discordapp.com/attachments/867151384703795241/867465639262027776/bot_long_banner.png`
 
 
@@ -37,7 +37,7 @@ module.exports = {
             }
         });
         if (!args[0]) {
-            message.channel.send(
+            message.channel.send({embeds:[
                 new MessageEmbed()
                     .setTitle("📬 Need help? Here are all of my commands:")
                     .addFields(
@@ -83,7 +83,7 @@ module.exports = {
                     )
                     .setImage(image)
                     .setColor("#2F3136")
-            );
+                    ]});
         } else {
             if (commands[args[0]] != undefined) {
                 var temp = [];
@@ -119,7 +119,7 @@ module.exports = {
                         )
                         .setTimestamp()
                         .setColor("#2F3136")
-                    message.channel.send(a);
+                    message.channel.send({embeds:[a]});
                 } else {
                     for (var i = 0; i < categories.length; i++) {
                         listOfEmbed.push(
@@ -141,12 +141,9 @@ module.exports = {
                                 .setColor("#2F3136")
                         );
                     }
-                    pagination.createSimpleSlider(
-                        message,
-                        listOfEmbed,
-                        ["◀️", "▶️"],
-                        30000
-                      );
+
+                    reactionMenu(message, listOfEmbed)
+                   
             
                 }
             } else {
@@ -164,7 +161,7 @@ module.exports = {
                             `Invalid command! Use \`${prefix}help\` for all of my commands!`
                         )
                         .setColor("FF0000");
-                    return message.channel.send(embed);
+                    return message.channel.send({embeds:[embed]});
                 }
 
                 const embed = new MessageEmbed()
@@ -200,7 +197,7 @@ module.exports = {
                     )
                     .setTimestamp()
                     .setColor("#2F3136")
-                return message.channel.send(embed);
+                return message.channel.send({embeds:[embed]});
             }
         }
     },

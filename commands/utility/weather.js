@@ -28,7 +28,7 @@ module.exports = {
             .addField("Feels like ", `${current.feelslike}`, true)
             .addField("Humidity", `${current.humidity}`, true)
             .setColor("#4db1d1");
-        message.channel.send(weatherinfo);
+        return message.channel.send({embeds:[weatherinfo]});
     })
   }
 }

@@ -29,7 +29,7 @@ module.exports = {
             .setImage(info.image_gradient) 
             .setColor(info.hex)
 
-        message.channel.send(embed)
+        return message.channel.send({embeds:[embed]});
 
      } catch(err){
          message.channel.send("Not a valid color")

@@ -8,18 +8,18 @@ module.exports = {
 
   async execute(message, args,client){
 
-    if(!message.member.hasPermission('MANAGE_CHANNELS')){
-      return message.channel.send('Perms Denied')
+    if(!message.member.permissions.has('MANAGE_CHANNELS')){
+      return message.channel.send({content:'Perms Denied'})
     }
 
     const channelNameQuery = args.join(" ");
 
     if(!channelNameQuery){
-      return message.channel.send('Please specify a channel name')
+      return message.channel.send({content:'Please specify a channel name'})
     }
 
   message.guild.channels.create(channelNameQuery).then((ch) => {
-        message.channel.send(`Click ${ch} to access the newly created channel`)
+        message.channel.send({content:`Click ${ch} to access the newly created channel`})
     });
   },
 
