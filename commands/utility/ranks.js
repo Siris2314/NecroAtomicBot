@@ -14,11 +14,11 @@ module.exports = {
                 return `#${index + 1 } | **${Rank}** -> <@&${Role}>`
             }).join('\n')
 
-            message.channel.send(
+            message.channel.send({embeds:[
                 new MessageEmbed()
                     .setDescription(embedDescription)
                     .setColor('RANDOM')
-            )
+             ]})
         })
 
     }

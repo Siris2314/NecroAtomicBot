@@ -10,17 +10,17 @@ module.exports = {
     async execute(message,args,client){
 
 
-        if(!(message.member.hasPermission('ADMINSTRATOR'))) return message.channel.send("Perms Denied")
+        if(!(message.member.permissions.has('ADMINSTRATOR'))) return message.channel.send({content:"Perms Denied"})
 
       try{  
       
         Schema.findOne({Guild: message.guild.id}, async(err, data) => {
           try{
-          if(!data) return message.channel.send('This guild has no data stored')
+          if(!data) return message.channel.send({content:'This guild has no data stored'})
 
           const channel = client.channels.cache.get(data.Channel)
 
-          message.channel.send(`Welcome Channel => ${channel}`)
+          message.channel.send({content:`Welcome Channel => ${channel}`})
           } catch(err){
             console.log(err);
           }

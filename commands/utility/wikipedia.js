@@ -29,7 +29,7 @@ module.exports = {
                  .setTitle(response.title)
                  .setURL(response.content_urls.desktop.page)
                  .setDescription([`${response.extract} Links for Topic You Searched [Link](${response.content_urls.desktop.page})`])
-              message.channel.send(embed)    
+                return message.channel.send({embeds:[embed]});    
             } else{
                 const embed = new Discord.MessageEmbed()
                     .setColor('RANDOM')
@@ -37,7 +37,7 @@ module.exports = {
                     .setThumbnail(response.thumbnail.source)
                     .setURL(response.content_urls.desktop.page)
                     .setDescription(response.extract)
-                message.channel.send(embed)
+                return message.channel.send({embeds:[embed]});
 
             }
         }

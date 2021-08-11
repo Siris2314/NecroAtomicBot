@@ -5,13 +5,13 @@ module.exports = {
     name : 'mute',
     description: 'mutes users',
     async execute(message, args, client){
-        if(!message.member.hasPermission('MANAGE_MESSAGES')) return message.channel.send('You do not have permissions to use this command')
+        if(!message.member.permissions.has('MANAGE_MESSAGES')) return message.channel.send({content:'You do not have permissions to use this command'})
         const Member = message.mentions.members.first() || message.guild.members.cache.get(args[0])
-        if(!Member) return message.channel.send('Member is not found.')
+        if(!Member) return message.channel.send({content:'Member is not found.'})
         const role = message.guild.roles.cache.find(role => role.name.toLowerCase() === 'muted')
         if(!role) {
             try {
-                message.channel.send('Muted role is not found, attempting to create muted role.')
+                message.channel.send({content:'Muted role is not found, attempting to create muted role.'})
 
                 let muterole = await message.guild.roles.create({
                     data : {
@@ -25,13 +25,13 @@ module.exports = {
                         ADD_REACTIONS: false
                     })
                 });
-                message.channel.send('Muted role has sucessfully been created.')
+                message.channel.send({content:'Muted role has sucessfully been created.'})
             } catch (error) {
                 console.log(error)
             }
         };
         let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
-        if(Member.roles.cache.has(role2.id)) return message.channel.send(`${Member.displayName} has already been muted.`)
+        if(Member.roles.cache.has(role2.id)) return message.channel.send({content:`${Member.displayName} has already been muted.`})
         await Member.roles.add(role2)
         Schema.findOne({Guild:message.guild.id}, async(err,data)=>{
             if(!data){
@@ -45,6 +45,6 @@ module.exports = {
             }
         })
 
-        message.channel.send(`${Member.displayName} is now muted.`)
+        message.channel.send({content:`${Member.displayName} is now muted.`})
     }
 }

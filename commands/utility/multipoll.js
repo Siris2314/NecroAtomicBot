@@ -93,7 +93,7 @@ module.exports = {
             
             
 
-            msg.channel.send(voteEmbed)
+             msg.channel.send({embeds:[voteEmbed]});
         })
 
     }

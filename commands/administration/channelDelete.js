@@ -8,18 +8,18 @@ module.exports = {
 
   async execute(message, args,client){
 
-    if(!message.member.hasPermission('MANAGE_CHANNELS')){
-      return message.reply('Perms Denied')
+    if(!message.member.permissions.has('MANAGE_CHANNELS')){
+      return message.channel.send({content:'Perms Denied'})
     }
 
     const channelTarget = message.mentions.channels.first()
 
     if(!channelTarget){
-      return message.reply('Please specify a channel name')
+      return message.channel.send({content:'Please specify a channel name'})
     }
 
     channelTarget.delete().then((ch) => {
-        message.author.send(`Channel has been deleted`)
+        message.author.send({content:`Channel has been deleted`})
     });
 
 

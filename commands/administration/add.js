@@ -7,12 +7,12 @@ module.exports ={
     description:'Adds role reactions',
 
     async execute(message,args, client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms Denied'})
         const role = message.mentions.roles.first();
 
         let[, emoji] = args;
 
-        if(!emoji) return message.channel.send('Please specify an emoji to react to')
+        if(!emoji) return message.channel.send({content:'Please specify an emoji to react to'})
 
         const parsedEmoji = Util.parseEmoji(emoji)
 
@@ -44,7 +44,7 @@ module.exports ={
                     
                 }).save();
             }
-            message.channel.send('New Role Added')
+            message.channel.send({content:'New Role Added'})
         })
 
 

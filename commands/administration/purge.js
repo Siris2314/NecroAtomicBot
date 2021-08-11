@@ -8,6 +8,8 @@ module.exports = {
   description:'Purges messages but with a lot more stuff',
 
   async execute(message, args,client){
+
+    if(!message.member.permissions.has('MANAGE_MESSAGES')) return message.channel.send({content:'Perms Denied'})
   
     await schema.findOne(
       { guildID: message.guild.id },
@@ -49,16 +51,16 @@ module.exports = {
         .setFooter(message.author.username, message.author.displayAvatarURL({dynamic:true}))
         .setTimestamp()
 
-      if (!args[0] || !args.length) return message.channel.send(embd);
+      if (!args[0] || !args.length) return message.channel.send({embeds:[embd]});
       let amount = Number(args[0], 10) || parseInt(args[0]);
       if (isNaN(amount) || !Number.isInteger(amount))
-        return message.channel.send(
+        return message.channel.send({content:
           "Please enter a number of messages to purge."
-        );
+        });
       if (!amount || amount < 2 || amount > 100)
-        return message.channel.send(
+        return message.channel.send({content:
           "Please enter a number of message between 2 and 100."
-        );
+        });
       if (!args[1]) {
         try {
           await message.delete();
@@ -70,21 +72,21 @@ module.exports = {
               );
 
             message.channel
-              .send(embed)
+              .send({embeds:[embed]})
               .then((msg) => msg.delete({ timeout: 4000 }));
           });
         } catch (e) {
           console.log(e);
-          message.channel.send(
+          message.channel.send({content:
             `You can only delete the messages which are not older than 14 days.`
-          );
+          });
         }
       } else if (args[1]) {
         let msg;
         let data;
         let embed;
         switch (args[1]) {
-          case "--bots":
+          case "bots":
             msg = await message.channel.messages.fetch({ limit: amount });
             data = [];
             msg
@@ -105,14 +107,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -136,14 +138,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embed:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -167,14 +169,14 @@ module.exports = {
                     );
                     
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -198,14 +200,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -230,14 +232,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -273,9 +275,9 @@ module.exports = {
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -299,14 +301,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -332,14 +334,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -365,14 +367,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -401,14 +403,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -434,14 +436,14 @@ module.exports = {
                     );
 
                   message.channel
-                    .send(embed)
+                    .send({embeds:[embed]})
                     .then((msg) => msg.delete({ timeout: 50000 }));
                 });
             } catch (e) {
               console.log(e);
-              message.channel.send(
+              message.channel.send({content:
                 `You can only delete the messages which are not older than 14 days.`
-              );
+              });
             }
 
             break;
@@ -450,11 +452,11 @@ module.exports = {
             break;
         }
       } else {
-        return message.channel.send(`An error occoured.`);
+        return message.channel.send({content:`An error occoured.`});
       }
     } catch (error) {
       console.log(error);
-      message.channel.send(`An error occurred: \`${error}\``);
+      message.channel.send({content:`An error occurred: \`${error}\``});
     }
   },
 };

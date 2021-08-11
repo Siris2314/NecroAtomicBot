@@ -30,7 +30,7 @@ module.exports = {
          .setThumbnail(body.profile_image_url_https.replace('_normal', ''))
          .setImage(body.profile_banner_url)
 
-         return message.channel.send(embed)
+         return message.channel.send({embeds:[embed]});
 
     } catch(error){
       if(error.status === 403) return message.channel.send("This user has either made their account private or closed it")

@@ -9,14 +9,14 @@ module.exports = {
 
     async execute(message,args,client){
 
-    if(!message.member.hasPermission('ADMINISTRATOR')) return;
+    if(!message.member.permissions.has('ADMINISTRATOR')) return;
     let option = args[0]
     if(!option) {
             const embed = new MessageEmbed()
             .setTitle("Options for anti alt system")
             .setDescription("`<prefix> antialt enable` To enable the anti-alt system\n`<prefix> antialt disable` To disable the anti-alt system")
             .setColor('RED')
-            return message.channel.send(embed)
+            return message.channel.send({embeds:[embed]})
         }
 
     if(option.toLowerCase() === 'enable') {
@@ -26,20 +26,15 @@ module.exports = {
         let channel = message.mentions.channels.first();
 
 
-        if(!choice) return message.channel.send("Please provide the action to take when alt detected, **ban** or **kick** or **warn** ")
+        if(!choice) return message.channel.send({content:"Please provide the action to take when alt detected, **ban** or **kick** or **warn** "})
 
-        if(!channel) return message.channel.send("Please provide a channel for me to give a log of the alt account")
+        if(!channel) return message.channel.send({content:"Please provide a channel for me to give a log of the alt account"})
 
-        console.log(args[0])
-        console.log(args[1])
-        console.log(args[2])
-        // if((choice.toLowerCase() !== 'kick') || (choice.toLowerCase() !== 'ban') || (choice.toLowerCase() !== 'warn')){
-        //     return message.channel.send("Please provide a valid choice: **ban** or **kick** or **warn**")
-        // }
-        if(!days) return message.channel.send("Please tell me the minimum age/days requirement of the account")
-        if(isNaN(days)) return message.channel.send("Please enter only numbers for the days")
+      
+        if(!days) return message.channel.send({content:"Please tell me the minimum age/days requirement of the account"})
+        if(isNaN(days)) return message.channel.send({content:"Please enter only numbers for the days"})
         schema.findOne({Guild:message.guild.id}, async(err, data) =>{
-            if(data) data.delete()
+            if(data) return message.channel.send({content:"Anti-Alt System Already Active"})
 
             new schema({
                 Guild:message.guild.id,
@@ -53,16 +48,16 @@ module.exports = {
         })
 
         const embed = new MessageEmbed()
-        .setTitle(":white_check_mark: Enabled Anti Alt System for this server")
-        .setColor('GREEN')
-        .setDescription(`${message.author.tag} has enabled the anti-alt system!`)
-        .setTimestamp()
-        return message.channel.send(embed)
+            .setTitle(":white_check_mark: Enabled Anti Alt System for this server")
+            .setColor('GREEN')
+            .setDescription(`${message.author.tag} has enabled the anti-alt system!`)
+            .setTimestamp()
+        return message.channel.send({embeds:[embed]})
      }
      else if(option.toLowerCase() === 'disable'){
         schema.findOne({Guild:message.guild.id}, async(err, data) =>{
 
-            if(!data) return message.channel.send('Anti Alt was never enabled in this server');
+            if(!data) return message.channel.send({content:'Anti Alt was never enabled in this server'});
 
             data.delete();
 
@@ -74,8 +69,12 @@ module.exports = {
         .setColor('RED')
         .setDescription(`${message.author.tag} has disabled the anti-alt system!`)
         .setTimestamp()
-        return message.channel.send(embed)
+        return message.channel.send({embeds:[embed]})
 
      }
+     else{
+        return message.channel.send({content:"Invalid option, please use <prefix> antialt enable/disable to enable or disable the anti-alt system"})
+
+     }  
     }
 }

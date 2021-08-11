@@ -6,21 +6,21 @@ module.exports = {
 
     async execute(message, args,client){
         
-        if(!message.member.hasPermission('BAN_MEMBERS')) return message.channel.send('Perms Denied')
+        if(!message.member.permissions.has('BAN_MEMBERS')) return message.channel.send({content:'Perms Denied'})
 
         const id = args[0];
 
-        if(!id) return message.channel.send('Please send an id')
+        if(!id) return message.channel.send({content:'Please send an id'})
 
 
-        const bannedMembers = await message.guild.fetchBans();
+        const bannedMembers = await message.guild.bans.fetch()
 
-        if(!bannedMembers.find((user) => user.user.id === id)) return message.channel.send('User is not banned from server')
+        if(!bannedMembers.find((user) => user.user.id === id)) return message.channel.send({content:'User is not banned from server'})
 
 
         message.guild.members.unban(id);
 
-        message.channel.send(`Unbanned user ${id}`)
+        message.channel.send({content:`Unbanned user ${id}`})
 
     }
 }

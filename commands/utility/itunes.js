@@ -38,7 +38,7 @@ module.exports = {
       .addField("Price", "$" + price, true)
             .addField('Length', (data.trackTimeMillis/1000) + "s", true)
       .addField('Genre', data.primaryGenreName, true);
-    return message.channel.send(embed);
+    return message.channel.send({embeds:[embed]});
   } catch (err) {
     if (err.status === 404) return message.reply('Could not find any results.');
     console.log(err);

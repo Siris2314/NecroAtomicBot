@@ -12,7 +12,7 @@ module.exports = {
             const embed = new MessageEmbed()
                 .setTitle(`${message.author.username}'s birthday`)
                 .setDescription(`${user} birthday is on ${data.Birthday}`)
-            message.channel.send(embed)
+            message.channel.send({embeds:[embed]});
         })
 
     }

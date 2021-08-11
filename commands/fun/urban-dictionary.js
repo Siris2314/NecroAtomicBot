@@ -33,7 +33,7 @@ module.exports = {
         `${answer.thumbs_up} 👍 || ${answer.thumbs_down} 👎`
       )
 
-    return message.channel.send(embed);
+      return message.channel.send({embeds:[embed]});
   } catch(err){
     return message.channel.send("Word not found")
   }

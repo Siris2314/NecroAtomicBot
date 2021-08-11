@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 module.exports = {
     name: "joke",
     description: "Get jokes",
-    execute(msg, args) {
+    async execute(message,args,client) {
         fetch("https://official-joke-api.appspot.com/random_joke")
             .then(function (response) {
                 return response.json();
@@ -21,7 +21,7 @@ module.exports = {
                     ],
                     timestamp: new Date(),
                 };
-                msg.channel.send({ embed: jokes });
+                msg.channel.send({ embeds: [jokes] });
             });
     },
 }

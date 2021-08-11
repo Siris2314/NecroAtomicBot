@@ -15,6 +15,6 @@ module.exports = {
     .setTitle(`PP size machine`)
     .setDescription(`${sizee.toFixed(2)} inch\n ${user.user.username}'s PP \n8${"=".repeat(size)}D`)
 
-        await message.channel.send(embed)
-  }
+        await message.channel.send({embeds:[embed]});
+}
 }

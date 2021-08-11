@@ -11,7 +11,7 @@ module.exports = {
     const input = args.join(" ")
 
     const char = genshin.characters(input)
-    console.log(char);
+  
 
 
     try{
@@ -42,7 +42,7 @@ module.exports = {
 
 
 
-    return message.channel.send(embed)
+    return message.channel.send({embeds:[embed]})
 
     } catch(err){
       message.channel.send("Character not in database")

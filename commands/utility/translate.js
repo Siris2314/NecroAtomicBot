@@ -28,7 +28,7 @@ module.exports = {
 
 
 
-        message.channel.send(translatedEmbed)
+         return message.channel.send({embeds:[translatedEmbed]});
 
     }
 } catch(err){

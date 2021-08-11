@@ -8,7 +8,7 @@ module.exports = {
 
         const option = args[0] 
 
-        if(!message.member.hasPermission('ADMINISTRATOR')) return message.channel.send('Invalid permissions')
+        if(!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send({content:'Invalid permissions'})
 
         if(!option){
             client.embed(message, {
@@ -45,7 +45,7 @@ module.exports = {
                     }) 
                 }
                 else{
-                    message.channel.send('Anti NSFW System was already enabled')
+                    message.channel.send({content:'Anti NSFW System was already enabled'})
                     
                 }
                
@@ -56,7 +56,7 @@ module.exports = {
         }
         else if(option.toLowerCase() === 'off'){
             await Schema.findOne({Server:message.guild.id}, async(err,data)=>{
-                if(!data) return message.channel.send('Anti NSFW was never enabled')
+                if(!data) return message.channel.send({content:'Anti NSFW was never enabled'})
                 
                 data.delete()
 

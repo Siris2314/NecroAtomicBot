@@ -20,7 +20,7 @@ module.exports = {
                     .setTimestamp()
                     .setFooter('Evil Insult API')
 
-                message.channel.send(roastEmbed)
+                    return message.channel.send({embeds:[roastEmbed]});
 
             })
     }

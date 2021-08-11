@@ -32,7 +32,7 @@ module.exports = {
     .setURL(href.link)
     .setFooter("Powered by Google")
 
-  return message.channel.send(embed);
+  return message.channel.send({embeds:[embed]});
 
   async function search(query){
     const { body } = await request.get("https://www.googleapis.com/customsearch/v1").query({

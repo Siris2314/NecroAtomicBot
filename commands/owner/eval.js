@@ -10,7 +10,7 @@ module.exports = {
 
         const embed = new MessageEmbed()
         .setTitle('Evaluating...')
-    const msg = await message.channel.send(embed);
+    const msg = await message.channel.send({embeds: [embed]});
     try {
         const data = eval(args.join(' ').replace(/```/g, ''));
         const embed = new MessageEmbed()

@@ -16,9 +16,9 @@ module.exports = {
 
         })
 
-        console.log(embed)
         
-        return message.channel.send({embed})
+        
+        return message.channel.send({embeds:[embed]})
     }
 
 

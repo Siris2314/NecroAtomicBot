@@ -20,6 +20,6 @@ module.exports = {
         .setTitle(`${message.author.username} Hugs ${target.user.username} \ 💖`)
         .setTimestamp()
     
-    return message.channel.send(embed);
+    return message.channel.send({embeds:[embed]});
   }
 };

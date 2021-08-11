@@ -5,7 +5,7 @@ module.exports = {
     description: 'Sets a mod log channel',
 
     async execute(message,args,client){
-        if(!message.member.hasPermission('ADMINSTRATOR')) return;
+        if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Invalid Perms'});
         const channel = message.mentions.channels.first() || message.channel;
 
         Schema.findOne({Guild: message.guild.id}, async (err,data) => {
@@ -14,7 +14,7 @@ module.exports = {
                 Guild:message.guild.id,
                 Channel: channel.id,
             }).save();
-            message.channel.send(`Mod Log Channel has been set to ${channel}`)
+            message.channel.send({content:`Mod Log Channel has been set to ${channel}`})
         })
 
     }

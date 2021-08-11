@@ -24,7 +24,7 @@ module.exports = {
             .setColor("RANDOM")
             .setImage(image[num])
 
-        message.channel.send(embed)
+            return message.channel.send({embeds:[embed]});
         
 
 

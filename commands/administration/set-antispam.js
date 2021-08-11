@@ -8,7 +8,7 @@ module.exports = {
 
     async execute(message, args,client){
 
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send('Invalid Perms')
+        if(!message.member.permissions.has("ADMINISTRATOR")) return message.channel.send({content:'Invalid Perms'})
 
         const option = args[0];
 

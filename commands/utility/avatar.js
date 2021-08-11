@@ -23,13 +23,13 @@ module.exports = {
     const format4096 = user.user.displayAvatarURL({dynamic: true, size:4096});
     const webpFormat = user.user.displayAvatarURL();
     const avatar = user.user.displayAvatarURL({ dynamic: true, size:4096});
-    message.channel.send(
+    message.channel.send({embeds:[
       new MessageEmbed()
         .setTitle(`${user.user.username}'s avatar`)
         .setDescription(
           `[png](${pngFormat}) | [jpg](${jpgFormat}) | [webp](${webpFormat}) | [1024](${format1024}) | [2048](${format2048}) | [4096](${format4096})`
         )
         .setImage(avatar)
-    );
+    ]});
   },
 };

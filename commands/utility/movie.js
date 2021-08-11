@@ -51,7 +51,7 @@ module.exports = {
           .setImage(movie.poster)
           .setColor("RANDOM")
 
-        message.channel.send(embed)
+        return message.channel.send({embeds:[embed]});
 
 
 

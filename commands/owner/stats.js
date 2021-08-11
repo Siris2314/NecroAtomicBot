@@ -42,7 +42,7 @@ module.exports = {
                 .addField("Number of Cores", `\`\`\`${cores}\`\`\``, false)
                 .addField("Dev Platform", `\`\`\`${os.platform()}\`\`\``, false)
                 .setThumbnail(client.user.displayAvatarURL({dynamic:true}))
-            message.channel.send(embed)
+            message.channel.send({embeds:[embed]})
 
 
 

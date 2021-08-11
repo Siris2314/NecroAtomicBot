@@ -19,7 +19,7 @@ async execute(message,args,client){
 
   const {msg, time, image,author} = target;
 
-  message.channel.send(
+  message.channel.send({embeds:[
     new Discord.MessageEmbed()
       .setAuthor(author.tag, author.displayAvatarURL())
       .setImage(image)
@@ -28,7 +28,7 @@ async execute(message,args,client){
       .setColor("RANDOM")
 
 
-  )
+  ]})
 
  
 }

@@ -84,7 +84,7 @@ module.exports = {
         
 
 
-        const devices = user.presence?.clientStatus  || {};
+        const devices = member.presence?.clientStatus  || {};
 
         const entries = Object.entries(devices)
             .map((value,index) => `${index + 1}) ${value[0][0].toUpperCase()}${value[0].slice(1)}`)
@@ -100,10 +100,10 @@ module.exports = {
             .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
             .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
             .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
-            .addField('**Status:**',`\`${status[member.user.presence.status]}\``,true)
+            .addField('**Status:**',`\`${status[member.presence.status]}\``,true)
             .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
             .addField('Currently On Device', `\`${entries}\``)
-            .addField('**Game**:',`\`${member.user.presence.game || 'Not Currently Playing a Game.'}\``,true)
+            .addField('**Game**:',`\`${member.presence.game || 'Not Currently Playing a Game.'}\``,true)
             .addField('**Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
             .addField(`\`${roles.length}\` **Roles:**`,`${getRoles(roles)}`)
             .setFooter(message.author.username, message.author.displayAvatarURL({dynamic: true}))
@@ -112,7 +112,7 @@ module.exports = {
             .setTimestamp()
 
 
-            return message.channel.send(embeduserinfo);
+            return message.channel.send({embeds:[embeduserinfo]})
           }
           else{
             let userflags = [];
@@ -125,7 +125,7 @@ module.exports = {
             
     
     
-            const devices = user.presence?.clientStatus  || {};
+            const devices = member.presence?.clientStatus  || {};
             const embeduserinfo = new Discord.MessageEmbed()
                 .setThumbnail(member.user.displayAvatarURL({dynamic: true, size:512}))
                 .setAuthor("Information about: " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({dynamic: true}))
@@ -136,10 +136,10 @@ module.exports = {
                 .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
                 .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
                 .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
-                .addField('**Status:**',`\`${status[member.user.presence.status]}\``,true)
+                .addField('**Status:**',`\`${status[member.presence.status]}\``,true)
                 .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
                 .addField('Currently On Device(s)', `\`${entries}\``)
-                .addField('**Game**:',`\`${member.user.presence.game || 'Not Currently Playing a Game.'}\``,true)
+                .addField('**Game**:',`\`${member.presence.game || 'Not Currently Playing a Game.'}\``,true)
                 .addField('**Highest Role:**',`${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,true)
                 .addField(`\`${roles.length}\` **Roles:**`,`${getRoles(roles)}`)
                 .setFooter(message.author.username, message.author.displayAvatarURL({dynamic: true}))
@@ -147,7 +147,7 @@ module.exports = {
                 .setTimestamp()
     
     
-                return message.channel.send(embeduserinfo);
+                return message.channel.send({embeds:[embeduserinfo]});
 
 
 

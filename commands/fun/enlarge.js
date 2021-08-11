@@ -19,14 +19,14 @@ module.exports = {
 
     if (custom.id) {
         embed.setImage(`https://cdn.discordapp.com/emojis/${custom.id}.${custom.animated ? "gif" : "png"}`);
-        return message.channel.send(embed);
+        return message.channel.send({embeds:[embed]});
     }
     else {
         let parsed = parse(emoji, { assetType: "png" });
         if (!parsed[0]) return message.channel.send("Invalid emoji!");
 
         embed.setImage(parsed[0].url);
-        return message.channel.send(embed);
+        return message.channel.send({embeds:[embed]});
     }
 
 }

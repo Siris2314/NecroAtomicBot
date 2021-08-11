@@ -8,15 +8,15 @@ module.exports = {
   async execute(message,args, client){
 
    
-    if(!message.member.hasPermission('BAN_MEMBERS')) return message.channel.send('Perms Denied')
+    if(!message.member.permissions.has('BAN_MEMBERS')) return message.channel.send({content:'Perms Denied'})
 
     const member = message.mentions.members.first()
 
-    if(!member) return message.channel.send('Please specify a member to ban')
+    if(!member) return message.channel.send({content:'Please specify a member to ban'})
 
     if(
       message.member.roles.highest.position <= member.roles.highest.position
-    ) return message.channel.send('You cannot kick people who are at the same role level or higher role level than you')
+    ) return message.channel.send({content:'You cannot kick people who are at the same role level or higher role level than you'})
 
     let reason = args.slice(1).join(" ") || "No Reason"
 
@@ -36,7 +36,7 @@ module.exports = {
 
 
 
-    return message.channel.send(kickembed);
+    return message.channel.send({embeds: [kickembed]});
 
   }
 }

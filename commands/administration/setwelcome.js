@@ -9,9 +9,9 @@ module.exports = {
     description:'sets a welcome channel',
 
     async execute(message,args,client){
-        if(!(message.member.hasPermission('ADMINSTRATOR'))) return message.channel.send("Perms Denied")
+        if(!(message.member.permissions.has('ADMINSTRATOR'))) return message.channel.send({content:"Perms Denied"})
         const channel = message.mentions.channels.first()
-        if(!channel) return message.channel.send("Please mention a channel")
+        if(!channel) return message.channel.send({content:"Please mention a channel"})
         Schema.findOne({Guild: message.guild.id}, async(err, data) => {
         try{
             if(data){
@@ -24,7 +24,7 @@ module.exports = {
                 }).save();
             }
 
-            message.channel.send(`${channel} has been set as the welcome channel`)
+            message.channel.send({content:`${channel} has been set as the welcome channel`})
         } catch(err){
             console.log(err)
         }

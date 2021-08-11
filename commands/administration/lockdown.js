@@ -8,18 +8,18 @@ module.exports = {
 
   async execute(message, args,client){
 
-    if(!message.member.hasPermission("ADMINSTRATOR")) return message.channel.send("Only admins can use this")
+    if(!message.member.permissions.has("ADMINSTRATOR")) return message.channel.send({content:"Only admins can use this"})
 
 
     const role = message.guild.roles.everyone;
 
-    if(!args.length) return message.channel.send("Please reply to either lockdown or to not")
+    if(!args.length) return message.channel.send({content:"Please reply to either lockdown or to not"})
 
     const query = args[0].toLowerCase();
 
 
     if(!["true", "false"].includes(query)){
-      return message.channel.send("Option is not valid")
+      return message.channel.send({content:"Option is not valid"})
     }
 
     const perms = role.permissions.toArray();
@@ -27,13 +27,13 @@ module.exports = {
       perms.push('SEND_MESSAGES')
       console.log(perms)
       await role.edit({permissions:perms});
-      message.channel.send("Server is unlocked")
+      message.channel.send({content:"Server is unlocked"})
     } else {
       const newPerms = perms.filter((perm) => perm !== 'SEND_MESSAGES')
       console.log(newPerms)
 
       await role.edit({permissions:newPerms})
-      message.channel.send("Server is now locked")
+      message.channel.send({content:"Server is now locked"})
 
     }
   }

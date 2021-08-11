@@ -39,7 +39,7 @@ module.exports = {
             .setFooter(new Date())
             .attachFiles(attachment);
 
-        message.channel.send(embed);
+        return message.channel.send({embeds:[embed]});
 
   }
 }

@@ -16,7 +16,7 @@ module.exports = {
            .setThumbnail(message.guild.iconURL({ dynamic: true }))
            .setDescription("https://discord.gg/" + invite.code)
 
-           message.reply(embed)
+           message.channel.send({embeds:[embed]})
          })
       }
 
