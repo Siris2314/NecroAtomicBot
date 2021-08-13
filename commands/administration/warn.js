@@ -35,18 +35,18 @@ module.exports = {
             }
             data.save();
         });
-        user.send(new MessageEmbed()
+        user.send({embeds: [new MessageEmbed()
             .setDescription(`You have been warned for ${reason}`)
             .setColor('RANDOM')
         
         
-        )
+        ]})
 
 
-        message.channel.send(new MessageEmbed()
+        message.channel.send({embeds: [new MessageEmbed()
             .setDescription(`Warned ${user} for ${reason}`).setColor('RANDOM')
         
-        )
+         ]})
 
 
 
