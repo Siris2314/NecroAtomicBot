@@ -17,6 +17,8 @@ module.exports = {
             }
         });
 
+
+
         const components = (state) => {
 
             new MessageActionRow().addComponents(
@@ -36,7 +38,7 @@ module.exports = {
         
 
 
-        console.log(directories);
+      
     }
 
 }

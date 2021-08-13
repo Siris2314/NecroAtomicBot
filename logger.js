@@ -81,11 +81,11 @@ module.exports = c => {
                 send_log(c, oldEmoji.guild, "ORANGE","EMOJI NAME CHANGED" ,`__Emoji: ${newEmoji}__\n\n**Before: ${oldEmoji.name}\n**After**: ${newEmoji.name} \nEmoji ID: ${newEmoji.id} `)
             }
         })
-        c.on("guildBanAdd", function(guild, user){
-            send_log(c, guild, "RED",`USER BANNED`, `User: ${user} (\n\`${user.id}\`)(\n\`${user.tag}\`)`)
+        c.on("guildBanAdd", function(ban){
+            send_log(c, ban.guild, "RED",`USER BANNED`, `User: ${ban.user}(\`${ban.user.id}\`)(\n\`${ban.user.tag}\`)`)
         })
-        c.on("guildBanRemove", function(guild, user){
-            send_log(c, guild, "YELLOW",`USER UNBANNED`, `User: ${user} (\n\`${user.id}\`)(\n\`${user.tag}\`)`)
+        c.on("guildBanRemove", function(ban){
+            send_log(c, ban.guild, "YELLOW",`USER UNBANNED`, `User: ${ban.user} (\n\`${ban.user.id}\`)(\n\`${ban.user.tag}\`)`)
         })
         c.on("guildMemberAdd", function(member){
             send_log(c, member.guild, "GREEN","Member Joined",`Member: ${member.user} \n(\`${member.user.id}\`) \n(\`${member.user.tag}\`)`, member.user.displayAvatarURL({dynamic: true}))
@@ -93,48 +93,52 @@ module.exports = c => {
         c.on("guildMemberRemove", function(member){
             send_log(c, member.guild, "RED","Member LEFT",`Member: ${member.user} \n(\`${member.user.id}\`) \n(\`${member.user.tag}\`)`, member.user.displayAvatarURL({dynamic: true}))
         })
-        c.on("guildMembersChunk", function(members, guild){
+        c.on("guildMembersChunk", function(members, guild, chunk){
             send_log(c, guild, "RED", `MEMBER RAID BAN, ${members.length} USERS BANNED`, members.map((user, index) => `${index}) - ${user} - ${user.tag} - ${user.id}`),
             )
 
         })
-        c.on("guildMemberUpdate", function(oldMember, newMember){
-            let options = {}
+        // c.on("guildMemberUpdate", function(oldMember, newMember){
+        //     let options = {}
 
-            if(options[newMember.guildid]){
-                options = options[newMember.guild.id]
-            }
+        //   if (options[newMember.guild.id]) {
+        //       options = options[newMember.guild.id]
+        //   }
 
-            if(typeof options.excludedroles === "undefined") options.excludedroles = new Array([])
-            if(typeof options.trackroles === "undefined") options.trackroles = true
-            const oldMemberRoles = oldMember.roles.cache.keyArray()
-            const newMemberRoles = newMember.roles.cache.keyArray()
-            const oldRoles = oldMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !newMemberRoles.includes(x))
-            const newRoles = newMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !oldMemberRoles.includes(x))
-            const rolechanged = (newRoles.length || oldRoles.length);
+        
+        //   if (typeof options.excludedroles === "undefined") options.excludedroles = new Array([])
+        //   if (typeof options.trackroles === "undefined") options.trackroles = true
+        //   const oldMemberRoles = oldMember.roles.cache.keyArray()
+        //   const newMemberRoles = newMember.roles.cache.keyArray()
+        //   const oldRoles = oldMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !newMemberRoles.includes(x))
+        //   const newRoles = newMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !oldMemberRoles.includes(x))
+        //   const rolechanged = (newRoles.length || oldRoles.length)
 
-            if(rolechanged){
-                let roleadded = ""
-                if(newRoles.length > 0){
-                    for(let i = 0; i<newRoles.length; i++){
-                        if(i > 0) roleadded += ", "
-                        roleadded += `<@&${newRoles[i]}>`
+        //   if (rolechanged) {
+        //       let roleadded = ""
+        //       if (newRoles.length > 0) {
+        //           for (let i = 0; i < newRoles.length; i++) {
+        //               if (i > 0) roleadded += ", "
+        //               roleadded += `<@&${newRoles[i]}>`
+        //           }
+        //       }
+        //       let roleremoved = ""
+        //       if (oldRoles.length > 0) {
+        //           for (let i = 0; i < oldRoles.length; i++) {
+        //               if (i > 0) roleremoved += ", "
+        //               roleremoved += `<@&${oldRoles[i]}>`
+        //           }
+        //       }
+        //       let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
+        //       send_log(c,
+        //         oldMember.guild,
+        //         `${roleadded ? "GREEN" : "RED"}`,
+        //         "Member ROLES Changed",
+        //         `Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`,
+        //         )
+        //   }
 
-                    }
-                }
-                let roleremoved = ""
-                if(oldRoles.length > 0){
-                    for(let i = 0; i<oldRoles.length; i++){
-                        if(i > 0) roleremoved += ", "
-                        roleremoved += `<@&${oldRoles[i]}>`
-
-                    }
-                }
-                let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
-                send_log(c, oldMember.guild,`${roleadded ? "GREEN" : "RED"}`, "Member Roles Changed",`Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`)
-
-            }
-        })
+        // })
         c.on("messageDelete", function(message){
            
                 if(message.author == null) return;
@@ -205,7 +209,6 @@ module.exports = c => {
                 send_log(c, oldState.guild, "BLUE", `Member connected to VC`, `${newState.member} has connected to ${newState.channel}`)
             }
             else if(oldState.channel !== newState.channel && (newState.channelId !== null)){
-                console.log(newState.channelId);
                 send_log(c, oldState.guild, "BLUE", `Member has switched voice channels`,`${newState.member} switched from ${oldState.channel} => ${newState.channel}`)
             }
             else if(newState.channelId == null){
@@ -230,12 +233,17 @@ module.exports = c => {
         })
         c.on('stickerCreate', function(sticker) {
 
-            console.log(sticker);
             send_log(c, sticker.guild, "BLUE", 'New Sticker Created', `Sticker ${sticker} \nSticker ID: ${sticker.id} \nSticker Name: ${sticker.name} \nAdded By ${sticker.user}`, sticker.url) 
 
 
 
 
+        })
+
+        c.on('threadCreate', function(thread) {
+
+            console.log(thread.guild)
+            
         })
 
         

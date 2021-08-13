@@ -21,8 +21,6 @@ require('dotenv').config()
 const nsfwtoken = process.env.nsfw
 deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
-const modlogsSchema = require("./schemas/modlogs");
-const voiceSchema = require("./schemas/customvoice");
 const client = new Discord.Client({
     partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
     intents:[Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MEMBERS, Discord.Intents.FLAGS.GUILD_BANS, Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Discord.Intents.FLAGS.GUILD_INTEGRATIONS, Discord.Intents.FLAGS.GUILD_WEBHOOKS, Discord.Intents.FLAGS.GUILD_INVITES, Discord.Intents.FLAGS.GUILD_VOICE_STATES, Discord.Intents.FLAGS.GUILD_PRESENCES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING],
@@ -37,6 +35,8 @@ const afk = new Discord.Collection();
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+const {promisify} = require('util')
+const globPromise = promisify(glob)
 
 const {VoiceClient} = require('djs-voice');
 
@@ -102,6 +102,7 @@ const chatschema = require("./schemas/chatbot-channel");
 const muteschema = require("./schemas/mute")
 const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
+client.slashCommands = new Discord.Collection();
 
 module.exports = { blacklistedWords, afk, starboardcollection };
 
@@ -187,17 +188,38 @@ client.embed = async(message, options) => {
 
 client.on("ready", async () => {
     console.log(botname);
-    console.log("Heroku Connected");
+    try{
+    console.log('Slash Commands Loaded');
+    const commandFolders = fs.readdirSync('./slashcmd');
+    for(const folder of commandFolders){
+       const commandFiles = fs.readdirSync(`./slashcmd/${folder}`).filter(files => files.endsWith('.js'));   
+       const commandsArray = []
+       for(const file of commandFiles){
+           const command = require(`./slashcmd/${folder}/${file}`);
+           client.slashCommands.set(command.name, command)
+           commandsArray.push(command);
 
-    const options = {
-        loop_delays_in_min: 3, 
-        defaults: {
-            Notification: "{videoauthorname} Posted: **{videotitle}**, as \n{videourl}"
-        },
-    };
+          
+            await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
+            // await client.application.commands.set(commandsArray);
+            
+       }
+
+    } 
+    } catch(error) {
+        console.log(error)
+    }     
 
 
-    client.YTP = new YoutubePoster(client, options);
+    // const options = {
+    //     loop_delays_in_min: 3, 
+    //     defaults: {
+    //         Notification: "{videoauthorname} Posted: **{videotitle}**, as \n{videourl}"
+    //     },
+    // };
+
+
+    // client.YTP = new YoutubePoster(client, options);
 
 
 
@@ -683,8 +705,15 @@ client.on("messageCreate", async (message) => {
                 `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
             );
         }
+
+
     }
     });
+
+
+    
+
+
 
 });
 
@@ -898,6 +927,20 @@ client.on("guildCreate", async(guild) => {
     
 
     
+})
+
+client.on('interactionCreate', async(interaction) => {
+
+    if(interaction.isCommand()){
+        await interaction.deferReply({ ephemeral: false }).catch(() => {});
+
+        const cmd = client.slashCommands.get(interaction.commandName);
+
+        if(!cmd) return interaction.followUp({content: 'Error Interacting With Slash Commands'})
+
+        cmd.run(client, interaction);
+    }
+
 })
 
 client.on("guildDelete", async(guild) => {
