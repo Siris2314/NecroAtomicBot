@@ -200,8 +200,8 @@ client.on("ready", async () => {
            commandsArray.push(command);
 
           
-            await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
-            // await client.application.commands.set(commandsArray);
+            // await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
+            await client.application.commands.set(commandsArray);
             
        }
 

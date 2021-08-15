@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const moment = require('moment')
 const Schema = require('./schemas/modlogs')
 module.exports = c => {
     console.log("Loaded Logger Module".green)
@@ -242,9 +243,65 @@ module.exports = c => {
 
         c.on('threadCreate', function(thread) {
 
-            console.log(thread.guild)
+            const guild = thread.guild;
+
+            const member = guild.members.cache.get(thread.ownerId);
+
+            const archive = thread.autoArchiveDuration / 60;
+
+            const name = thread.name;
+
+            const parent = thread.parent;
+
+            let locked = '';
+
+
+            if(thread.locked){
+                locked = 'Thread is Locked'
+            }
+            else{
+                locked = 'Thread is not Locked'
+            }
+
+            send_log(c, guild, "BLUE", 'New Thread Created', `\`\`\`yaml\nThread Name: ${name} \nThread Creator: ${member.user.username} \nThread Channel: ${parent.name} \nTime of Message for Thread: ${moment(thread.createdTimestamp).format('LL')} ${moment(thread.createdTimestamp).format('LT')}, ${moment(thread.createdTimestamp).fromNow()} \nDuration for Inactivity Thread: ${archive} hours \nLocked: ${locked} \`\`\``)
             
         })
+
+        c.on('threadDelete', function(thread) {
+
+            const guild = thread.guild;
+
+            const member = guild.members.cache.get(thread.ownerId);
+
+            const archive = thread.autoArchiveDuration / 60;
+
+            const name = thread.name;
+
+            const parent = thread.parent;
+
+
+
+            if(thread.locked){
+                locked = 'Thread is Locked'
+            }
+            else{
+                locked = 'Thread is not Locked'
+            }
+            
+
+            send_log(c, guild, "RED", 'Thread Deleted', `\`\`\`yaml\nThread Name: ${name} \nThread Creator: ${member.user.username} \nThread Channel: ${parent.name} \nTime of Deletion: ${moment(thread.archivedTimestamp).format('LL')} ${moment(thread.archivedTimestamp).format('LT')}, ${moment(thread.archivedTimestamp).fromNow()} \nTime the thread was up for: ${archive} hours \`\`\``)
+
+
+
+
+        })
+
+        c.on('threadMembersUpdate', function(oldMembers, newMembers) {
+
+
+
+        })
+
 
         
 

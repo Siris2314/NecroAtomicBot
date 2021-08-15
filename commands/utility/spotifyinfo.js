@@ -1,5 +1,6 @@
 const axios = require('axios')
 const Discord = require('discord.js')
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior } = require('@discordjs/voice');
 
 module.exports = {
 
@@ -14,6 +15,18 @@ module.exports = {
 
         const voiceChannel = message.member.voice.channel;
 
+        const connection = joinVoiceChannel({
+            channelId: voiceChannel.id,
+            guildId: message.guild.id,
+            adapterCreator: message.guild.voiceAdapterCreator,
+        });  
+
+        const player = createAudioPlayer({
+            behaviors: {
+               noSubscriber: NoSubscriberBehavior.Pause,
+           },
+        });
+
         
         if(!url) return message.channel.send('Please provide a url to find the preview of')
 
@@ -22,14 +35,20 @@ module.exports = {
 
         const info = data.data;
 
-
        
     if(voiceChannel){
 
-        const connection = await voiceChannel.join();
-        const dispatcher = connection.play(info.audio);
-        dispatcher.once("finish", () => voiceChannel.leave());
-        dispatcher.once("error", () => voiceChannel.leave());
+
+    
+        const resource = createAudioResource(info.audio)
+        player.play(resource);
+
+        connection.subscribe(player);
+
+     
+
+
+      
 
         const embed = new Discord.MessageEmbed()
             .setTitle(info.title)
@@ -39,6 +58,16 @@ module.exports = {
             .addField('Release Date', info.release,true)
             .addField('Description', info.description ? info.description : 'No description available', true)
             .setImage(info.image)
+
+
+            setTimeout(function() {
+                try {
+                connection.destroy()
+                } catch (err) {
+                   message.channel.send("Audio Player Crashed, Rerun command please")
+             
+                }
+               }, 40000) 
 
         return message.channel.send({embeds:[embed]});
 
@@ -55,7 +84,7 @@ module.exports = {
             .addField('Description', info.description ? info.description : 'No description available', true)
             .setImage(info.image)
 
-        return message.channel.send(embed)
+        return message.channel.send({embeds:[embed]})
     }
 
     } catch(e) {

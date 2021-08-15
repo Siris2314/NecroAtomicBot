@@ -23,9 +23,6 @@ module.exports = {
                 }
             }
         );
-        const emojiList = ["⬅️", "➡️"]
-        const timeout = 600000
-
         const roleColor =
             message.guild.me.displayHexColor === "#000000"
                 ? "#ffffff"
