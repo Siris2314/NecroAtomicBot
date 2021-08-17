@@ -38,7 +38,7 @@ module.exports = c => {
                 category: "Category",
             }
             if(oldChannel.name != newChannel.name){
-                send_log(c, oldChannel.guild, "Yellow", "Channel Updated - NAME", `Before: \nChannelName: ${oldChannel.name}
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - NAME", `Before: \nChannelName: ${oldChannel.name}
                 \nChannelId: ${oldChannel.id}
                 \n\n`+ `After: \nChannelName: ${newChannel.name}
                 \nChannelId: ${newChannel.id}
@@ -46,7 +46,7 @@ module.exports = c => {
 
             }
             else if(oldChannel.type != newChannel.type){
-                send_log(c, oldChannel.guild, "Yellow", "Channel Updated - TYPE", `Before: \nChannelName: ${oldChannel.name}
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TYPE", `Before: \nChannelName: ${oldChannel.name}
                 \nChannelId: ${oldChannel.id}
                 \nChannelType: ${types[oldChannel.type]}
                 \n\n`+ `After: \nChannelName: ${newChannel.name}
@@ -61,7 +61,7 @@ module.exports = c => {
                 else if(newChannel.topic == null){
                     newChannel.topic = "None"
                 }
-                send_log(c, oldChannel.guild, "Yellow", "Channel Updated - TOPIC", `Before: \nChannelName: ${oldChannel.name}
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TOPIC", `Before: \nChannelName: ${oldChannel.name}
                 \nChannelId: ${oldChannel.id}
                 \nChannelTopic: ${oldChannel.topic}
                 \n\n`+ `After: \nChannelName: ${newChannel.name}
@@ -143,32 +143,30 @@ module.exports = c => {
         c.on("messageDelete", function(message){
            
                 if(message.author == null) return;
-                if(message.channel.type != "text") return;
+                if(!message.channel.type ==  "GUILD_TEXT") return;
 
-                send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",
-                `**Author :** <@${message.author.id}> - *${message.author.tag}*
-                **Date : ** ${message.createdAt}
-                **Channel : ** <#${message.channel.id}> - *${message.channel.name}*
+                send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",`\`\`\`yaml Author :<@${message.author.id}>: ${message.author.tag} \n Date : ** ${moment(message.createdTimestamp).format('LL')} ${moment(message.createdTimestamp).format('LT')}, ${moment(message.createdTimestamp).fromNow()}
+                **Channel : ** <#${message.channel.id}>: *${message.channel.name}*
                 **Deleted Message : ** ${message.content.replace(/`/g, "'")}
-                **Attachment URL : ** ${message.attachments.map(x => x.proxyURL)}`)
+                **Attachment URL : ** ${message.attachments.map(x => x.proxyURL) ? message.attachments.map(x => x.proxyURL) : 'No Images Sent'}\`\`\``)
 
                 
             
         })
         c.on("messageDeleteBulk", function(messages){
-            send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel}`)
+            send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel.name}`)
         })
         c.on("messageUpdate", function(oldMessage, newMessage){
             if(oldMessage.author == null) return;
             
-            if(oldMessage.channel.type !== "text") return;
-            if(newMessage.channel.type !== "text") return;
+            if(!oldMessage.channel.type  == "GUILD_TEXT") return;
+            if(!newMessage.channel.type == "GUILD_TEXT") return;
         
          
 
             if(oldMessage.content === newMessage.content) return;
             send_log(c, oldMessage.guild, "YELLOW", "MESSAGE UPDATED", `**Author : ** <@${newMessage.member.user.id}> - *${newMessage.member.user.tag}*
-            **Date : ** ${newMessage.createdAt}
+            **Date : ** ${moment(newMessage.createdTimestamp).format('LL')} ${moment(newMessage.createdTimestamp).format('LT')}, ${moment(newMessage.createdTimestamp).fromNow()}
             **Channel : ** <#${newMessage.channel.id}> - *${newMessage.channel.name}*
             **Original Message : ** 
             \`\`\`

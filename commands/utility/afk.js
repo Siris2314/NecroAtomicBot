@@ -1,34 +1,32 @@
-const {Client, Message, MessageEmbed} = require('discord.js');
-const afkSchema = require('../../schemas/afk')
-const mongoose = require('mongoose')
-
+const { MessageEmbed } = require('discord.js');
+const db = require('../../schemas/afk');
 
 module.exports = {
-
-    name:"afk",
-    description: 'Sets user to afk',
-    async execute(message,args,client){
-
-        const reason = args.join(' ') || 'No Reason'
-
-        let afkProfile = await afkSchema.findOne({user:message.author.id});
-
-        if(!afkProfile){
-            afkProfile = await new afkSchema({
-                _id:mongoose.Types.ObjectId(),
-                Guild:message.guild.id,
-                user:message.author.id,
-                reason:reason,
-                date:message.createdTimestamp
-            }).save()
-
-            message.channel.send(`You are now afk \`${reason}\``)
-        }
-        else{
-            message.channel.send("You were already AFK")
-        }
-
+  name: 'afk',
+  descriptoon:'AFK System',
+ async execute(message, args,client){
+    const afkreason = args.slice(0).join(' ') || 'No reason';
+    db.findOne({ Guild: message.guild.id, Member: message.author.id }, async(err, data) => {
+      if(data) {
+        return;
+      } else {
+        data = new db({
+          Guild: message.guild.id,
+          Member: message.author.id,
+          Content: afkreason,
+          TimeAgo: Date.now()
+        })
+        data.save()
+        const afksave = new MessageEmbed()
+            .setTitle(`${message.author.tag} is now afk`)
+            .setDescription( `\`\`\`${afkreason}\`\`\``)
+            .setColor("RANDOM")
+            .setThumbnail(message.author.displayAvatarURL({dynamic: true}))
+            .setFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+            .setTimestamp()
         
-
-    }
+        message.channel.send({ embeds: [afksave]})
+      }
+    })
+  }
 }
