@@ -14,11 +14,9 @@ module.exports = {
       .then((embed) => {
         
         const {data} = embed
-        // let newarr = []
-        // let arr = Object.values(data.fields[0])
-        // newarr = arr.splice(1,2)[0].replace(/`/g, "").split(' ')
-        // console.log(newarr);
 
+        console.log(uri);
+      
         if(data && !data.error){
           message.channel.send({embeds: [data]})
         } else{

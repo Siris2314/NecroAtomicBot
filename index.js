@@ -47,7 +47,7 @@ const voiceClient = new VoiceClient({
     mongooseConnectionString:mongoPath,
 
 })
-const YoutubePoster = require("discord-yt-poster");
+
 
 
 const alexa = require("alexa-bot-api-v3");
@@ -210,16 +210,6 @@ client.on("ready", async () => {
         console.log(error)
     }     
 
-
-    // const options = {
-    //     loop_delays_in_min: 3, 
-    //     defaults: {
-    //         Notification: "{videoauthorname} Posted: **{videotitle}**, as \n{videourl}"
-    //     },
-    // };
-
-
-    // client.YTP = new YoutubePoster(client, options);
 
 
 
@@ -554,62 +544,39 @@ client.on("messageCreate", async (message) => {
     });
 
 
-   if(await afkschema.findOne({Guild:message.guild.id},{user: message.author.id})){
-       let afkProfile = await afkschema.findOne({user: message.author.id})
-
-       if(afkProfile){
-      
-        const user = await client.users.fetch(afkProfile.user).then(async (u) => {
-            const image = u.displayAvatarURL({dynamic:true})
+    afkschema.findOne({ Guild: message.guild.id, Member: message.author.id }, async(err, data) => {
+        if(err) throw err;
+        if(data) {
+          data.delete()
+          const afk = new Discord.MessageEmbed()
+          .setTitle('Afk Removed')
+          .setDescription(`${message.author.tag} afk has been removed`)
+          .setFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+          .setTimestamp()
+          
+          message.channel.send({ embeds: [afk]})
+        } else{
             
-            await client.embed(message,{ 
-     
-                 title:'AFK Removed',
-                 description:`<@${afkProfile.user}> AFK has been removed`,
-                 color:'RANDOM',
-                 thumbnail:{
-                     url: image
-                 }
-     
-     
-             })
-         })
-         afkProfile.delete()
+            return;
         }
-       
-
-       
-       
-   }
-
-   if(message.mentions.members.first()){
-       await message.mentions.members.forEach(async (member) => {
-        
-           let afkProfile = await afkschema.findOne({Guild:message.guild.id},{user:member.user.id});
-
-        
-           if(afkProfile) 
-           {
-            const reason = afkProfile.reason
-            const timestamp = afkProfile.date
-            const timeAgo = moment(timestamp).fromNow();
-
-           message.delete()
-           await client.embed(message, {
-                title:`AFK System`,
-                color:'RANDOM',
-                description: `${member.user.username} is currently afk \n(${timeAgo})\nReason: ${reason}`,
-                footer: {
-                    text: `${message.author.username}`,
-                    iconURL: `${message.author.displayAvatarURL({dynamic: true})}`
-                }
-             })
+      })
+      
+      if(message.mentions.members.first()) {
+        afkschema.findOne({ Guild: message.guild.id, Member: message.mentions.members.first().id }, async(err, data) => {
+          if(err) throw err;
+          if(!data) return;
+          if(data) {
+            const member = message.guild.members.cache.get(data.Member);
+            const afk = new Discord.MessageEmbed()
+            .setTitle(`${member.user.tag} is Afk`)
+            .setDescription(`${data.Content} - ${moment(parseInt(data.TimeAgo)).fromNow()}`)
+            .setFooter(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+            .setTimestamp()
             
-        }   
+            message.channel.send({ embeds: [afk]})
+          } else return;
         })
-       }
-
-
+      }
    
 
     const settings = await guildSchema.findOne(
@@ -940,6 +907,16 @@ client.on('interactionCreate', async(interaction) => {
 
         cmd.run(client, interaction);
     }
+    if (interaction.isContextMenu()) {
+        await interaction.deferReply({ ephemeral: false });
+        const command = client.slashCommands.get(interaction.commandName);
+        if (command) command.run(client, interaction);
+    }
+
+
+
+
+
 
 })
 
