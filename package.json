@@ -158,6 +158,8 @@
 
     "pretty-ms": "^7.0.1",
 
+    "python-shell": "^3.0.0",
+
     "querystring": "^0.2.1",
 
     "random": "^3.0.6",

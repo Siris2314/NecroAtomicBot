@@ -17,6 +17,7 @@ const Discord = require("discord.js");
 const path = require("path");
 const nsfwschema = require('./schemas/nsfw')
 const deepai = require('deepai')
+const banner = './assets/bot_long_banner.png'
 require('dotenv').config()
 const nsfwtoken = process.env.nsfw
 deepai.setApiKey(nsfwtoken);
@@ -200,8 +201,8 @@ client.on("ready", async () => {
            commandsArray.push(command);
 
           
-            // await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
-            await client.application.commands.set(commandsArray);
+            await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
+            // await client.application.commands.set(commandsArray);
             
        }
 
@@ -890,6 +891,21 @@ client.on("messageDelete", async (message) => {
 });
 
 client.on("guildCreate", async(guild) => {
+
+    const id = guild.ownerId;
+
+    let attachments = new Discord.MessageAttachment(banner, "banner.png");
+
+    client.users.fetch(id).then(user => {
+        user.send({content:`\`\`\`Greetings ${user.username}, thank you for inviting me to your server, I am NecroAtomicBot a multiple purpose bot built to serve all your Discord needs.\nMy default prefix is !necro to change it simply use **!necro** prefix <custom prefix> to change it. Thanks again for inviting me \`\`\``, files:[attachments]});
+
+    })
+
+    
+
+    // owner.send({content:"Hello There"});
+
+
 
     
 
