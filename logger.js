@@ -5,22 +5,32 @@ module.exports = c => {
     console.log("Loaded Logger Module".green)
     try{
         c.on("channelCreate", function(channel){
-            send_log(c, channel.guild, "GREEN", "Channel Created", `ChannelName: ${channel.name}
-            ChannelId: ${channel.id}
-            ChannelType: ${channel.type}
-            `)
+
+            let types = {
+                GUILD_TEXT: "Text Channel",
+                GUILD_VOICE: "Voice Channel",
+                UNKNOWN: "No Type",
+                GUILD_NEWS: "News Channel",
+                GUILD_STORE: "Store Channel",
+                GUILD_CATEGORY: "Category",
+                GUILD_STAGE_VOICE:"Stage Channel"
+            }
+            send_log(c, channel.guild, "GREEN", "Channel Created", `\`\`\`yaml\nChannelName: ${channel.name} \nChannelId: ${channel.id} \nChannelType: ${types[channel.type]} \nChannel Category: ${channel.category}\`\`\``)
         })
         c.on("channelDelete", function(channel){
-            send_log(c, channel.guild, "RED", "Channel Deleted", `ChannelName: ${channel.name}
-            \nChannelId: ${channel.id}
-            \nChannelType: ${channel.type}
-            `)
+            let types = {
+                GUILD_TEXT: "Text Channel",
+                GUILD_VOICE: "Voice Channel",
+                UNKNOWN: "No Type",
+                GUILD_NEWS: "News Channel",
+                GUILD_STORE: "Store Channel",
+                GUILD_CATEGORY: "Category",
+                GUILD_STAGE_VOICE:"Stage Channel"
+            }
+            send_log(c, channel.guild, "RED", "Channel Deleted", `\`\`\`yaml\nChannelName: ${channel.name} \nChannelId: ${channel.id} \nChannelType: ${types[channel.type]} \nChannel Category: ${channel.category}\`\`\``)
         })
         c.on("channelPinsUpdate", function(channel, time){
-            send_log(c, channel.guild, "YELLOW", "Channel Pins Update", `ChannelName: ${channel.name}
-            \nChannelId: ${channel.id}
-            \nPinned At: ${time}
-            `, 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/samsung/265/pushpin_1f4cc.png')
+            send_log(c, channel.guild, "YELLOW", "Channel Pins Update", `\`\`\`yaml\nChannelName: ${channel.name} \nChannelId: ${channel.id} \nPinned At: ${time}\`\`\``, 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/samsung/265/pushpin_1f4cc.png')
 
 
         })
@@ -30,28 +40,20 @@ module.exports = c => {
             if(!guildChannel || !guildChannel.available) return;
 
             let types = {
-                text: "Text Channel",
-                voice: "Voice Channel",
+                GUILD_TEXT: "Text Channel",
+                GUILD_VOICE: "Voice Channel",
                 null: "No Type",
-                news: "News Channel",
-                store: "Store Channel",
-                category: "Category",
+                GUILD_NEWS: "News Channel",
+                GUILD_STORE: "Store Channel",
+                GUILD_CATEGORY: "Category",
+                GUILD_STAGE_VOICE:"Stage Channel"
             }
             if(oldChannel.name != newChannel.name){
-                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - NAME", `Before: \nChannelName: ${oldChannel.name}
-                \nChannelId: ${oldChannel.id}
-                \n\n`+ `After: \nChannelName: ${newChannel.name}
-                \nChannelId: ${newChannel.id}
-                `)
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - NAME", `\`\`\`yaml\nBefore: \nChannelName: ${oldChannel.name} \nChannelId: ${oldChannel.id} \n\n`+ `After: \nChannelName: ${newChannel.name} \nChannelId: ${newChannel.id} \`\`\``)
 
             }
             else if(oldChannel.type != newChannel.type){
-                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TYPE", `Before: \nChannelName: ${oldChannel.name}
-                \nChannelId: ${oldChannel.id}
-                \nChannelType: ${types[oldChannel.type]}
-                \n\n`+ `After: \nChannelName: ${newChannel.name}
-                \nChannelId: ${newChannel.id}
-                \nChannelType: ${types[newChannel.type]}`)
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TYPE", `\`\`\`yaml\nBefore: \nChannelName: ${oldChannel.name} \nChannelId: ${oldChannel.id} \nChannelType: ${types[oldChannel.type]} \n\n`+ `After: \nChannelName: ${newChannel.name} \nChannelId: ${newChannel.id} \nChannelType: ${types[newChannel.type]}\`\`\``)
 
             }
             else if(oldChannel.topic != newChannel.topic){
@@ -61,21 +63,16 @@ module.exports = c => {
                 else if(newChannel.topic == null){
                     newChannel.topic = "None"
                 }
-                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TOPIC", `Before: \nChannelName: ${oldChannel.name}
-                \nChannelId: ${oldChannel.id}
-                \nChannelTopic: ${oldChannel.topic}
-                \n\n`+ `After: \nChannelName: ${newChannel.name}
-                \nChannelId: ${newChannel.id}
-                \nChannelTopic: ${newChannel.topic}`)
+                send_log(c, oldChannel.guild, "YELLOW", "Channel Updated - TOPIC", `\`\`\`yaml\nBefore: \nChannelName: ${oldChannel.name} \nChannelId: ${oldChannel.id} \nChannelTopic: ${oldChannel.topic} \n\n`+ `After: \nChannelName: ${newChannel.name} \nChannelId: ${newChannel.id} \nChannelTopic: ${newChannel.topic}\`\`\``)
 
             }
           
         })
         c.on("emojiCreate", function(emoji){
-            send_log(c, emoji.guild, "GREEN","EMOJI CREATED" ,`EMOJI: ${emoji}\nEMOJI ID: ${emoji.id}\nEMOJI URL: ${emoji.url}`)
+            send_log(c, emoji.guild, "GREEN","EMOJI CREATED" ,`\`\`\`yaml\nEMOJI: ${emoji} \nEMOJI ID: ${emoji.id} \nEMOJI URL: ${emoji.url}\`\`\``)
         })
         c.on("emojiDelete", function(emoji){
-            send_log(c, emoji.guild, "RED", "EMOJI DELETED",`EMOJI: ${emoji}\nEMOJI ID: ${emoji.id}\nEMOJI URL: ${emoji.url}`)
+            send_log(c, emoji.guild, "RED","EMOJI DELETED" ,`\`\`\`yaml\nEMOJI: ${emoji} \nEMOJI ID: ${emoji.id} \nEMOJI URL: ${emoji.url}\`\`\``)
         })
         c.on("emojiUpdate", function(oldEmoji, newEmoji){
             if(oldEmoji.name !== newEmoji.name){
@@ -83,20 +80,19 @@ module.exports = c => {
             }
         })
         c.on("guildBanAdd", function(ban){
-            send_log(c, ban.guild, "RED",`USER BANNED`, `User: ${ban.user}(\`${ban.user.id}\`)(\n\`${ban.user.tag}\`)`)
+            send_log(c, ban.guild, "RED",`USER BANNED`, `\`\`\`yaml\nUser: ${ban.user.username} \nBanned User ID: ${ban.user.id} \nReason for Ban: ${ban.reason ? ban.reason : "No Reason Given"} \`\`\``)
         })
         c.on("guildBanRemove", function(ban){
-            send_log(c, ban.guild, "YELLOW",`USER UNBANNED`, `User: ${ban.user} (\n\`${ban.user.id}\`)(\n\`${ban.user.tag}\`)`)
+            send_log(c, ban.guild, "ORANGE",`USER UNBANNED`, `\`\`\`yaml\nUser: ${ban.user.username} \nBanned User ID: ${ban.user.id} \n${ban.user.tag} \`\`\``)
         })
         c.on("guildMemberAdd", function(member){
-            send_log(c, member.guild, "GREEN","Member Joined",`Member: ${member.user} \n(\`${member.user.id}\`) \n(\`${member.user.tag}\`)`, member.user.displayAvatarURL({dynamic: true}))
+            send_log(c, member.guild, "GREEN","Member Joined",`\`\`\`yaml\nMember: ${member.user.username} \nMember ID: ${member.user.id} \nMember Type: ${member.user.bot ? member.user.bot : "Guild Member"}\`\`\``, member.user.displayAvatarURL({dynamic: true}))
         })
         c.on("guildMemberRemove", function(member){
-            send_log(c, member.guild, "RED","Member LEFT",`Member: ${member.user} \n(\`${member.user.id}\`) \n(\`${member.user.tag}\`)`, member.user.displayAvatarURL({dynamic: true}))
+            send_log(c, member.guild, "RED","Member Left",`\`\`\`yaml\nMember: ${member.user.username} \nMember ID: ${member.user.id} \nMember Type: ${member.user.bot ? member.user.bot : "Guild Member"}\`\`\``, member.user.displayAvatarURL({dynamic: true}))
         })
         c.on("guildMembersChunk", function(members, guild, chunk){
-            send_log(c, guild, "RED", `MEMBER RAID BAN, ${members.length} USERS BANNED`, members.map((user, index) => `${index}) - ${user} - ${user.tag} - ${user.id}`),
-            )
+            send_log(c, guild, "RED", `MEMBER RAID BAN, ${members.length} USERS BANNED`, members.map((user, index) => `${index}) - ${user} - ${user.tag} - ${user.id}`))
 
         })
         // c.on("guildMemberUpdate", function(oldMember, newMember){
@@ -142,19 +138,16 @@ module.exports = c => {
         // })
         c.on("messageDelete", function(message){
            
-                if(message.author == null) return;
+                if(message.author == null || message.author.bot) return;
                 if(!message.channel.type ==  "GUILD_TEXT") return;
 
-                send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",`\`\`\`yaml Author :<@${message.author.id}>: ${message.author.tag} \n Date : ** ${moment(message.createdTimestamp).format('LL')} ${moment(message.createdTimestamp).format('LT')}, ${moment(message.createdTimestamp).fromNow()}
-                **Channel : ** <#${message.channel.id}>: *${message.channel.name}*
-                **Deleted Message : ** ${message.content.replace(/`/g, "'")}
-                **Attachment URL : ** ${message.attachments.map(x => x.proxyURL) ? message.attachments.map(x => x.proxyURL) : 'No Images Sent'}\`\`\``)
+                send_log(c, message.guild, "ORANGE", "MESSAGE DELETED",`\`\`\`yaml\nAuthor: ${message.author.tag} \nDate: ${moment(message.createdTimestamp).format('LL')} ${moment(message.createdTimestamp).format('LT')}, ${moment(message.createdTimestamp).fromNow()} \nChannel: ${message.channel.name} \nDeleted Message: ${message.content.replace(/`/g, "'")} \nAttachment URL: ${message.attachments.map(x => x.proxyURL) ? message.attachments.map(x => x.proxyURL) : 'No Images Sent'}\`\`\``)
 
                 
             
         })
         c.on("messageDeleteBulk", function(messages){
-            send_log(c, messages.first().guild,"RED", `Bulk Delete - ${messages.size} messages`, `${messages.size} Messages Deleted in ${messages.first().channel.name}`)
+            send_log(c, messages.first().guild,"RED", `Bulk Delete: ${messages.size} messages`, `\`\`\`yaml\n${messages.size} Messages Deleted in ${messages.first().channel.name}\`\`\``)
         })
         c.on("messageUpdate", function(oldMessage, newMessage){
             if(oldMessage.author == null) return;
@@ -296,6 +289,9 @@ module.exports = c => {
 
         c.on('threadMembersUpdate', function(oldMembers, newMembers) {
 
+
+            console.log(oldMembers.size)
+            console.log(oldMembers.size)
 
 
         })

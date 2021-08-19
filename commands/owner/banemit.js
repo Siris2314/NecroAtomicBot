@@ -14,6 +14,6 @@ module.exports = {
 
         client.emit('guildBanAdd', message.member);
 
-        message.channel.send({content:'Sticker Event Simulation Success'})
+        message.channel.send({content:'Ban Event Simulation Success'})
     }
 }

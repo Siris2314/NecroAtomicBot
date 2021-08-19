@@ -38,7 +38,7 @@ module.exports = {
         const neededXp = Levels.xpFor(parseInt(user.level) + 1)
 
         let BackgroundRadius = '50', 
-        BackGroundImg = 'https://images7.alphacoders.com/109/1092420.jpg',
+        BackGroundImg = 'https://cdn.discordapp.com/attachments/765926464628719627/877228416414408714/wallpaper-1.jpg',
         AttachmentName = 'rank.png',
         Username = member.user.username,
         DrawLayerColor = '#000000',
@@ -176,7 +176,7 @@ module.exports = {
         ctx.shadowOffsetX = 1;
         ctx.shadowOffsetY = 1;
         ctx.font = '30px "Poppins-Bold"'
-        ctx.fillText("Diamond Nature", 390, 120);
+        ctx.fillText(message.guild.name, 390, 120);
         ctx.restore()
 
         ctx.save();
