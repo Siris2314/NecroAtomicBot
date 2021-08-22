@@ -38,7 +38,7 @@ module.exports = {
         const neededXp = Levels.xpFor(parseInt(user.level) + 1)
 
         let BackgroundRadius = '50', 
-        BackGroundImg = 'https://cdn.discordapp.com/attachments/765926464628719627/877228416414408714/wallpaper-1.jpg',
+        BackGroundImg = 'https://cdn.discordapp.com/attachments/765926464628719627/877945787429044274/images_1.png',
         AttachmentName = 'rank.png',
         Username = member.user.username,
         DrawLayerColor = '#000000',
