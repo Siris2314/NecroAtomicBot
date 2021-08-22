@@ -162,13 +162,9 @@ module.exports = c => {
             **Date : ** ${moment(newMessage.createdTimestamp).format('LL')} ${moment(newMessage.createdTimestamp).format('LT')}, ${moment(newMessage.createdTimestamp).fromNow()}
             **Channel : ** <#${newMessage.channel.id}> - *${newMessage.channel.name}*
             **Original Message : ** 
-            \`\`\`
-            ${oldMessage.content.replace(/`/g, "'")} \`\`\`}
+            \`\`\`yaml\n${oldMessage.content.replace(/`/g, "'")} \`\`\`}
             **Updated Message : ** 
-            \`\`\`
-            ${newMessage.content.replace(/`/g, "'")} \`\`\`}`)
-
-        })
+            \`\`\`yaml\n${newMessage.content.replace(/`/g, "'")} \`\`\`}`)})
         c.on("roleCreate", function(role) {
             send_log(c, role.guild, "GREEN", "ROLE CREATED",
             `ROLE: ${role}\nROLENAME: ${role.name}\nCOLOR: ${role.hexColor}\n POSITION: ${role.position}`)

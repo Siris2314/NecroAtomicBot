@@ -8,10 +8,12 @@ const botname = process.env.botname;
 const colors = require('colors');
 const fetch = require('node-fetch');
 const logger = require('./logger')
+const zero = require("chatbot-zero");
 const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
+const axios  = require('axios');
 const counterSchema = require("./schemas/count");
 const Discord = require("discord.js");
 const path = require("path");
@@ -51,8 +53,6 @@ const voiceClient = new VoiceClient({
 
 
 
-const alexa = require("alexa-bot-api-v3");
-const ai = new alexa();
 
 client.vcclient = voiceClient;
 Levels.setURL(mongoPath);
@@ -534,13 +534,12 @@ client.on("messageCreate", async (message) => {
         if (!data) return;
 
         if (message.channel.id !== data.Channel) return;
+      
 
-        let context = []
-        ai.getReply(message.content, context, 'english','OwO').then(reply => {
-            message.channel.send({content: reply}); 
-            context.push(reply);
-        });
+        const res = await axios.get(`https://luminabot.xyz/api/json/chatbot?text=${message.content}&uid=${message.author.id}`)
 
+       
+        message.reply(res.data.answer)
         
     });
 
@@ -613,7 +612,7 @@ client.on("messageCreate", async (message) => {
 
  try{
 
-    if(message.mentions.has(client.user.id)){
+    if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
             description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
@@ -903,8 +902,6 @@ client.on("guildCreate", async(guild) => {
 
     
 
-    // owner.send({content:"Hello There"});
-
 
 
     
@@ -919,8 +916,18 @@ client.on('interactionCreate', async(interaction) => {
 
         const cmd = client.slashCommands.get(interaction.commandName);
 
+
         if(!cmd) return interaction.followUp({content: 'Error Interacting With Slash Commands'})
 
+        // interaction.member = interaction.guild.members.cache.get(interaction.user.id);
+        
+        // const userperm = interaction.member.permissions.has(cmd.userperm);
+        // if (!userperm) return interaction.followUp({content: `You need \`${cmd.userperm || []}\` Permissions` });
+
+        // const botperm = interaction.guild.me.permissions.has(cmd.botperm);
+        // if (!botperm) return interaction.followUp({content: `I need \`${cmd.botperm || []}\` Permissions` });
+
+    
         cmd.run(client, interaction);
     }
     if (interaction.isContextMenu()) {
