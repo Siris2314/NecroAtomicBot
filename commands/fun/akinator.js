@@ -21,7 +21,7 @@ module.exports = {
         message.channel.send("Please wait......").then((m) => m.delete({timeout:4000}));
 
         try{
-            const aki = new Aki(region);
+            const aki = new Aki({region});
             let ans = null;
             let win = false;
             let timeGuessed = 0;
@@ -50,18 +50,18 @@ module.exports = {
                 if(aki.currentStep > 0) answers.push("back");
                 const embed = new Discord.MessageEmbed()
                  .setAuthor(`Question Number ${aki.currentStep + 1} `, client.user.avatarURL())
-                 .setDescription([
+                 .setDescription(
                      `${aki.question}`,
                      `Available Answers:`,
                      `**${aki.answers.join(" | ")}${aki.currentStep > 0 ? ` | Back` : "" } | End **`
-                 ])
+                 )
                  .setColor("RANDOM")
-                 await message.channel.send(embed);
+                 await message.channel.send({embeds:[embed]});
                  const filter = (res) => res.author.id === message.author.id && answers.includes(res.content.toLowerCase())
                  const messages = await message.channel.awaitMessages(filter, {
                      max:1,
                      time:30000
-                 });
+                 })
                  if(!messages.size){
                      await message.channel.send("Time up!")
                      win = true;
@@ -93,7 +93,7 @@ module.exports = {
                        .setTitle(`I'm ${Math.round(guess.proba * 100)}% sure its`)
                        .setDescription(`${guess.name}${guess.description ? `\nProfession - ${guess.description}` : ""}\nRanking: ${guess.ranking} \nType yes/no to confirm or deny`)
                        .setImage(guess.absolute_picture_path || null)
-                       await message.channel.send(embed);
+                       await message.channel.send({embeds:[embed]});
                        const verification = await verify(message.channel, message.author)
                        if(verification === 0){
                            win = "time";
@@ -106,7 +106,7 @@ module.exports = {
                            const embed = new Discord.MessageEmbed()
                             .setDescription([`Is that so? ${exmessage}`])
                             .setColor("RANDOM")
-                           await message.channel.send(embed);
+                           await message.channel.send({embeds:[embed]});
                            if(timeGuessed >= 3 || forceGuess){
                                win = true;
                                break;
@@ -122,7 +122,7 @@ module.exports = {
                 const embed = new Discord.MessageEmbed()
                  .setDescription("You have defeated me this time")
                  .setColor("RANDOM")
-                return message.channel.send(embed)
+                return message.channel.send({embeds:[embed]})
             } else{
                 return message.channel.send("Guessed it right once again")
             }

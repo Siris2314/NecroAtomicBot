@@ -20,7 +20,6 @@ module.exports = {
     
 
     const role = interaction.options.getRole('role')
-    console.log(role);
     const position = `\`${
       interaction.guild.roles.cache.size - role.position
     }\`/\`${interaction.guild.roles.cache.size}\``;
