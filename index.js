@@ -9,6 +9,8 @@ const colors = require('colors');
 const fetch = require('node-fetch');
 const logger = require('./logger')
 const zero = require("chatbot-zero");
+const ascii = require("ascii-table");
+
 const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
 const SpotifyPlugin = require("@distube/spotify");
@@ -190,23 +192,30 @@ client.embed = async(message, options) => {
 client.on("ready", async () => {
     console.log(botname);
     try{
+    let slash = []
+    let table = new ascii("Slash commands");
     console.log('Slash Commands Loaded');
-    const commandFolders = fs.readdirSync('./slashcmd');
-    for(const folder of commandFolders){
-       const commandFiles = fs.readdirSync(`./slashcmd/${folder}`).filter(files => files.endsWith('.js'));   
-       const commandsArray = []
-       for(const file of commandFiles){
-           const command = require(`./slashcmd/${folder}/${file}`);
-           client.slashCommands.set(command.name, command)
-           commandsArray.push(command);
-
-          
-            await client.guilds.cache.get('844278725604016139').commands.set(commandsArray)
-            // await client.application.commands.set(commandsArray);
+    fs.readdirSync("./slashcmd/").forEach(dir => {
+        const commands = fs.readdirSync(`./slashcmd/${dir}/`).filter(file => file.endsWith(".js"));
+    
+        for (let file of commands) {
+            let pull = require(`./slashcmd/${dir}/${file}`);
             
-       }
+           
+            if (pull.name) {
+                client.slashCommands.set(pull.name, pull);
+                slash.push(pull);
+                table.addRow(file, '✅');
+            } else {
+                table.addRow(file, `❌  -> missing a help.name, or help.name is not a string.`);
+                continue;
+            }
+    
+            }
+        });
+        console.log(table.toString());
+        await client.application.commands.set(slash)
 
-    } 
     } catch(error) {
         console.log(error)
     }     
