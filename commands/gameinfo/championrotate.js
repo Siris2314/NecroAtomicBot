@@ -16,7 +16,6 @@ module.exports = {
         const info  = axios.get(`https://euw1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=${token}`)
             .then(response => {
 
-                console.log(response);
                 var myChampions = [];
                 var championId = "";
                 var dataToPush = "";

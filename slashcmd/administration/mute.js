@@ -3,6 +3,7 @@ const Schema = require('../../schemas/mute')
 module.exports = {
     name:'mute',
     description: 'mutes users',
+    permission: 'ADMINISTRATOR',
     options: [
 
         {
@@ -60,12 +61,17 @@ module.exports = {
    */
 
     run: async (client, interaction) => {
+
+       
+
         
         const Target = interaction.options.getMember('target')
         const Reason = interaction.options.getString('reason') || "No Reason"
         const Time = interaction.options.getString('custom-time') || interaction.options.getString('preset-time') || "Forever"
         const role = interaction.guild.roles.cache.find(role => role.name.toLowerCase() === 'muted')
-
+        if(
+            interaction.member.roles.highest.position <= Target.roles.highest.position
+          ) return interaction.followUp({content:'You cannot mute people who are at the same role level or higher role level than you'})
         if(!role) {
             try {
                 interaction.followUp({content:'Muted role is not found, attempting to create muted role.'})

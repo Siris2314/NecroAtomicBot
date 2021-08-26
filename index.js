@@ -192,33 +192,34 @@ client.embed = async(message, options) => {
 client.on("ready", async () => {
     console.log(botname);
     try{
-    let slash = []
-    let table = new ascii("Slash commands");
-    console.log('Slash Commands Loaded');
-    fs.readdirSync("./slashcmd/").forEach(dir => {
-        const commands = fs.readdirSync(`./slashcmd/${dir}/`).filter(file => file.endsWith(".js"));
+        let slash = []
+        let table = new ascii("Slash commands");
+        console.log('Slash Commands Loaded');
+        fs.readdirSync("./slashcmd/").forEach(dir => {
+            const commands = fs.readdirSync(`./slashcmd/${dir}/`).filter(file => file.endsWith(".js"));
+        
+            for (let file of commands) {
+                let pull = require(`./slashcmd/${dir}/${file}`);
+                
+               
+                if (pull.name) {
+                    client.slashCommands.set(pull.name, pull);
+                    slash.push(pull);
+                    table.addRow(file, '✅');
+                } else {
+                    table.addRow(file, `❌  -> missing a help.name, or help.name is not a string.`);
+                    continue;
+                }
+        
+                }
+            });
+            console.log(table.toString());
+            await client.application.commands.set(slash)
     
-        for (let file of commands) {
-            let pull = require(`./slashcmd/${dir}/${file}`);
-            
-           
-            if (pull.name) {
-                client.slashCommands.set(pull.name, pull);
-                slash.push(pull);
-                table.addRow(file, '✅');
-            } else {
-                table.addRow(file, `❌  -> missing a help.name, or help.name is not a string.`);
-                continue;
-            }
-    
-            }
-        });
-        console.log(table.toString());
-        await client.application.commands.set(slash)
-
-    } catch(error) {
-        console.log(error)
-    }     
+        } catch(error) {
+            console.log(error)
+        }     
+     
 
 
 
@@ -920,6 +921,7 @@ client.on("guildCreate", async(guild) => {
 
 client.on('interactionCreate', async(interaction) => {
 
+  
     if(interaction.isCommand()){
         await interaction.deferReply({ ephemeral: false }).catch(() => {});
 
@@ -927,6 +929,13 @@ client.on('interactionCreate', async(interaction) => {
 
 
         if(!cmd) return interaction.followUp({content: 'Error Interacting With Slash Commands'})
+
+
+        if(cmd.permission){
+            const authorPerms = interaction.channel.permissionsFor(interaction.member)
+            if(!authorPerms || !authorPerms.has(cmd.permission)) return interaction.followUp({content: 'You do not have perms to run this command'})
+
+        }
 
         // interaction.member = interaction.guild.members.cache.get(interaction.user.id);
         
