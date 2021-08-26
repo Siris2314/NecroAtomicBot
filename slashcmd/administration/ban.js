@@ -3,6 +3,7 @@ const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
 module.exports = {
     name:'ban',
     description: 'Bans users',
+    permission: 'ADMINISTRATOR',
     options: [
 
         {
@@ -57,7 +58,11 @@ module.exports = {
 
         if(Target.id === interaction.user.id) return interaction.followUp({content:'Cannot ban yourself'});
 
-        if(!interaction.user.permissions.has('BAN_MEMBERS')) return interaction.followUp({content:'Invalid Perms'});
+
+    if(
+        interaction.member.roles.highest.position <= Target.roles.highest.position
+      ) return interaction.followUp({content:'You cannot ban people who are at the same role level or higher role level than you'})
+  
 
         const Reason = interaction.options.getString('reason') || "No Reason"
 

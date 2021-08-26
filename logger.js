@@ -311,7 +311,8 @@ async function send_log(client, guild,color, title, description,thumb){
     try{
     
      await Schema.findOne({Guild:guild.id}, async(err, data) => {
-        if(!data) return;
+        
+      
       
         const logembed = new Discord.MessageEmbed()
             .setColor(color ? color: "RANDOM")
@@ -322,7 +323,8 @@ async function send_log(client, guild,color, title, description,thumb){
             .setFooter(guild.name,guild.iconURL({format: "png"}))
         
 
-    
+        
+        if(!data) return;
         const logger = await client.channels.cache.get(data.Channel);
        
 

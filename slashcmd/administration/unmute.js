@@ -3,6 +3,7 @@ const Schema = require('../../schemas/mute')
 module.exports = {
     name:'unmute',
     description: 'unmutes users',
+    permission: 'ADMINISTRATOR',
     options: [
 
         {
@@ -47,7 +48,7 @@ module.exports = {
                 data.save()
                 await Target.roles.remove(role)
     
-                interaction.followUp({content:`${Targer.displayName} has been unmuted`})
+                interaction.followUp({content:`${Target.displayName} has been unmuted`})
             })
     
 
