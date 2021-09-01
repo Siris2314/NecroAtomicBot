@@ -46,6 +46,8 @@
 
     "coinlayer-wrapper": "^1.0.91",
 
+    "coloras": "^1.3.2",
+
     "colors": "^1.4.0",
 
     "common-tags": "^1.8.0",
