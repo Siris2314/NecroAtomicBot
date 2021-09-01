@@ -227,10 +227,13 @@ client.on("ready", async () => {
 
     await mongoose
         .connect(mongoPath, {
+            useFindAndModify:true,
             useUnifiedTopology: true,
             useNewUrlParser: true,
         })
         .then(console.log("Connected to Mongo"));
+
+    if(!mongoPath) return;
 
     blacklistSchema.find().then((data) => {
         data.forEach((val) => {
@@ -937,15 +940,7 @@ client.on('interactionCreate', async(interaction) => {
 
         }
 
-        // interaction.member = interaction.guild.members.cache.get(interaction.user.id);
-        
-        // const userperm = interaction.member.permissions.has(cmd.userperm);
-        // if (!userperm) return interaction.followUp({content: `You need \`${cmd.userperm || []}\` Permissions` });
-
-        // const botperm = interaction.guild.me.permissions.has(cmd.botperm);
-        // if (!botperm) return interaction.followUp({content: `I need \`${cmd.botperm || []}\` Permissions` });
-
-    
+          
         cmd.run(client, interaction);
     }
     if (interaction.isContextMenu()) {

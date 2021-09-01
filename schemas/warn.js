@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 let Schema = new mongoose.Schema({
-    guildid:String,
+    guildID:String,
     user:String,
     content:Array
 })
