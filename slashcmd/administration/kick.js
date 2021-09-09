@@ -2,7 +2,7 @@ const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
 
 module.exports = {
     name:'kick',
-    description: 'kicks a member from channel',
+    description: 'kicks a member from server',
     permission: 'ADMINISTRATOR',
     options: [
         {

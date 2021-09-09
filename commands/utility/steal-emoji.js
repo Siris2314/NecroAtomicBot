@@ -10,9 +10,9 @@ module.exports = {
       return message.channel.send("Please specify some emoji to steal");
     }
 
-    if(!message.guild.me.hasPermission('MANAGE_EMOJIS')) return message.channel.send('Invalid Bot Perms')
+    if(!message.guild.me.permissions.has('MANAGE_EMOJIS')) return message.channel.send('Invalid Bot Perms')
 
-    if(!message.member.hasPermission('MANAGE_EMOJIS')) return message.channel.send('Invalid User Perms')
+    if(!message.member.permissions.has('MANAGE_EMOJIS')) return message.channel.send('Invalid User Perms')
 
     const name = args[1] ? args[1].replace(/[^a-z0-9]/gi, "") : null;
 		if (!name) {
@@ -31,10 +31,21 @@ module.exports = {
         const extension = parsedEmoji.animated ? ".gif" : ".png";
         const url = `https://cdn.discordapp.com/emojis/${parsedEmoji.id + extension}`;
         message.guild.emojis.create(url, name)
-          .then((emoji) => message.channel.send({embeds:[new MessageEmbed() .setTitle('Emoji Added') .setDescription(`Emoji ${name} was added`) .setThumbnail(emoji.url) .setTimestamp() .setColor('RANDOM'),{
-            emojiName: emoji.name
-          }]}))
+          .then((emoji) => 
+
+        {
+          
+            const embed = new MessageEmbed()
+              .setTitle('Emoji Added')
+              .setTitle('Emoji Added')
+              .setDescription(`Emoji **${name.toUpperCase()}** was added`)
+              .setThumbnail(emoji.url) 
+              .setTimestamp()
+              .setColor('RANDOM')
+            message.channel.send({embeds:[embed]})
+          })
+        }
       }
     }
   }
-}
+
