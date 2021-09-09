@@ -22,25 +22,25 @@ module.exports = {
         const messages = interaction.options.getNumber('messages')
 
         if(messages > 100){
-            messages = 100;
+            messages = messages - 100;
         }
 
-        const fetch = await interaction.channel.messages.fetch({ limit: int });
+        const fetch = await interaction.channel.messages.fetch({ limit: messages });
         const deletedMessages = await interaction.channel.bulkDelete(fetch, true);
 
         const results = {};
         for (const [, deleted] of deletedMessages) {
             const user = `${deleted.author.username}#${deleted.author.discriminator}`;
             if (!results[user]) results[user] = 0;
+            if(deleted.author.bot) results[user] = 0;
             results[user]++;
         }
 
 
         const userMessageMap = Object.entries(results);
 
-
         const finalResult = `${deletedMessages.size} message${deletedMessages.size > 1 ? 's' : ''} were removed!\n\n${userMessageMap.map(([user, messages]) => `**${user}** : ${messages}`).join('\n')}`;
-        await interaction.followUp({ content: finalResult })
+        await interaction.channel.send({ content: finalResult })
 
 
     }

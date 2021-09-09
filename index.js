@@ -37,6 +37,8 @@ const client = new Discord.Client({
 });
 const fs = require("fs");
 const afk = new Discord.Collection();
+const antiscam = require('./schemas/antiscam')
+const unsafe = require('./unsafe.json')
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
@@ -207,7 +209,7 @@ client.on("ready", async () => {
                     slash.push(pull);
                     table.addRow(file, '✅');
                 } else {
-                    table.addRow(file, `❌  -> missing a help.name, or help.name is not a string.`);
+                    table.addRow(file, `❌  -> missing command parameters`);
                     continue;
                 }
         
@@ -424,6 +426,68 @@ client.on("messageCreate", async (message) => {
 
     })
 
+    await antiscam.findOne({Guild:message.guild.id}, async (err, data) => {
+        if(!data) return;
+
+        const punishment = String(data.Punishment)
+        unsafe.forEach(
+            async (item) => {
+                if(message.content === item || message.content.startsWith(item)){
+                    message.delete()
+                    const Member = await message.guild.members.fetch(message.author.id)
+                    message.channel.send(`Scam link sent by ${message.author.username}`) 
+
+                    if(punishment === "mute"){
+
+                        const role = message.guild.roles.cache.find(role => role.name.toLowerCase() === 'muted')
+                        if(!role) {
+                            try {
+                                message.channel.send({content:'Muted role is not found, attempting to create muted role.'})
+                
+                                let muterole = await message.guild.roles.create({
+                                    data : {
+                                        name : 'muted',
+                                        permissions: []
+                                    }
+                                });
+                                message.guild.channels.cache.filter(c => c.type === 'text').forEach(async (channel, id) => {
+                                    await channel.createOverwrite(muterole, {
+                                        SEND_MESSAGES: false,
+                                        ADD_REACTIONS: false
+                                    })
+                                });
+                                message.channel.send({content:'Muted role has sucessfully been created.'})
+                            } catch (error) {
+                                console.log(error)
+                            }
+                        };
+                        let role2 = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'muted')
+                        if(Member.roles.cache.has(role2.id)) return message.channel.send({content:`${Member.displayName} has already been muted.`})
+                        await Member.roles.add(role2)
+                    }
+                    else if(punishment === 'warn'){
+                        const reason = 'Sending Scam Links'
+                        Member.send({embeds:[new MessageEmbed() .setTitle('You Have Been Warned') .setDescription(`${reason}`)]})
+                    }
+                    else if(punishment === 'ban'){
+                        Member.ban({reason:'Sending Scam Links'})
+                        Member.send({embeds:[new MessageEmbed() .setTitle(`You Have Been Banned from ${message.guild.name}`) .setDescription(`Sending Scam Links`)]})
+
+                    }
+                    else if(punishment === 'kick'){
+                        Member.kick({reason:'Sending Scam Links'})
+                        Member.send({embeds:[new MessageEmbed() .setTitle(`You Have Been Kicked from ${message.guild.name}`) .setDescription(`Sending Scam Links`)]})
+
+                    }
+
+                }
+            }
+        )
+
+    })
+
+
+
     await inviteschema.findOne({Server: message.guild.id}, async(err, data) => {
         if(!data) return;
         if(data.Server === message.guild.id){
@@ -619,8 +683,11 @@ client.on("messageCreate", async (message) => {
             }
         }
     );
+    
 
     const prefix = settings.prefix;
+
+  
 
 
  try{
