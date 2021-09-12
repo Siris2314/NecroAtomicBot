@@ -23,6 +23,7 @@ module.exports = {
 		}     
 
     for(const rawEmoji of args){
+      console.log(rawEmoji);
       const parsedEmoji = Util.parseEmoji(rawEmoji);
 
 

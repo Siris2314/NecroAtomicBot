@@ -29,6 +29,11 @@ module.exports = {
     run: async (client, interaction) => {
         const user = interaction.options.getMember('target');
         const reason = interaction.options.getString('reason') || 'No Reason'
+
+        if(
+            interaction.member.roles.highest.position <= user.roles.highest.position
+          ) return interaction.followUp({content:'You cannot kick people who are at the same role level or higher role level than you'})
+      
         user.kick({reason:reason});
 
         const embed = new MessageEmbed()
