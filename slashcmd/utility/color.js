@@ -22,6 +22,8 @@ module.exports = {
 
     run: async(client, interaction) => {
 
+    try{
+
         const color = interaction.options.getString('color');
 
 
@@ -42,6 +44,9 @@ module.exports = {
 
 
         interaction.followUp({embeds:[embed]})
+    } catch(err) {
+        interaction.followUp({ content:'Please provide color in valid format, example: rgb(0,0,0)'})
+    }
 
 
 

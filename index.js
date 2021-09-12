@@ -226,7 +226,7 @@ client.on("ready", async () => {
 
 
 
-
+ try{
     await mongoose
         .connect(mongoPath, {
             useFindAndModify:true,
@@ -236,6 +236,9 @@ client.on("ready", async () => {
         .then(console.log("Connected to Mongo"));
 
     if(!mongoPath) return;
+ } catch(err){
+      console.log('Mongo Connection Timed Out')
+ }
 
     blacklistSchema.find().then((data) => {
         data.forEach((val) => {
@@ -398,6 +401,7 @@ client.on("messageCreate", async (message) => {
                     username: message.author.username,
                     avatarURL: message.author.avatarURL({ dynamic: true }),
                 });
+                console.log(webhook)
                 message.delete();
             } catch (error) {
                 console.log(`Error :\n${error}`);
