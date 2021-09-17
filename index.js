@@ -8,12 +8,12 @@ const botname = process.env.botname;
 const colors = require('colors');
 const fetch = require('node-fetch');
 const logger = require('./logger')
-const zero = require("chatbot-zero");
 const ascii = require("ascii-table");
+
+const musicschema = require('./schemas/music')
 
 const antiraid = require('./schemas/antiraid');
 const ownerID = process.env.ownerid;
-const SpotifyPlugin = require("@distube/spotify");
 const {format} = require('./functions2')
 const axios  = require('axios');
 const counterSchema = require("./schemas/count");
@@ -65,17 +65,7 @@ const antispamschema = require('./schemas/anti-spam')
 
 
 
-const DisTube = require("distube");
 const afkschema = require('./schemas/afk');
-const music = new DisTube(client,  { searchSongs: 0,
-    emitNewSongOnly: false,
-    highWaterMark: 1024*1024*64,
-    leaveOnEmpty: false,
-    leaveOnFinish: false,
-    leaveOnStop: false,
-    plugins: [new SpotifyPlugin({ parallel: true })],
-    youtubeDL: true,
-    updateYouTubeDL: true, });
 
 client.snipes = new Discord.Collection();
 const Canvas = require('canvas');
@@ -110,70 +100,65 @@ const starboardcollection = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 
 module.exports = { blacklistedWords, afk, starboardcollection };
+const { Player } = require("discord-music-player");
+const player = new Player(client, {
+    leaveOnEmpty: false, 
+    deafenOnJoin: true,
+    timeout:600000,
+    volume:100
+});
 
-const status = (queue) =>
-    `Volume: \`${queue.volume}%\` | Loop: \`${
-        queue.repeatMode ? (queue.repeatMode == 2 ? "Server Queue" : "This Song") : "Off"
-    }\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;
-music
-    .on("connect", (queue) => {
-        queue.textChannel.send(`Connected to ${queue.voiceChannel}`)
+
+
+client.player = player;
+
+player 
+    .on('channelEmpty', async (queue) => {
+        queue.connection.leave()
+        await musicschema.findOne({Guild:queue.guild.id}, async(err, data) => {
+            if(!data) return;
+
+            const channel = client.channels.cache.get(data.Channel)
+
+            channel.send(`Disconnected from ${queue.connection.channel} due to empty channel`)
+        })
     })
-    .on("disconnect", (queue) => {
-        queue.textChannel.send(`Disconnected from ${queue.voiceChannel}`)
+    .on('songAdd', async (queue, song)=>{
+
+        await musicschema.findOne({Guild:queue.guild.id}, async(err, data) => {
+            if(!data) return;
+
+            const channel = client.channels.cache.get(data.Channel)
+
+
+          if(!song.isFirst){
+            const embed = new Discord.MessageEmbed()
+                    .setTitle(`Track queued`)
+                    .setDescription(`[${song.name}](${song.url}) - ${song.duration}`)
+                    .setThumbnail(song.thumbnail)
+                    .setColor(queue.guild.me.displayColor || "#00FFFF");
+            channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } })
+          }
+        
+
+        })
+
+
+
     })
-    .on("playSong", (queue, song) => {
-        const embed = new Discord.MessageEmbed()
-            .setDescription(
-                `Playing: :notes: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(
-                    queue
-                )}`
-            )
-            .setColor("RANDOM")
-            .setImage(song.thumbnail);
-        queue.textChannel.send(embed);
+    .on('clientDisconnect', async (queue) => {
+        await musicschema.findOne({Guild:queue.guild.id}, async(err, data) => {
+            const channel = client.channels.cache.get(data.Channel) 
+            if(!data) return;
+            await data.delete()
+
+            channel.send({content:`Disconnected from ${queue.connection.channel}`})
+        })
     })
-    .on("addSong", (queue, song) => {
-        const embed = new Discord.MessageEmbed()
-            .setDescription(
-                    `Added: [${song.name}](${song.url}) - \`${song.formattedDuration}\`\n${status(
-                            queue
-                )} to the queue`
-             )
-            .setColor("RANDOM")
-            .setThumbnail(song.thumbnail);
-        queue.textChannel.send(embed);
-    })
-    .on("addList", (queue, playlist) => {
-        queue.textChannel.send(
-            `Added \`${playlist.name}\` playlist (${
-                playlist.songs.length
-            } songs) to queue\n${status(queue)}`
-        );
-    })
-    .on("playList", (queue, playlist) => {
-        const embed = new Discord.MessageEmbed()
-            .setDescription(
-                `Play \`${playlist.name}\` playlist (${
-                    playlist.songs.length
-                } 
-                }\`\n${status(queue)}`
-            )
-            .setColor("RANDOM")
-            .setThumbnail(song.thumbnail);
-        queue.textChannel.send(embed);
-    })
-    .on("initQueue", (queue) => {
-        queue.autoplay = false;
-        queue.volume = 100;
-    })
-    .on("empty", (queue) => {
-        (queue.textChannel.send("Channel is empty. Leaving the channel"))
-    })
-    .on("error", (channel, error) => {
-        channel.send(`An error has occured ${error}`);
-    });
-client.music = music;
+
+
+
+
 
 
 
@@ -206,6 +191,7 @@ client.on("ready", async () => {
                
                 if (pull.name) {
                     client.slashCommands.set(pull.name, pull);
+                    console.log(pull.name)
                     slash.push(pull);
                     table.addRow(file, '✅');
                 } else {
@@ -396,12 +382,11 @@ client.on("messageCreate", async (message) => {
                 const emoji =
                     client.emojis.cache.find((e) => e.name == EmojiName).id ||
                     message.guild.emojis.cache.find((e) => e.name === EmojiName).id;
-
+                
                 await webhook.send(`${client.emojis.cache.get(emoji)}`, {
                     username: message.author.username,
                     avatarURL: message.author.avatarURL({ dynamic: true }),
                 });
-                console.log(webhook)
                 message.delete();
             } catch (error) {
                 console.log(`Error :\n${error}`);
