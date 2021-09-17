@@ -22,6 +22,7 @@ module.exports = {
 
             const categories = dir
 
+            console.log(command)
             directories.push(categories)
 
             commands.push(command)
@@ -86,7 +87,7 @@ module.exports = {
                             console.log(desc)
                             return {
                                 name:name,
-                                value:desc.description || 'No Description',
+                                value:desc.description ? desc.description : 'No Description',
                                 inline:true
                             }
                         })
