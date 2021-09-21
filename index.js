@@ -191,7 +191,6 @@ client.on("ready", async () => {
                
                 if (pull.name) {
                     client.slashCommands.set(pull.name, pull);
-                    console.log(pull.name)
                     slash.push(pull);
                     table.addRow(file, '✅');
                 } else {
@@ -363,8 +362,7 @@ client.on("messageCreate", async (message) => {
                 if (webhook === undefined || null || !webhook) {
                     let Created = channel
                         .createWebhook("Bloxiphy", {
-                            avatar:
-                                "https://cdn.discordapp.com/avatars/708580906880860171/a_229b573176f79643d7fa5f6f7d8aed63.gif?size=256",
+                            avatar:"https://cdn.discordapp.com/avatars/708580906880860171/a_229b573176f79643d7fa5f6f7d8aed63.gif?size=256",
                         })
                         .then(async (webhook) => {
                             const emoji =
@@ -994,6 +992,11 @@ client.on('interactionCreate', async(interaction) => {
             const authorPerms = interaction.channel.permissionsFor(interaction.member)
             if(!authorPerms || !authorPerms.has(cmd.permission)) return interaction.followUp({content: 'You do not have perms to run this command'})
 
+        }
+
+        function replyOrEdit(interaction, ...data) {
+            if (interaction.replied || interaction.deferred) return interaction.editReply(...data);
+            else interaction.reply(...data)
         }
 
           

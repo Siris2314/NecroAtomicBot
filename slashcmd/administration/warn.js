@@ -26,39 +26,29 @@ module.exports = {
 
     run: async (client, interaction) => {
         const member = interaction.options.getMember("member")
-        const reason = interaction.options.getString("reason")
+        const reason = interaction.options.getString("reason") || "No Reason"
 
         if (interaction.member.roles.highest.position <= member.roles.highest.position) return interaction.followUp({ content: "You cannot do this action due to having lower role hierarchy"})
-        if (interaction.user.id === user.id) return interaction.followUp({ content: "Cannot warn yourself"})
+        if (interaction.user.id === member.id) return interaction.followUp({ content: "Cannot warn yourself"})
 
-        await Schema.findOne({Guild:interaction.guild.id}, async (err, data) => {
-            if(!data){
-             data = new Schema({
-                 guildID: interaction.guild.id,
-                 user: member.id,
-                 content: [
-                    {
-                      moderator: interaction.user.id,
-                      reason: reason || "No reason provided"
-                    }
-                  ]
-             })   
-                
-            }
-            else{
-
-            const newwarn = {
-                    moderator: interaction.user.id,
-                    reason: reason || "No reason provided"
-              }
-              data.content.push(newwarn)
-            }
-            data.save();
+        new Schema({
+          userId: member.id,
+          guildId:interaction.guild.id,
+          moderatorId:interaction.user.id,
+          reason: reason, 
+          timestamp:Date.now()
 
 
-        })
 
-        interaction.channel.send({embeds:[new MessageEmbed() .setTitle('Member Warned') .setDescription(`${member.user.username} has been by ${interaction.user.username} for \n${reason}`)]})
+        }).save()
+
+        const sendEmbed = new MessageEmbed()
+          .setTitle(`You have been warned in **${interaction.guild.name}**`)
+          .setDescription(`You have been warned by ${interaction.username} for ${reason}`)
+
+        member.send({embeds:[sendEmbed]})
+
+        interaction.followUp({embeds:[new MessageEmbed() .setTitle('Member Warned') .setDescription(`${member.user.username} has been by ${interaction.user.username} for \n${reason}`) .setColor()]})
 
     }
 

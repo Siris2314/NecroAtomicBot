@@ -22,19 +22,12 @@ module.exports = {
 
             const categories = dir
 
-            console.log(command)
             directories.push(categories)
 
             commands.push(command)
             
 
         })
-
-        console.log(directories)
-
-
-        console.log(commands)
-
 
         const embed = new MessageEmbed()
             .setDescription("Please Select A Category")
@@ -84,7 +77,6 @@ module.exports = {
                         commands[0].map((cmd) => {
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
-                            console.log(desc)
                             return {
                                 name:name,
                                 value:desc.description ? desc.description : 'No Description',
@@ -93,7 +85,7 @@ module.exports = {
                         })
                     )
                 }
-                else if(directory === 'utility'){
+                else if(directory === 'music'){
                     catEmbed.setTitle(`${directory}`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
@@ -101,7 +93,23 @@ module.exports = {
 
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
-                            console.log(desc)
+                            return {
+                                name:name,
+                                value:(desc.description) || 'No Description',
+                                inline:true
+                            }
+                        })
+                    )
+
+                }
+                
+                else if(directory === 'utility'){
+                    catEmbed.setTitle(`${directory}`)
+                    catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
+                    catEmbed.addFields(
+                        commands[2].map((cmd) => {
+                            const name = cmd.split('.').slice(0, -1).join('.')
+                            const desc = client.slashCommands.get(name)
                             return {
                                 name:name,
                                 value:(desc.description) || 'No Description',
@@ -117,18 +125,6 @@ module.exports = {
         collector.on('end',() => {
             initial.edit({components:components(true)})
         })
-
-
-
-
-        
-
-       
-
-
-
-
-
 
     }
 }
