@@ -1,7 +1,7 @@
 const {CommandInteraction, Client, MessageEmbed, Util} = require('discord.js')
 
 module.exports = {
-    name:'steal-emote',
+    name:'stealemote',
     description:'Steal Emote from Other Servers',
     permission:'MANAGE_EMOJIS',
     options:[

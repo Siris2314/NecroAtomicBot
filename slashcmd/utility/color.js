@@ -1,5 +1,5 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
-const { Color, isColor } = require("coloras");
+const axios = require('axios')
 module.exports = {
 
     name:'color',
@@ -8,7 +8,7 @@ module.exports = {
 
         {
             name:'color',
-            description:'Enter Color to find info on(Must be in form: rgb(37, 150, 190))',
+            description:'Enter Color to find info on(Must be in form: #FFFFF)',
             type:'STRING',
             required: true,
 
@@ -22,39 +22,33 @@ module.exports = {
 
     run: async(client, interaction) => {
 
-    try{
+    
 
-        const color = interaction.options.getString('color');
+        var color = interaction.options.getString('color');
 
-
-        const colorer = new Color(color);
-
-
-        const embed = new MessageEmbed()
-            .setColor(colorer.toHex())
-            .addFields([
-                { name: "HEX", value: colorer.toHex(), inline: true },
-                { name: "RGB", value: colorer.toRgb(), inline: true },
-                { name: "HSL", value: colorer.toHsl(), inline: true },
-                { name: "HSV", value: colorer.toHsv(), inline: true },
-                { name: "CMYK", value: colorer.toCmyk(), inline: true },
-                { name: "ㅤ", value: `[Image Url](${colorer.imageUrl})`, inline: true }
-            ])
-            .setImage(colorer.imageUrl);
+        if(color.includes("#")){
+            color = color.split("#")[1];
+        }
 
 
-        interaction.followUp({embeds:[embed]})
-    } catch(err) {
-        interaction.followUp({ content:'Please provide color in valid format, example: rgb(0,0,0)'})
-    }
-
-
-
-
-
-
-
+        try{
+            const data = await axios.get(`https://api.alexflipnote.dev/colour/${color}`);
+    
+            const info = data.data; 
+    
+    
+            const embed = new MessageEmbed() 
+                .setTitle(info.name)
+                .setDescription(`RGB Values: ${info.rgb}\n\nBrightness: ${info.brightness}\n\nHex: ${info.hex}`)
+                .setThumbnail(info.image)
+                .setImage(info.image_gradient) 
+                .setColor(info.hex)
+    
+            return interaction.followUp({embeds:[embed]});
+    
+         } catch(err){
+             message.channel.send("Not a valid color")
+         }
 
     }
-
 }

@@ -1,4 +1,5 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
+const ms = require('ms')
 
 module.exports = {
     name:'purge',
@@ -95,6 +96,10 @@ module.exports = {
                 .setDescription(`✅ Deleted ${num} messages in ${interaction.channel.name}`)
 
             await interaction.channel.send({embeds:[embed]})
+                .then(interaction => 
+                    setTimeout(() => {
+                        interaction.deleteReply()
+            }), ms('10 Seconds'))
 
 
 
