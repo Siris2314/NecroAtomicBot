@@ -20,6 +20,8 @@ const counterSchema = require("./schemas/count");
 const Discord = require("discord.js");
 const path = require("path");
 const nsfwschema = require('./schemas/nsfw')
+
+const {GiveawaysManager} = require('discord-giveaways')
 const deepai = require('deepai')
 const banner = './assets/bot_long_banner.png'
 require('dotenv').config()
@@ -54,6 +56,18 @@ const voiceClient = new VoiceClient({
     mongooseConnectionString:mongoPath,
 
 })
+
+// const manager = new GiveawaysManager(client, {
+//     storage:mongoPath,
+//     default:{
+//         botsCanWin: false,
+//         embedColor: '#FF0000',
+//         embedColorEnd: '#000000',
+//         reaction: '🎉'
+//     }
+// })
+
+// client.giveawaysManager = manager;
 
 
 
@@ -211,7 +225,7 @@ client.on("ready", async () => {
 
 
 
- try{
+
     await mongoose
         .connect(mongoPath, {
             useFindAndModify:true,
@@ -221,9 +235,9 @@ client.on("ready", async () => {
         .then(console.log("Connected to Mongo"));
 
     if(!mongoPath) return;
- } catch(err){
-      console.log('Mongo Connection Timed Out')
- }
+//  } catch(err){
+//       console.log('Mongo Connection Timed Out')
+//  }
 
     blacklistSchema.find().then((data) => {
         data.forEach((val) => {
@@ -252,6 +266,7 @@ client.on("ready", async () => {
         `Multi-Purpose Bot`,
         `Watching Over Everyone`,
         `run !necro`,
+        '\help for slash commands'
     ];
 
     let index = 0;
@@ -354,14 +369,15 @@ client.on("messageCreate", async (message) => {
     if (message.content.startsWith(":") && message.content.endsWith(":")) {
         let EmojiName = message.content.slice(1, -1);
 
+        console.log(EmojiName)
+
         if (Check(EmojiName) === true) {
-            const channel = client.channels.cache.get(message.channel.id);
+            const channel = message.channel;
             try {
                 let webhooks = await channel.fetchWebhooks();
                 let webhook = webhooks.first();
                 if (webhook === undefined || null || !webhook) {
-                    let Created = channel
-                        .createWebhook("Bloxiphy", {
+            channel.createWebhook("Bloxiphy", {
                             avatar:"https://cdn.discordapp.com/avatars/708580906880860171/a_229b573176f79643d7fa5f6f7d8aed63.gif?size=256",
                         })
                         .then(async (webhook) => {
@@ -385,6 +401,7 @@ client.on("messageCreate", async (message) => {
                     username: message.author.username,
                     avatarURL: message.author.avatarURL({ dynamic: true }),
                 });
+                console.log(webhook)
                 message.delete();
             } catch (error) {
                 console.log(`Error :\n${error}`);
@@ -682,7 +699,7 @@ client.on("messageCreate", async (message) => {
     if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
-            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash command, simply type in \help`,
             color:'BLUE',
             thumbnail:{
                 url:message.author.client.user.displayAvatarURL({dynamic:true})

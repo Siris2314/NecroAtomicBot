@@ -293,7 +293,7 @@ module.exports = c => {
         })
 
         c.on('inviteCreate', function(invite){
-            send_log(c, guild, "BLUE","Server Invite Created",`\`\`\`yaml\nInvite Channel: ${invite.channel} \nInvite URL: ${invite.url} \nInvite Duration: ${invite.maxAge} \nMax Invite Uses: ${invite.maxUses}  ```)
+            send_log(c, invite.guild, "BLUE","Server Invite Created",`\`\`\`yaml\nInvite Channel: ${invite.channel} \nInvite URL: ${invite.url} \nInvite Duration: ${invite.maxAge} \nMax Invite Uses: ${invite.maxUses}  ```)
         })
 
 
