@@ -64,11 +64,13 @@
 
     "discord-anti-alt": "^1.1.0",
 
-    "discord-anti-spam": "^2.5.1",
+    "discord-anti-spam": "^2.5.8",
 
     "discord-backup": "^3.0.1",
 
     "discord-canvas": "^1.4.1",
+
+    "discord-giveaways": "^5.0.1",
 
     "discord-music-player": "^8.0.2",
 
@@ -132,7 +134,7 @@
 
     "moment-timezone": "^0.5.33",
 
-    "mongoose": "^6.0.7",
+    "mongoose": "^5.12.3",
 
     "ms": "^2.1.3",
 
@@ -158,7 +160,7 @@
 
     "pokedex-promise-v2": "^3.3.2",
 
-    "popcat-wrapper": "^1.3.16",
+    "popcat-wrapper": "^1.4.8",
 
     "pretty-ms": "^7.0.1",
 

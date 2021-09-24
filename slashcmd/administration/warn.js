@@ -33,14 +33,16 @@ module.exports = {
 
         new Schema({
           userId: member.id,
-          guildId:interaction.guild.id,
+          guildID:interaction.guild.id,
           moderatorId:interaction.user.id,
-          reason: reason, 
+          reason:reason, 
           timestamp:Date.now()
 
 
-
         }).save()
+
+        console.log(interaction.guild.id);
+
 
         const sendEmbed = new MessageEmbed()
           .setTitle(`You have been warned in **${interaction.guild.name}**`)
