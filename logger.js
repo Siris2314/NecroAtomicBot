@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const moment = require('moment')
 const Schema = require('./schemas/modlogs')
+const ms = require('ms')
 module.exports = c => {
     console.log("Loaded Logger Module".green)
     try{
@@ -293,7 +294,7 @@ module.exports = c => {
         })
 
         c.on('inviteCreate', function(invite){
-            send_log(c, invite.guild, "BLUE","Server Invite Created",`\`\`\`yaml\nInvite Channel: ${invite.channel} \nInvite URL: ${invite.url} \nInvite Duration: ${invite.maxAge} \nMax Invite Uses: ${invite.maxUses}  ```)
+            send_log(c, invite.guild, "BLUE","Server Invite Created",`\`\`\`yaml\nInvite Channel: ${invite.channel} \nInvite URL: ${invite.url} \nInvite Duration: ${ms(invite.maxAge)} \nMax Invite Uses: ${invite.maxUses}\`\`\``)
         })
 
 
