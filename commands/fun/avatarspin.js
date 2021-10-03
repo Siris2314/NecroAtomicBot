@@ -7,6 +7,9 @@ module.exports = {
 
     async execute(message,args,client){
 
+
+    try{
+
         message.delete()
         const user = message.mentions.users.first() || message.author
 
@@ -73,6 +76,10 @@ module.exports = {
                 }
             ]
         });
+
+    } catch(err){
+        message.channel.send('Connection Error')
+    }
 
 
 

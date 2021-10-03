@@ -10,6 +10,8 @@ const fetch = require('node-fetch');
 const logger = require('./logger')
 const ascii = require("ascii-table");
 
+const giveawaySchema = require('./schemas/giveaways')
+
 const musicschema = require('./schemas/music')
 
 const antiraid = require('./schemas/antiraid');
@@ -57,17 +59,46 @@ const voiceClient = new VoiceClient({
 
 })
 
-// const manager = new GiveawaysManager(client, {
-//     storage:mongoPath,
-//     default:{
-//         botsCanWin: false,
-//         embedColor: '#FF0000',
-//         embedColorEnd: '#000000',
-//         reaction: '🎉'
-//     }
-// })
+const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
+    async getAllGiveaways() {
+        
+        return await giveawaySchema.find().lean().exec();
+    }
 
-// client.giveawaysManager = manager;
+   
+    async saveGiveaway(messageId, giveawayData) {
+        await giveawaySchema.create(giveawayData);
+      
+        return true;
+    }
+
+    
+    async editGiveaway(messageId, giveawayData) {
+
+        await giveawaySchema.updateOne({ messageId }, giveawayData, { omitUndefined: true }).exec();
+
+        return true;
+    }
+
+ 
+    async deleteGiveaway(messageId) {
+    
+        await giveawaySchema.deleteOne({ messageId }).exec();
+     
+        return true;
+    }
+}
+
+const manager = new GiveawaysManager(client, {
+    default:{
+        botsCanWin: false,
+        embedColor: '#FF0000',
+        embedColorEnd: '#000000',
+        reaction: '🎉'
+    }
+})
+
+client.giveawaysManager = manager;
 
 
 
@@ -136,6 +167,30 @@ player
 
             channel.send(`Disconnected from ${queue.connection.channel} due to empty channel`)
         })
+    })
+    .on('playlistAdd', async(queue, playlist) => {
+
+        await musicschema.findOne({Guild:queue.guild.id}, async(err, data) => {
+            var amount = 1;
+            const description = await (playlist.queue.songs)
+                .map((song) =>`${amount++} **${song.name}**`)
+                .join("\n");
+                const channel = client.channels.cache.get(data.Channel)
+                        
+
+                const musicembed = new Discord.MessageEmbed()
+                        .setTitle(`${playlist.name}`)
+                        .setDescription(description)
+                        .setFooter(`Requested by: ${data.Username}`)
+
+                channel.send({embeds: [musicembed]});
+
+        
+            
+            
+
+        })
+            
     })
     .on('songAdd', async (queue, song)=>{
 
@@ -235,9 +290,6 @@ client.on("ready", async () => {
         .then(console.log("Connected to Mongo"));
 
     if(!mongoPath) return;
-//  } catch(err){
-//       console.log('Mongo Connection Timed Out')
-//  }
 
     blacklistSchema.find().then((data) => {
         data.forEach((val) => {
@@ -699,7 +751,7 @@ client.on("messageCreate", async (message) => {
     if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
-            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash command, simply type in \help`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in \help`,
             color:'BLUE',
             thumbnail:{
                 url:message.author.client.user.displayAvatarURL({dynamic:true})

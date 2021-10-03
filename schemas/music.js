@@ -4,5 +4,7 @@ module.exports = model(
     new Schema({
         Guild:String,
         Channel:String,
+        Playlist:String,
+        Username:String,
     })
 );
