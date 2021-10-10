@@ -58,21 +58,7 @@ module.exports =  {
                 queue.stop();
         });
 
-        if(song.isFirst){
-            const embed = new MessageEmbed()
-            .setTitle(`Playing Track`)
-            .setDescription(`[${song.name}](${song.url}) - ${song.duration}`)
-            .setThumbnail(song.thumbnail)
-            .setColor(queue.guild.me.displayColor || "#00FFFF");
-         interaction.followUp({ embeds: [embed], allowedMentions: { repliedUser: false } })
-        }
-
-
         
-
-      
-
-
 
         
     }

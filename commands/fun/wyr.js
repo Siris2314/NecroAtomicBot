@@ -10,9 +10,14 @@ module.exports = {
 
     async execute(message, args,client){
 
+
+        try{
+
             const res = await fetch(`https://api.tovade.xyz/v1/fun/wyr`).then((re) =>
                 re.json()
             );
+
+        
 
             const row = new MessageActionRow()
             .addComponents(
@@ -85,6 +90,10 @@ module.exports = {
                     await ButtonInteraction.update({ content: `**Would You Rather**`, components: [row2] });
                 }
             });
+
+        } catch(err){
+            message.channel.send(err);
+        }
 
 
 

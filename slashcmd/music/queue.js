@@ -22,7 +22,9 @@ module.exports = {
         const embed = new MessageEmbed() 
             .setTitle(`Queue in **${interaction.guild.name}**`)
             .setDescription(fullqueue)
-            .setFooter(queue.nowPlaying)
+            .setFooter(queue.nowPlaying.name)
+
+
 
         interaction.followUp({embeds:[embed]})
 

@@ -40,13 +40,10 @@ module.exports = {
             duration: ms(duration),
             winners,
             prize,
-            hostedBy: interaction.user.username,
-            thumbnail: interaction.guild.iconURL({dynamic: true}),
-
             
-
         }).then((gData) => {
-            console.log(gData);
+           interaction.delete();
+           interaction.channel.send(`New Giveaway Started by ${interaction.user.username}`)
         })
         
 

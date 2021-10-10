@@ -12,7 +12,7 @@ module.exports = {
         name:'time',
         description:'Time for slowmode(Set it to 0, to have no slowmode)',
         type:'STRING',
-        require:'true'
+        required:true
         }
     ],
 

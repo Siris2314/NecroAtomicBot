@@ -168,6 +168,19 @@ player
             channel.send(`Disconnected from ${queue.connection.channel} due to empty channel`)
         })
     })
+    .on('songFirst', async (queue, song) => {
+
+     await musicschema.findOne({Guild:queue.guild.id}, async (err, data) => {
+        const channel = client.channels.cache.get(data.Channel)
+        const embed = new Discord.MessageEmbed()
+            .setColor('GREEN')
+            .setDescription('Now playing [' + song.name + '](' + song.url + ')')
+            .setThumbnail(song.thumbnail)
+            .setFooter('Requested by ' + data.Username)
+        channel.send({embeds: [embed]})
+
+      })
+    })
     .on('playlistAdd', async(queue, playlist) => {
 
         await musicschema.findOne({Guild:queue.guild.id}, async(err, data) => {
@@ -223,6 +236,12 @@ player
 
             channel.send({content:`Disconnected from ${queue.connection.channel}`})
         })
+    })
+    .on('channelEmpty', (queue) => {
+        const embed = new Discord.MessageEmbed()
+            .setColor('BLUE')
+            .setDescription('Everyone left the voice channel so I left!')
+        queue.message.channel.send({embeds: [embed]})
     })
 
 
@@ -751,7 +770,7 @@ client.on("messageCreate", async (message) => {
     if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
         client.embed(message, {
             title: `Greetings ${message.author.username}`,
-            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in \help`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
             color:'BLUE',
             thumbnail:{
                 url:message.author.client.user.displayAvatarURL({dynamic:true})
