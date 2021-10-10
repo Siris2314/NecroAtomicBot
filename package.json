@@ -72,7 +72,7 @@
 
     "discord-giveaways": "^5.0.1",
 
-    "discord-music-player": "^8.0.2",
+    "discord-music-player": "^8.1.0",
 
     "discord-rpc": "^4.0.1",
 
@@ -102,7 +102,7 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.9.4",
+    "genshin-db": "^3.10.5",
 
     "gif-encoder-2": "^1.0.5",
 
