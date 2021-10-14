@@ -32,8 +32,9 @@ module.exports =  {
         const vc = interaction.member.voice.channel
 
         const args = interaction.options.data
-        const name = args[1]?.value
-        const choice = args[1]?.value
+        const choice = args[0]?.value
+
+        console.log(choice);
 
         if(!vc) return interaction.followUp({content:'Must be in VC to use command'})
 
@@ -42,8 +43,16 @@ module.exports =  {
 
         queue.setRepeatMode(Number(choice))
 
+      if(choice == 0){
+        interaction.followUp({content:`Repeat Mode set to off`})
+      }
+      else if(choice == 1){
+          interaction.followUp({content:`Repeat Mode set to Song`})
+      }
+      else if(choice  == 2){
+        interaction.followUp({content:`Repeat Mode set to Queue`})
 
-        interaction.followUp({content:`Repeat Mode set to ${name}`})
+      }
 
 
     }

@@ -4,7 +4,7 @@ module.exports = {
   name: 'invite',
   description: 'gives you invite',
 
-  execute(message,args, client){
+  async execute(message,args, client){
 
     const embed = new Discord.MessageEmbed()
     if(args[0] == 'create'){

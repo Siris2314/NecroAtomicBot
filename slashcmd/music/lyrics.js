@@ -34,10 +34,19 @@ module.exports =  {
 
 
     if (embed.description.length >= 2048){
-        embed.description = `${embed.description.substring(0, 2045)}...`;
+        const newdescription = `${embed.description.substring(0, 2045)}...`;
+
+        const nextpage = new MessageEmbed()
+          .setTitle(`Lyrics for ${song.name} page 2`)
+          .setDescription(newdescription)
+          .setTimestamp()
+          .setColor("#F0EAD6")
+          
+       reactionMenu(interaction, [embed, nextpage]);
+          
     }
 
-    interaction.followUp({embeds:[embed]})
+    // interaction.followUp({embeds:[embed]})
 
     
 

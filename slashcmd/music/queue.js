@@ -27,12 +27,5 @@ module.exports = {
 
 
         interaction.followUp({embeds:[embed]})
-
-
-
-
-
-
-        
     }
 }

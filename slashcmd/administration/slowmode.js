@@ -28,6 +28,7 @@ module.exports = {
 
         if(time === '0'){
           interaction.channel.setRateLimitPerUser(0)
+          return interaction.followUp({content: 'Slowmode has been turned off'});
         }
 
         const milliseconds = ms(time)
