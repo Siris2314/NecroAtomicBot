@@ -1,5 +1,6 @@
 const {CommandInteraction, Client, MessageEmbed, MessageActionRow, MessageSelectMenu} = require('discord.js')
 const fs = require('fs')
+const image = `https://cdn.discordapp.com/attachments/867151384703795241/867465639262027776/bot_long_banner.png`
 module.exports = {
     name:'help',
     description:'Slash Help Command',
@@ -31,6 +32,8 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setDescription("Please Select A Category")
+            .setImage(image)
+            .setThumbnail(client.user.avatarURL({dynamic: true}))
         const components = (state) => [
             new MessageActionRow().addComponents(
                 new MessageSelectMenu()
@@ -71,7 +74,7 @@ module.exports = {
                 const catEmbed = new MessageEmbed()
 
                 if(directory === 'administration'){
-                    catEmbed.setTitle(`${directory}`)
+                    catEmbed.setTitle(`${directory} :lock:`)
                     catEmbed.setDescription(`List of Commands in ${directory} category`)
                     catEmbed.addFields(
                         commands[0].map((cmd) => {
@@ -86,7 +89,7 @@ module.exports = {
                     )
                 }
                 else if(directory === 'music'){
-                    catEmbed.setTitle(`${directory}`)
+                    catEmbed.setTitle(`${directory} :musical_note:`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
                         commands[1].map((cmd) => {
@@ -104,7 +107,7 @@ module.exports = {
                 }
                 
                 else if(directory === 'utility'){
-                    catEmbed.setTitle(`${directory}`)
+                    catEmbed.setTitle(`${directory} :tools:`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
                         commands[2].map((cmd) => {

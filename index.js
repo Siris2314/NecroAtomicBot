@@ -172,12 +172,27 @@ player
 
      await musicschema.findOne({Guild:queue.guild.id}, async (err, data) => {
         const channel = client.channels.cache.get(data.Channel)
+
+        if(song.name.includes("(Official Audio)") || song.name.includes("(Official Video)")){
+            const newname = song.name.replace("(Official Audio)","")
+            const embed = new Discord.MessageEmbed()
+            .setColor('GREEN')
+            .setDescription('Now playing [' + newname + '](' + song.url + ')')
+            .setThumbnail(song.thumbnail)
+            .setFooter('Requested by ' + data.Username)
+        channel.send({embeds: [embed]})
+
+        }
+        else{
+        const newname = song.name.replace("(Official Audio)","")
         const embed = new Discord.MessageEmbed()
             .setColor('GREEN')
             .setDescription('Now playing [' + song.name + '](' + song.url + ')')
             .setThumbnail(song.thumbnail)
             .setFooter('Requested by ' + data.Username)
         channel.send({embeds: [embed]})
+
+        }
 
       })
     })
@@ -729,6 +744,31 @@ client.on("messageCreate", async (message) => {
           } else return;
         })
       }
+
+
+    
+ try{
+
+    if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
+        client.embed(message, {
+            title: `Greetings ${message.author.username}`,
+            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
+            color:'BLUE',
+            thumbnail:{
+                url:message.author.client.user.displayAvatarURL({dynamic:true})
+            },
+            footer: {
+                text:`${message.author.username}`,
+                iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
+            },
+            timestamp: Date.now()
+
+
+        })
+    }
+} catch(err){
+
+}
    
 
     const settings = await guildSchema.findOne(
@@ -761,32 +801,6 @@ client.on("messageCreate", async (message) => {
     
 
     const prefix = settings.prefix;
-
-  
-
-
- try{
-
-    if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
-        client.embed(message, {
-            title: `Greetings ${message.author.username}`,
-            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
-            color:'BLUE',
-            thumbnail:{
-                url:message.author.client.user.displayAvatarURL({dynamic:true})
-            },
-            footer: {
-                text:`${message.author.username}`,
-                iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
-            },
-            timestamp: Date.now()
-
-
-        })
-    }
-} catch(err){
-
-}
   
     if (!message.content.startsWith(prefix)) return;
 

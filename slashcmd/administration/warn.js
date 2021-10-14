@@ -28,8 +28,8 @@ module.exports = {
         const member = interaction.options.getMember("member")
         const reason = interaction.options.getString("reason") || "No Reason"
 
-        if (interaction.member.roles.highest.position <= member.roles.highest.position) return interaction.followUp({ content: "You cannot do this action due to having lower role hierarchy"})
         if (interaction.user.id === member.id) return interaction.followUp({ content: "Cannot warn yourself"})
+        if (interaction.member.roles.highest.position <= member.roles.highest.position) return interaction.followUp({ content: "You cannot do this action due to having lower role hierarchy"})
 
         new Schema({
           userId: member.id,
