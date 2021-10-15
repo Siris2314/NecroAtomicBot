@@ -29,8 +29,6 @@
 ### Necro is currently being hosted on Heroku, any changes to hosting will be listed on this GitHub Repository
 
 <a href="https://www.heroku.com/"><img src="https://www3.assets.heroku.com/assets/logo-purple-08fb38cebb99e3aac5202df018eb337c5be74d5214768c90a8198c97420e4201.svg" width="60%" height="auto"/></a>
-### To any bot developers - Google Cloud is offering one year of hosting for free and so far it has been a great host for the bot
-
 #
 
 
