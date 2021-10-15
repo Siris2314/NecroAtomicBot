@@ -14,21 +14,26 @@
                - Gameinfo: Game information commands,currently only Genshin Impact Commands Available
                - Work In Progress: Work in progress commands, commands not fully implemented into the bot
                
-               
-               
+### Please contact us if you would like any features you would like added to the bot!               
+        
+  &nbsp;
 
-# Necro is currently being hosted on Google Cloud, any changes to hosting will be listed on this GitHub Repository
+# Add the bot now~!
+
+### Add NecroAtomic to your server: https://dsc.gg/necroatomic
+
+### If you have any questions about the Bot, feel free to join our support server for help: https://discord.gg/jY8Esuxfh9
+
+  &nbsp;
+#
+### Necro is currently being hosted on Google Cloud, any changes to hosting will be listed on this GitHub Repository
 
 ![image](https://user-images.githubusercontent.com/25334323/126578291-99fee6bb-a889-4da1-9ebe-2a8b11e53067.png)
 
 ### To any bot developers - Google Cloud is offering one year of hosting for free and so far it has been a great host for the bot
 
+#
 
-
-
-### Invite Link for The Bot: https://dsc.gg/necroatomic
-
-### If you have any questions or concerns about the Bot, feel free to join the support server: https://discord.gg/jY8Esuxfh9
 
 
 
