@@ -12,6 +12,10 @@ module.exports = {
             return message.channel.send({content:'You do not have permission to use this command!'}).then(m => m.delete({timeout: 10000}));
         };
 
+        if(!message.guild.me.permissions.has('MANAGE_GUILD')) {
+            return message.channel.send({content:'I do not have enough perms to use this command!'}).then(m => m.delete({timeout: 10000}));
+        }
+
         const settings = await Guild.findOne({
             guildID: message.guild.id
         }, (err, guild) => {

@@ -36,14 +36,16 @@ module.exports = {
         const duration = interaction.options.getString('duration');
         const winners = interaction.options.getNumber('winners');
 
+
+        console.log(winners);
         client.giveawaysManager.start(interaction.channel, {
             duration: ms(duration),
-            winners,
-            prize,
+            prize: prize,
+            winnerCount: winners,
+            hostedBy: interaction.user 
             
         }).then((gData) => {
-           interaction.delete();
-           interaction.channel.send(`New Giveaway Started by ${interaction.user.username}`)
+           interaction.followUp(`New Giveaway Started by ${interaction.user.username} in ${interaction.channel}`)
         })
         
 

@@ -321,7 +321,7 @@ async function send_log(client, guild,color, title, description,thumb){
       
         const logembed = new Discord.MessageEmbed()
             .setColor(color ? color: "RANDOM")
-            .setDescription(description ? description.substr(0,2048) : "\u200b")
+            .setDescription(description ? description.substring(0,2048) : "\u200b")
             .setTitle(title ? title.substr(0,256) : "\u200b")
             .setThumbnail(thumb ? thumb: guild.iconURL({format: "png"}))
             .setTimestamp()
@@ -332,7 +332,9 @@ async function send_log(client, guild,color, title, description,thumb){
         if(!data) return;
         const logger = await client.channels.cache.get(data.Channel);
        
-
+        if(!logger){
+            return;
+        }
         logger.createWebhook(client.user.username, {
             avatar: client.user.displayAvatarURL({format:'png'})
         }).then(webhook => {
