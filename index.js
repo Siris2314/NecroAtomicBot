@@ -746,36 +746,10 @@ client.on("messageCreate", async (message) => {
       }
 
 
-    
- try{
-
-    if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
-        client.embed(message, {
-            title: `Greetings ${message.author.username}`,
-            description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
-            color:'BLUE',
-            thumbnail:{
-                url:message.author.client.user.displayAvatarURL({dynamic:true})
-            },
-            footer: {
-                text:`${message.author.username}`,
-                iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
-            },
-            timestamp: Date.now()
-
-
-        })
-    }
-} catch(err){
-
-}
+       
    
-
-    const settings = await guildSchema.findOne(
-        {
-            guildID: message.guild.id,
-        },
-        (err, guild) => {
+    const settings = await guildSchema.findOne({
+            guildID: message.guild.id,},(err, guild) => {
             if (err) console.error(err);
             if (!guild) {
                 const newGuild = new guildSchema({
@@ -784,9 +758,7 @@ client.on("messageCreate", async (message) => {
                     guildName: message.guild.name,
                     prefix: process.env.prefix,
                 });
-
-                newGuild
-                    .save()
+                newGuild.save()
                     .then((result) => console.log(result))
                     .catch((err) => console.error(err));
 
@@ -795,15 +767,40 @@ client.on("messageCreate", async (message) => {
                         "This server was not in our database! We have now added and you should be able to use bot commands."
                     })
                     .then((m) => m.delete({ timeout: 10000 }));
+
             }
         }
     );
-    
 
-    const prefix = settings.prefix;
+    
+    
+    const prefix = settings.prefix || process.env.prefix
   
     if (!message.content.startsWith(prefix)) return;
 
+
+    try{
+
+        if(message.mentions.has(client.user.id) && (!message.mentions.everyone)){
+            client.embed(message, {
+                title: `Greetings ${message.author.username}`,
+                description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
+                color:'BLUE',
+                thumbnail:{
+                    url:message.author.client.user.displayAvatarURL({dynamic:true})
+                },
+                footer: {
+                    text:`${message.author.username}`,
+                    iconURL:`${message.author.displayAvatarURL({dynamic:true})}`
+                },
+                timestamp: Date.now()
+    
+    
+            })
+        }
+    } catch(err){
+    
+    }
 
     
     const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -1021,16 +1018,11 @@ client.on("guildMemberAdd", async (member) => {
 });
 
 client.on("messageDelete", async (message) => {
-    let snipes = client.snipes.get(message.channel.id) || []
-    if(snipes.length > 5) snipes = snipes.slice(0,4)
-    snipes.unshift({
-        msg: message,
+    client.snipes.set(message.channel.id, {
+        content: message.content,
         author:message.author,
-        image: message.attachments.first()?.proxyURL || null,
-        time: Date.now()
-    })
-
-    client.snipes.set(message.channel.id, snipes)
+        image:message.attachments.first() ? message.attachments.first().proxyURL: null
+      })
 
 
     await ghostpingschema.findOne({Guild:message.guild.id}, async(err,data) =>{
@@ -1121,7 +1113,7 @@ client.on("guildDelete", async(guild) => {
 
  await guildSchema.findOne({guildID: guild.id}, async(err,data) => {
      if(!data) return;
-     data.delete()
+        data.delete()
      })
 })
 

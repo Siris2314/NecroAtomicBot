@@ -40,7 +40,7 @@ module.exports = {
         const collector = message.channel.createMessageComponentCollector({ filter, time: 60000 });
         const collector2 = message.channel.createMessageComponentCollector({ filter: filter2, time: 60000 });
 
-
+``
             collector.on('collect', async(ButtonInteraction) => {
 
                 if(!ButtonInteraction.member.id === message.author.id) return interaction.reply({ content: "Only the author of the button can use this command", ephemeral: true})
@@ -89,10 +89,10 @@ module.exports = {
                     );
                     await ButtonInteraction.update({ content: `**Would You Rather**`, components: [row2] });
                 }
-            });
+            });``
 
         } catch(err){
-            message.channel.send(err);
+            message.channel.send('API Timed Out');
         }
 
 

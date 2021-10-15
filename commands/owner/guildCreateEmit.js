@@ -8,7 +8,6 @@ module.exports = {
 
     async execute(message,args,client){
         if(!message.author.id == ownerid) return;
-        console.log(ownerid);
 
 
 
