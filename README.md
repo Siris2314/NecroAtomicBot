@@ -8,7 +8,6 @@
                - Moderation: Server Moderation and Setup Commands(Will be split into a new category called Server Setup at a later date)
                - Fun: Fun commands that users can play around with
                - Levels: Commands for the leveling system
-               - Music: Music Commands to play music in Voice Channels
                - Utility: Utility commands for users, i.e. serverinfo, whois(user information)
                - Images: Powerful image manipulation commands
                - Gameinfo: Game information commands,currently only Genshin Impact Commands Available
