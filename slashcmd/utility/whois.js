@@ -25,11 +25,6 @@ module.exports = {
 
     run: async (client, interaction) => {
 
-
-
-
-
-
            const flags = {
             DISCORD_EMPLOYEE: 'Discord Employee',
             DISCORD_PARTNER: 'Discord Partner',

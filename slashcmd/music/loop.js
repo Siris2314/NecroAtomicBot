@@ -8,6 +8,7 @@ module.exports =  {
             name:'choice',
             description:'Loop Choice(Single Song/Queue)',
             type:'STRING',
+            required:true,
             choices:[
                 {
                     name:'off',

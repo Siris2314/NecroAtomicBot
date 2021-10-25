@@ -68,7 +68,6 @@ module.exports = {
         let punishment = args[1]?.value;
 
 
-        console.log(args)
 
         if(choice.toLowerCase() === 'enable') {
            Schema.findOne({Guild:interaction.guild.id}, async (err, data) => {

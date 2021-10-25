@@ -13,7 +13,7 @@ module.exports = {
 
         try{
 
-            const res = await fetch(`https://api.tovade.xyz/v1/fun/wyr`).then((re) =>
+            const res = await fetch("http://api.xaliks.xyz/random/wyr").then((re) =>
                 re.json()
             );
 
@@ -24,11 +24,11 @@ module.exports = {
 
                 new MessageButton()
                         .setCustomId('primary')
-                        .setLabel(`${res.questions[0]}`)
+                        .setLabel(`${res.questions[0].question}`)
                         .setStyle('PRIMARY'),
                 new MessageButton()
                         .setCustomId("second")
-                        .setLabel(`${res.questions[1]}`)
+                        .setLabel(`${res.questions[1].question}`)
                         .setStyle("DANGER"),
         );
 
@@ -52,12 +52,12 @@ module.exports = {
                     .addComponents(
                         new MessageButton()
                             .setCustomId('primary')
-                            .setLabel(`${res.questions[0]}: `+ " "+ `${res.percentage["1"]}%`)
+                            .setLabel(`${res.questions[0].question}: `+ " "+ `${res.questions[0].percentage}%`)
                             .setStyle('PRIMARY')
                             .setDisabled(),
                     new MessageButton()
                             .setCustomId("second")
-                            .setLabel(`${res.questions[1]}: `+ " "+ `${res.percentage["2"]}%`)
+                            .setLabel(`${res.questions[1].question}: `+ " "+ `${res.questions[1].percentage}%`)
                             .setStyle("SECONDARY")
                             .setDisabled(),
                     );
@@ -78,12 +78,12 @@ module.exports = {
                     .addComponents(
                         new MessageButton()
                             .setCustomId('primary')
-                            .setLabel(`${res.questions[0]}: `+ " "+ `${res.percentage["1"]}%`)
+                            .setLabel(`${res.questions[0].question}: `+ " "+ `${res.questions[0].percentage}%`)
                             .setStyle('SECONDARY')
                             .setDisabled(),
-                    new MessageButton(`${res.questions[1]}: `+ " "+ `${res.percentage["2"]}%`)
+                    new MessageButton()
                             .setCustomId("second")
-                            .setLabel()
+                            .setLabel(`${res.questions[1].question}: `+ " "+ `${res.questions[1].question}%`)
                             .setStyle("DANGER")
                             .setDisabled(),
                     );
