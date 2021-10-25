@@ -82,13 +82,13 @@
 
     "discord-ytdl-core": "^5.0.2",
 
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.2.0",
 
     "discordv13-pagination": "^1.1.0",
 
     "distube": "^3.0.0-beta.32",
 
-    "djs-games": "^1.4.6",
+    "djs-games": "^2.1.10",
 
     "djs-voice": "^1.1.1",
 
@@ -203,6 +203,8 @@
     "weather-builder": "^1.0.17",
 
     "weather-js": "^2.0.0",
+
+    "weky": "^3.1.8",
 
     "youtube-search": "^1.1.6",
 

@@ -106,7 +106,7 @@ client.giveawaysManager = manager;
 client.vcclient = voiceClient;
 Levels.setURL(mongoPath);
 
-const antispamschema = require('./schemas/anti-spam')
+
 
 
 
@@ -128,8 +128,6 @@ client.discordTogether = new DiscordTogether(client, {
 const rpctoken = process.env.rpc
 const RPC = require('discord-rpc'); 
 const rpc = new RPC.Client({transport: 'ipc'});
-
-const AntiSpam = require('discord-anti-spam');
 
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
@@ -173,21 +171,23 @@ player
      await musicschema.findOne({Guild:queue.guild.id}, async (err, data) => {
         const channel = client.channels.cache.get(data.Channel)
 
-        if(song.name.includes("(Official Audio)") || song.name.includes("(Official Video)")){
-            const newname = song.name.replace("(Official Audio)","")
+        if(song.name.includes("(Official Video)")){
+            const newname = song.name.replace("(Official Video)","")
             const embed = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription('Now playing [' + newname + '](' + song.url + ')')
+            .setDescription('Now playing: \n[' + newname + '](' + song.url + ')')
+            .addField('Song Duration',song.duration,false)
             .setThumbnail(song.thumbnail)
             .setFooter('Requested by ' + data.Username)
-        channel.send({embeds: [embed]})
+        channel.send({embeds: [embed]}) 
 
         }
-        else{
+    else{
         const newname = song.name.replace("(Official Audio)","")
         const embed = new Discord.MessageEmbed()
             .setColor('GREEN')
-            .setDescription('Now playing [' + song.name + '](' + song.url + ')')
+            .setDescription('Now playing: \n[' + newname + '](' + song.url + ')')
+            .addField('Song Duration',song.duration,false)
             .setThumbnail(song.thumbnail)
             .setFooter('Requested by ' + data.Username)
         channel.send({embeds: [embed]})
@@ -367,27 +367,7 @@ client.on("ready", async () => {
 
 });
 
-const antiSpam = new AntiSpam({
-    warnThreshold: 3, 
-    muteThreshold: 10, 
-    kickThreshold: 50, 
-    banThreshold: 100, 
-    maxInterval: 10000, 
-    warnMessage: 'Warning Spam Not Allowed',
-    kickMessage: '**{user_tag}** has been kicked for spamming.', 
-    muteMessage: '**{user_tag}** has been muted for spamming.',
-    banMessage: '**{user_tag}** has been banned for spamming.',
-    maxDuplicatesWarning: 6, 
-    maxDuplicatesKick: 10, 
-    maxDuplicatesBan: 12,
-    maxDuplicatesMute: 8,
-    ignoredPermissions: [ 'ADMINISTRATOR'], 
-    ignoreBots: true, 
-    verbose: true, 
-    ignoredMembers: [], 
-    muteRoleName: "muted", 
-    removeMessages: true 
-});
+
 
 
 
@@ -402,7 +382,7 @@ client.once("disconnect", () => {
 //         state: 'Working on stuff', 
 //         startTimestamp: new Date(), 
 //         largeImageKey: 'large-key', 
-//         largeImageText: 'Doing Stuff Over Summer', 
+//         largeImageText: 'Grind Season', 
 //         smallImageKey: 'small-key', 
 //         smallImageText: 'Chilling', 
 //         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}] 
@@ -431,6 +411,23 @@ Canvas.loadImage("./assets/background.jpg").then(async(img) => {
 
 
 })
+
+// process.on("unhandledRejection", (reason, p) => {
+//     console.log(" [antiCrash] :: Unhandled Rejection/Catch");
+//     // console.log(reason, p);
+// });
+// process.on("uncaughtException", (err, origin) => {
+//     console.log(" [antiCrash] :: Uncaught Exception/Catch");
+//     // console.log(err, origin);
+// });
+// process.on("uncaughtExceptionMonitor", (err, origin) => {
+//     console.log(" [antiCrash] :: Uncaught Exception/Catch (MONITOR)");
+//     // console.log(err, origin);
+// });
+// process.on("multipleResolves", (type, promise, reason) => {
+//     console.log(" [antiCrash] :: Multiple Resolves");
+//     // console.log(type, promise, reason);
+// });
 
 
 
@@ -507,14 +504,6 @@ client.on("messageCreate", async (message) => {
         message.channel.send({content: newstr});
     
     } 
-
-    await antispamschema.findOne({ Server: message.guild.id }, async (err, data) => {
-        if(!data) return
-        antiSpam.message(message); 
-
-
-
-    })
 
     await antiscam.findOne({Guild:message.guild.id}, async (err, data) => {
         if(!data) return;
@@ -701,12 +690,15 @@ client.on("messageCreate", async (message) => {
         if (!data) return;
 
         if (message.channel.id !== data.Channel) return;
-      
+    
 
-        const res = await axios.get(`https://luminabot.xyz/api/json/chatbot?text=${message.content}&uid=${message.author.id}`)
+        message.channel.sendTyping();
 
-       
-        message.reply(res.data.answer)
+        fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(message.content)}&botname=${client.user.username}&ownername=EndofLeTime#6747`)
+        .then(res => res.json())
+        .then(data => {
+            message.reply(`${data.message}`);
+        });
         
     });
 
@@ -772,9 +764,12 @@ client.on("messageCreate", async (message) => {
         }
     );
 
-    
-    
-    const prefix = settings.prefix || process.env.prefix
+  var prefix = '';
+  try{
+    prefix = settings.prefix || process.env.prefix
+  } catch(err){
+
+  }
   
     if (!message.content.startsWith(prefix)) return;
 
