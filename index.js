@@ -438,59 +438,50 @@ client.on("messageCreate", async (message) => {
         return;
     }
 
-    
-    function Check(str) {
-        if (
-            client.emojis.cache.find((emoji) => emoji.name === str) ||
-            message.guild.emojis.cache.find((emoji) => emoji.name === str)
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+    function randomNumber(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      } 
+
+if (message.content.startsWith(":") && message.content.endsWith(":")) {
+    let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g)
+    if (!emojis) return;
+    emojis.forEach(m => {
+      let emoji = client.emojis.cache.find(x => x.name === m)
+      if (!emoji) return;
+      let temp = emoji.toString()
+      if (new RegExp(temp, "g").test(message.content)) message.content = message.content.replace(new RegExp(temp, "g"), emoji.toString())
+      else message.content = message.content.replace(new RegExp(":" + m + ":", "g"), emoji.toString());
+    })
+  
+    let webhook = await message.channel.fetchWebhooks();
+    let number = randomNumber(1, 2);
+    webhook = webhook.find(x => x.name === "NQN" + number);
+  
+    if (!webhook) {
+      webhook = await message.channel.createWebhook(`NQN` + number, {
+        avatar: client.user.displayAvatarURL({ dynamic: true })
+      });
     }
-    if (message.content.startsWith(":") && message.content.endsWith(":")) {
-        let EmojiName = message.content.slice(1, -1);
+  
+    await webhook.edit({
+      name: message.member.nickname ? message.member.nickname : message.author.username,
+      avatar: message.author.displayAvatarURL({ dynamic: true })
+    })
+  
+    message.delete().catch(err => { })
+    webhook.send(message.content).catch(err => { })
+  
+    await webhook.edit({
+      name: `NQN` + number,
+      avatar: client.user.displayAvatarURL({ dynamic: true })
+    })
+}
 
-        console.log(EmojiName)
 
-        if (Check(EmojiName) === true) {
-            const channel = message.channel;
-            try {
-                let webhooks = await channel.fetchWebhooks();
-                let webhook = webhooks.first();
-                if (webhook === undefined || null || !webhook) {
-            channel.createWebhook("Bloxiphy", {
-                            avatar:"https://cdn.discordapp.com/avatars/708580906880860171/a_229b573176f79643d7fa5f6f7d8aed63.gif?size=256",
-                        })
-                        .then(async (webhook) => {
-                            const emoji =
-                                client.emojis.cache.find((e) => e.name == EmojiName).id ||
-                                message.guild.emojis.cache.find((e) => e.name === EmojiName).id;
-
-                            await webhook.send(`${client.emojis.cache.get(emoji)}`, {
-                                username: message.author.username,
-                                avatarURL: message.author.avatarURL({ dynamic: true }),
-                            });
-                            message.delete();
-                        });
-                }
-
-                const emoji =
-                    client.emojis.cache.find((e) => e.name == EmojiName).id ||
-                    message.guild.emojis.cache.find((e) => e.name === EmojiName).id;
-                
-                await webhook.send(`${client.emojis.cache.get(emoji)}`, {
-                    username: message.author.username,
-                    avatarURL: message.author.avatarURL({ dynamic: true }),
-                });
-                console.log(webhook)
-                message.delete();
-            } catch (error) {
-                console.log(`Error :\n${error}`);
-            }
-        }
-    }
+   
+      
 
     const randomXP = Math.floor(Math.random() * 29) + 1;
     const hasLeveledUp = await Levels.appendXp(message.author.id, message.guild.id, randomXP);
@@ -768,10 +759,16 @@ client.on("messageCreate", async (message) => {
   try{
     prefix = settings.prefix || process.env.prefix
   } catch(err){
+    return message.channel
+    .send({content:
+        "This server was not in our database! We have now added and you should be able to use bot commands."
+    })
+    .then((m) => m.delete({ timeout: 10000 }));
+
 
   }
   
-    if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix)) return;
 
 
     try{
