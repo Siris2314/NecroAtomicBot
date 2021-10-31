@@ -8,7 +8,7 @@ module.exports = {
      /**
    *
    * @param {Client} client
-   * @param {CommandInteracion} interaction
+   * @param {CommandInteraction} interaction
    */
 
     run:async (client, interaction) => {
@@ -105,12 +105,27 @@ module.exports = {
                     )
 
                 }
+                else if(directory === 'serversetup') {
+                    catEmbed.setTitle(`${directory} :wrench:`)
+                    catEmbed.setDescription(`List of Commands in ${directory} category`)
+                    catEmbed.addFields(
+                        commands[2].map((cmd) => {
+                            const name = cmd.split('.').slice(0, -1).join('.')
+                            const desc = client.slashCommands.get(name)
+                            return {
+                                name:name,
+                                value:(desc.description) || 'No Description',
+                                inline:true
+                            }
+                        })
+                    )
+                }
                 
                 else if(directory === 'utility'){
                     catEmbed.setTitle(`${directory} :tools:`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
-                        commands[2].map((cmd) => {
+                        commands[3].map((cmd) => {
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
                             return {
