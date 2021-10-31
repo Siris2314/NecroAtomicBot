@@ -1,116 +1,103 @@
-const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
-const ms = require('ms')
+const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
+const ms = require("ms");
 
 module.exports = {
-    name:'purge',
-    description: 'purge messages from channel',
-    permission: 'ADMINISTRATOR',
-    options: [
-
-        {
-            name:'messages',
-            description:'Enter a number of messages to clear(up to 300 messages)',
-            type:'NUMBER',
-            required: true,
-        },
-        {
-
-            name:'target',
-            description:'User messages to be deleted',
-            type:'USER',
-            required: false,
-
-
-        }
-
-    ],
-   /**
+  name: "purge",
+  description: "purge messages from channel",
+  permission: "ADMINISTRATOR",
+  options: [
+    {
+      name: "messages",
+      description: "Enter a number of messages to clear(up to 300 messages)",
+      type: "NUMBER",
+      required: true,
+    },
+    {
+      name: "target",
+      description: "User messages to be deleted",
+      type: "USER",
+      required: false,
+    },
+  ],
+  /**
    *
    * @param {Client} client
-   * @param {CommandInteracion} interaction
+   * @param {CommandInteraction} interaction
    */
 
-    run: async (client, interaction) => {
+  run: async (client, interaction) => {
+    const num = interaction.options.getNumber("messages");
 
-        const num = interaction.options.getNumber('messages');
+    const user = interaction.options.getMember("target");
 
-        const user = interaction.options.getMember('target');
+    const channel = interaction.channel;
 
-        const channel  = interaction.channel;
+    const messages = channel.messages.fetch();
 
+    if (user) {
+      const userMessages = (await messages).filter(
+        (e) => e.author.id === user.id
+      );
+      await channel.bulkDelete(userMessages, true);
+      const embed = new MessageEmbed()
+        .setColor("GREEN")
+        .setDescription(
+          `✅ Deleted ${num} messages sent by ${user.user.username}`
+        );
 
-        const messages = channel.messages.fetch();
+      await interaction.channel.send({ embeds: [embed] });
+    } else {
+      if (num < 100) {
+        await channel.bulkDelete(num, true);
 
-        if(user){
-            const userMessages = (await messages).filter((e) => e.author.id === user.id)
-            await channel.bulkDelete(userMessages, true);
-            const embed = new MessageEmbed()
-                .setColor("GREEN")
-                .setDescription(`✅ Deleted ${num} messages sent by ${user.user.username}`)
+        const embed = new MessageEmbed()
+          .setColor("GREEN")
+          .setDescription(
+            `✅ Deleted ${num} messages in ${interaction.channel.name}`
+          );
 
-            await interaction.channel.send({embeds:[embed]})
+        await interaction.channel.send({ embeds: [embed] });
+      } else if (num <= 200) {
+        channel.bulkDelete(100, true);
 
-        }
-        else{
+        const remain = num - 100;
+        setTimeout(() => {
+          channel.bulkDelete(remain, true);
+        }, 1000);
 
-          if(num < 100){
-            await channel.bulkDelete(num, true);
+        const embed = new MessageEmbed()
+          .setColor("GREEN")
+          .setDescription(
+            `✅ Deleted ${num} messages in ${interaction.channel.name}`
+          );
 
-            const embed = new MessageEmbed()
-                .setColor("GREEN")
-                .setDescription(`✅ Deleted ${num} messages in ${interaction.channel.name}`)
+        await interaction.channel.send({ embeds: [embed] });
+      } else if (num <= 300) {
+        channel.bulkDelete(100, true);
+        setTimeout(() => {
+          channel.bulkDelete(100, true);
+        }, 1000);
 
-            await interaction.channel.send({embeds:[embed]})
+        const remain = num - 200;
 
-          } else if(num <= 200){
-              channel.bulkDelete(100, true);
+        setTimeout(() => {
+          channel.bulkDelete(remain, true);
+        }, 1000);
 
-              const remain = num - 100;
-              setTimeout(() => {
-                  channel.bulkDelete(remain, true);
-              }, 1000)
+        const embed = new MessageEmbed()
+          .setColor("GREEN")
+          .setDescription(
+            `✅ Deleted ${num} messages in ${interaction.channel.name}`
+          );
 
-              const embed = new MessageEmbed()
-                .setColor("GREEN")
-                .setDescription(`✅ Deleted ${num} messages in ${interaction.channel.name}`)
-
-             await interaction.channel.send({embeds:[embed]})
-
-
-          }
-          else if(num <=300){
-
-            channel.bulkDelete(100, true);
+        await interaction.channel.send({ embeds: [embed] }).then(
+          (interaction) =>
             setTimeout(() => {
-                channel.bulkDelete(100, true);
-            }, 1000)
-
-            const remain = num - 200;
-
-            setTimeout(() => {
-                channel.bulkDelete(remain, true);
-            }, 1000)
-
-            const embed = new MessageEmbed()
-                .setColor("GREEN")
-                .setDescription(`✅ Deleted ${num} messages in ${interaction.channel.name}`)
-
-            await interaction.channel.send({embeds:[embed]})
-                .then(interaction => 
-                    setTimeout(() => {
-                        interaction.deleteReply()
-            }), ms('10 Seconds'))
-
-
-
-          }
-
-
-
-        }   
-
-
-
+              interaction.deleteReply();
+            }),
+          ms("10 Seconds")
+        );
+      }
     }
-
-}
+  },
+};

@@ -2,11 +2,10 @@ const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
 
 module.exports = {
 
-    name:'snipe',
-    description:'Snipe Messages in a Channel',
+    name:'snipes',
+    description:'Snipe Messages in a Channel',  
 
-    
-    run: async(client, interaction, args) => {
+    run: async(client, interaction) => {
 
         const msg = client.snipes.get(interaction.channel.id)
 

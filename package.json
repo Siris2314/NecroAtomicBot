@@ -70,6 +70,8 @@
 
     "discord-canvas": "^1.4.1",
 
+    "discord-easy-dashboard": "^1.0.9",
+
     "discord-giveaways": "^5.0.1",
 
     "discord-music-player": "^8.1.0",
