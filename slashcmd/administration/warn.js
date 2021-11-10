@@ -30,6 +30,9 @@ module.exports = {
     const member = interaction.options.getMember("member");
     const reason = interaction.options.getString("reason") || "No Reason";
 
+    if(!interaction.guild.me.permissions.has('ADMINISTRATOR')){
+      return interaction.followUp({ content: 'I do not have the right permissions to run this command'})
+    }
     if (interaction.user.id === member.id)
       return interaction.followUp({ content: "Cannot warn yourself" });
     if (

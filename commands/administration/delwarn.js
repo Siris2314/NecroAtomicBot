@@ -6,6 +6,8 @@ module.exports = {
     description:'Removes a users warning',
 
     async execute(message,args,client){
+
+     try{
         if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms denied'})
 
 
@@ -28,5 +30,10 @@ module.exports = {
             }
 
         })
+
+    }catch(err){
+        console.log(err);
+        message.channel.send("I do not have perms to use this command");
+    }
  }
 }

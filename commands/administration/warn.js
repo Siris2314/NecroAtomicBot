@@ -5,6 +5,8 @@ module.exports = {
     name:'warn', 
     description:'warns users',
     async execute(message, args, client){
+
+     try{
         if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms denied'})
 
         const user = message.mentions.members.first() || message.guild.members.cache.get(args[0])
@@ -47,7 +49,10 @@ module.exports = {
             .setDescription(`Warned ${user} for ${reason}`).setColor('RANDOM')
         
          ]})
-
+        }catch(err){
+            console.log(err)
+            message.channel.send("I do not have perms to use this command")
+        }
 
 
 
