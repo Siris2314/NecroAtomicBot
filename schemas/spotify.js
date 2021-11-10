@@ -1,11 +1,10 @@
 const {Schema, model} = require('mongoose');
 module.exports = model(
-    "Music",
+    "spotify",
     new Schema({
         Guild:String,
         Channel:String,
-        Playlist:String,
+        Song:String,
         Username:String,
-        Spotify:Boolean,
     })
 );

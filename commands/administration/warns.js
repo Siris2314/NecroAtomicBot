@@ -5,6 +5,8 @@ module.exports = {
     name:'warns', 
     description:'Lists a users warnings',
     async execute(message, args, client){
+
+     try{
         if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms denied'})
 
         const user = message.mentions.members.first() || message.guild.members.cache.get(args[0])
@@ -32,7 +34,16 @@ module.exports = {
                 message.channel.send({content:'User has no data'})
             }
 
+
+
+
         });
 
+    }catch(err){
+        console.log(err);
+        message.channel.send("I do not have perms to use this command")
+
+
     }
+}
 }

@@ -18,6 +18,10 @@ module.exports = {
   run: async (client, interaction) => {
     const member = interaction.options.getMember("user");
 
+    if(!interaction.guild.me.permissions.has('ADMINISTRATOR')){
+      return interaction.followUp({ content: 'I do not have the right permissions to run this command'})
+    }
+
     const warnings = await Schema.find({
       userId: member.id,
       guildID: interaction.guild.id,

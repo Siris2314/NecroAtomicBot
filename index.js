@@ -14,6 +14,8 @@ const giveawaySchema = require("./schemas/giveaways");
 
 const musicschema = require("./schemas/music");
 
+const buttonrr = require("./schemas/buttonrr");
+
 const antiraid = require("./schemas/antiraid");
 const ownerID = process.env.ownerid;
 const { format } = require("./functions2");
@@ -55,6 +57,8 @@ const client = new Discord.Client({
   },
   restTimeOffset: 0,
 });
+
+const { getPreview } = require("spotify-url-info");
 const fs = require("fs");
 const afk = new Discord.Collection();
 const antiscam = require("./schemas/antiscam");
@@ -65,6 +69,11 @@ const glob = require("glob");
 const { promisify } = require("util");
 const globPromise = promisify(glob);
 
+const spotSchema = require("./schemas/spotify");
+const spotify = new Discord.Collection();
+
+client.spotify = spotify;
+
 const { VoiceClient } = require("djs-voice");
 
 const voiceClient = new VoiceClient({
@@ -74,14 +83,14 @@ const voiceClient = new VoiceClient({
   mongooseConnectionString: mongoPath,
 });
 
-const Dashboard = require('discord-easy-dashboard');
+const Dashboard = require("discord-easy-dashboard");
 
-const dashboard = new Dashboard(client,{
-  name:'NecroAtomicBot',
-  description: 'A powerful discord bot that allows for secure moderation of discord servers, while also providing other features such as music and utility commands',
-  serverUrl: 'https://discord.gg/jY8Esuxfh9',
+const dashboard = new Dashboard(client, {
+  name: "NecroAtomicBot",
+  description:
+    "A powerful discord bot that allows for secure moderation of discord servers, while also providing other features such as music and utility commands",
+  serverUrl: "https://discord.gg/jY8Esuxfh9",
   secret: process.env.secret,
-
 });
 
 client.dashboard = dashboard;
@@ -185,24 +194,53 @@ player
     await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
       const channel = client.channels.cache.get(data.Channel);
 
-      if (song.name.includes("(Official Video)")) {
-        const newname = song.name.replace("(Official Video)", "");
-        const embed = new Discord.MessageEmbed()
-          .setColor("GREEN")
-          .setDescription("Now playing: \n[" + newname + "](" + song.url + ")")
-          .addField("Song Duration", song.duration, false)
-          .setThumbnail(song.thumbnail)
-          .setFooter("Requested by " + data.Username);
-        channel.send({ embeds: [embed] });
+      if (data.spotify == true) {
+        await spotSchema.findOne(
+          { Guild: queue.guild.id },
+          async (err, data) => {
+            if (!data) return;
+
+            const spot = data.Song;
+
+            getPreview(spot).then(async (res) => {
+              const embed = new Discord.MessageEmbed()
+                .setColor("GREEN")
+                .setDescription(
+                  "Now playing: \n" + res.title + " - " + res.artist
+                )
+                .addField("Song Duration", song.duration, false)
+                .setThumbnail(res.image)
+                .setFooter("Requested by " + data.Username);
+              return channel.send({ embeds: [embed] });
+            });
+          }
+        );
       } else {
-        const newname = song.name.replace("(Official Audio)", "");
-        const embed = new Discord.MessageEmbed()
-          .setColor("GREEN")
-          .setDescription("Now playing: \n[" + newname + "](" + song.url + ")")
-          .addField("Song Duration", song.duration, false)
-          .setThumbnail(song.thumbnail)
-          .setFooter("Requested by " + data.Username);
-        channel.send({ embeds: [embed] });
+        if (song.name.includes("(Official Video)")) {
+          const newname = song.name.replace("(Official Video)", "");
+          const embed = new Discord.MessageEmbed()
+            .setColor("GREEN")
+            .setDescription("Now playing: \n" + newname + "")
+            .addField("Song Duration", song.duration, false)
+            .setFooter("Requested by " + data.Username);
+          channel.send({ embeds: [embed] });
+        } else if (song.name.includes("(Lyric Video)")) {
+          const newname = song.name.replace("(Lyric video)", "");
+          const embed = new Discord.MessageEmbed()
+            .setColor("GREEN")
+            .setDescription("Now playing: \n" + newname + "")
+            .addField("Song Duration", song.duration, false)
+            .setFooter("Requested by " + data.Username);
+          channel.send({ embeds: [embed] });
+        } else {
+          const newname = song.name.replace("(Official Audio)", "");
+          const embed = new Discord.MessageEmbed()
+            .setColor("GREEN")
+            .setDescription("Now playing: \n" + newname + "")
+            .addField("Song Duration", song.duration, false)
+            .setFooter("Requested by " + data.Username);
+          channel.send({ embeds: [embed] });
+        }
       }
     });
   })
@@ -241,6 +279,22 @@ player
       }
     });
   })
+  .on("queueEnd", async (queue) => {
+    client.spotify.length = 0;
+    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
+      await spotSchema.findOne({ Guild: queue.guild.id }, async (err, data) => {
+        if (!data) return;
+
+        data.delete();
+      });
+
+      if (!data) return;
+
+      const channel = client.channels.cache.get(data.Channel);
+
+      channel.send(`Queue has ended`);
+    });
+  })
   .on("clientDisconnect", async (queue) => {
     await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
       const channel = client.channels.cache.get(data.Channel);
@@ -266,7 +320,6 @@ client.embed = async (message, options) => {
   message.channel.send({ embeds: [embed] });
 };
 
-
 client.on("ready", async () => {
   console.log(botname);
   console.log(`Dashboard launched on port 3000`);
@@ -282,7 +335,6 @@ client.on("ready", async () => {
       for (let file of commands) {
         let pull = require(`./slashcmd/${dir}/${file}`);
 
-
         if (pull.name) {
           client.slashCommands.set(pull.name, pull);
           slash.push(pull);
@@ -294,9 +346,9 @@ client.on("ready", async () => {
       }
     });
     console.log(table.toString());
-     client.slashCommands.forEach(command => {
-          client.dashboard.registerCommand(command.name, command.description);
-        })
+    client.slashCommands.forEach((command) => {
+      client.dashboard.registerCommand(command.name, command.description);
+    });
 
     await client.application.commands.set(slash);
   } catch (error) {
@@ -1040,9 +1092,6 @@ client.on("messageDelete", async (message) => {
   );
 });
 
-
-
-
 client.on("guildCreate", async (guild) => {
   const id = guild.ownerId;
 
@@ -1077,11 +1126,11 @@ client.on("interactionCreate", async (interaction) => {
         });
     }
 
-    function replyOrEdit(interaction, ...data) {
-      if (interaction.replied || interaction.deferred)
-        return interaction.editReply(...data);
-      else interaction.reply(...data);
-    }
+    // function replyOrEdit(interaction, ...data) {
+    //   if (interaction.replied || interaction.deferred)
+    //     return interaction.editReply(...data);
+    //   else interaction.reply(...data);
+    // }
 
     cmd.run(client, interaction);
   }
@@ -1091,8 +1140,59 @@ client.on("interactionCreate", async (interaction) => {
     if (command) command.run(client, interaction);
   }
 
-  if(interaction.isSelectMenu()){
-    if(interaction.customId !== 'reaction-roles'){
+  if(interaction.isButton()){
+
+    // if(interaction.customId !== 'reaction_role_menu'){
+    //   return;
+    // }
+
+
+
+    const emoji = interaction?.component?.emoji;
+
+    const menu = await buttonrr.findOne({message:interaction.message.id});
+
+    if(!menu || menu.roles.length == 0 || !menu.roles.some(v => v.emoji === emoji.id || v.emoji === emoji.name)){
+      return;
+    }
+
+    const member = interaction.guild.members.cache.get(interaction.user.id);
+
+    menu.roles.forEach(v =>{
+      const role = interaction.guild.members.cache.get(v.role);
+
+      if((v.emoji !== emoji.name && v.emoji !== emoji.id) || !role){
+        return;
+      }
+
+      if(!member.roles.cache.has(role.id)){
+        member.roles.add(role).then(() =>{
+          interaction.reply({
+            content: `You have been given the role ${role.name}`
+          ,ephemeral: true});
+        }).catch((err) => {
+          interaction.reply({
+            content: `An error occured while giving you the role ${role.name}`
+          ,ephemeral: true});
+        });
+      }
+      else{
+        member.roles.remove(role).then(() =>{
+          interaction.reply({
+            content: `You have been removed from the role ${role.name}`
+          ,ephemeral: true});
+        }).catch(() => {
+          interaction.reply({
+            content: `An Error Has Occurred`
+          ,ephemeral: true});
+        });
+      }
+    })
+
+  }
+
+  if (interaction.isSelectMenu()) {
+    if (interaction.customId !== "reaction-roles") {
       return;
     }
     await interaction.deferReply({ ephemeral: true });
@@ -1103,16 +1203,13 @@ client.on("interactionCreate", async (interaction) => {
 
     const obtained = allroles.cache.has(roleId);
 
-    if(obtained) {
+    if (obtained) {
       allroles.remove(roleId);
       interaction.followUp(`${role.name} has been removed from you`);
-    }
-    else{
+    } else {
       allroles.add(roleId);
       interaction.followUp(`${role.name} has been given to you`);
-
     }
-
   }
 });
 
@@ -1200,8 +1297,6 @@ client.on("messageReactionAdd", async (reaction, user) => {
   if (reaction.message.partial) await reaction.message.fetch();
   if (reaction.partial) await reaction.fetch();
   if (user.bot) return;
-
-
 });
 
 client.on("messageReactionRemove", async (reaction, user) => {
@@ -1252,8 +1347,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
   if (reaction.message.partial) await reaction.message.fetch();
   if (reaction.partial) await reaction.fetch();
   if (user.bot) return;
-
-
 });
 
 logger(client);
