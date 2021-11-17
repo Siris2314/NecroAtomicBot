@@ -38,6 +38,8 @@
 
     "canvas": "^2.8.0",
 
+    "captcha-canvas": "^3.1.0",
+
     "chartjs-node-canvas": "^4.1.4",
 
     "chatbot-zero": "^1.1.0",
@@ -106,7 +108,9 @@
 
     "figlet": "^1.5.0",
 
-    "genshin-db": "^3.11.2",
+    "genshin-data": "^0.14.1",
+
+    "genshin-db": "^3.11.3",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -202,6 +206,8 @@
 
     "string-toolkit": "^1.4.0",
 
+    "striptags": "^3.2.0",
+
     "twemoji-parser": "^13.0.0",
 
     "weather-builder": "^1.0.17",
@@ -209,6 +215,8 @@
     "weather-js": "^2.0.0",
 
     "weky": "^3.1.8",
+
+    "winston": "^3.3.3",
 
     "youtube-search": "^1.1.6",
 
