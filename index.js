@@ -10,6 +10,9 @@ const fetch = require("node-fetch");
 const logger = require("./logger");
 const ascii = require("ascii-table");
 
+const { Captcha } = require("captcha-canvas");
+const captchaSchema = require("./schemas/captcha");
+
 const giveawaySchema = require("./schemas/giveaways");
 
 const musicschema = require("./schemas/music");
@@ -392,7 +395,7 @@ client.on("ready", async () => {
     `Multi-Purpose Bot`,
     `Watching Over Everyone`,
     `run !necro`,
-    "help for slash commands",
+    "/help for slash commands",
   ];
 
   let index = 0;
@@ -917,6 +920,48 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
+  await captchaSchema.findOne({ Guild: member.guild.id }, async (err, data) => {
+
+    if (!data) return;
+
+    const captcha = new Captcha();
+    captcha.async = true;
+    captcha.addDecoy();
+    captcha.drawTrace();
+    captcha.drawCaptcha();
+
+    const attachment = new Discord.MessageAttachment(
+      await captcha.png,
+      "captcha.png"
+    );
+
+    const msg = await member.send({
+      files: [attachment],
+      content:
+        "Please answer the following Captcha to make sure you are not a bot",
+    });
+
+
+    const role = member.guild.roles.cache.get(data.Role);
+
+    const filter = (message) => {
+      if (message.author.id !== member.id) return;
+      if (message.content == captcha.text) return true;
+      else member.send(`:x: Wrong Captcha Answer`);
+    };
+
+    const collector = await msg.channel.awaitMessages({
+      filter,
+      max: 1,
+      time: 60000,
+      errors: ["time"],
+    });
+
+    if (collector) {
+      member.roles.add(role);
+      member.send(`Thank you for verifying, welcome to ${member.guild.name}`);
+    }
+  });
   Schema.findOne({ Guild: member.guild.id }, async (e, data) => {
     if (!data) return;
     const user = member.user;
@@ -970,6 +1015,7 @@ client.on("guildMemberAdd", async (member) => {
 
     member.roles.add(role);
   });
+
 
   antiraid.findOne({ Guild: member.guild.id }, async (err, data) => {
     const kickReason = "Anti-raidmode activated";
@@ -1140,55 +1186,64 @@ client.on("interactionCreate", async (interaction) => {
     if (command) command.run(client, interaction);
   }
 
-  if(interaction.isButton()){
-
+  if (interaction.isButton()) {
     // if(interaction.customId !== 'reaction_role_menu'){
     //   return;
     // }
 
-
-
     const emoji = interaction?.component?.emoji;
 
-    const menu = await buttonrr.findOne({message:interaction.message.id});
+    const menu = await buttonrr.findOne({ message: interaction.message.id });
 
-    if(!menu || menu.roles.length == 0 || !menu.roles.some(v => v.emoji === emoji.id || v.emoji === emoji.name)){
+    if (
+      !menu ||
+      menu.roles.length == 0 ||
+      !menu.roles.some((v) => v.emoji === emoji.id || v.emoji === emoji.name)
+    ) {
       return;
     }
 
     const member = interaction.guild.members.cache.get(interaction.user.id);
 
-    menu.roles.forEach(v =>{
+    menu.roles.forEach((v) => {
       const role = interaction.guild.members.cache.get(v.role);
 
-      if((v.emoji !== emoji.name && v.emoji !== emoji.id) || !role){
+      if ((v.emoji !== emoji.name && v.emoji !== emoji.id) || !role) {
         return;
       }
 
-      if(!member.roles.cache.has(role.id)){
-        member.roles.add(role).then(() =>{
-          interaction.reply({
-            content: `You have been given the role ${role.name}`
-          ,ephemeral: true});
-        }).catch((err) => {
-          interaction.reply({
-            content: `An error occured while giving you the role ${role.name}`
-          ,ephemeral: true});
-        });
+      if (!member.roles.cache.has(role.id)) {
+        member.roles
+          .add(role)
+          .then(() => {
+            interaction.reply({
+              content: `You have been given the role ${role.name}`,
+              ephemeral: true,
+            });
+          })
+          .catch((err) => {
+            interaction.reply({
+              content: `An error occured while giving you the role ${role.name}`,
+              ephemeral: true,
+            });
+          });
+      } else {
+        member.roles
+          .remove(role)
+          .then(() => {
+            interaction.reply({
+              content: `You have been removed from the role ${role.name}`,
+              ephemeral: true,
+            });
+          })
+          .catch(() => {
+            interaction.reply({
+              content: `An Error Has Occurred`,
+              ephemeral: true,
+            });
+          });
       }
-      else{
-        member.roles.remove(role).then(() =>{
-          interaction.reply({
-            content: `You have been removed from the role ${role.name}`
-          ,ephemeral: true});
-        }).catch(() => {
-          interaction.reply({
-            content: `An Error Has Occurred`
-          ,ephemeral: true});
-        });
-      }
-    })
-
+    });
   }
 
   if (interaction.isSelectMenu()) {
