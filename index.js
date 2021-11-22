@@ -75,6 +75,8 @@ const globPromise = promisify(glob);
 const spotSchema = require("./schemas/spotify");
 const spotify = new Discord.Collection();
 
+const welcomeMessage = require('./schemas/welcomeMessage')
+
 client.spotify = spotify;
 
 const { VoiceClient } = require("djs-voice");
@@ -920,6 +922,31 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
+
+
+  await welcomeMessage.findOne({Guild:member.guild.id}, async (err, data)=>{
+    if(!data) return;
+
+    const channel = client.channels.cache.get(data.Channel);
+    const rulesChannel = client.channels.cache.get(data.RulesChannel);
+    const rolesChannel = client.channels.cache.get(data.RolesChannel);
+    const modTag = member.guild.roles.cache.get(data.ModeratorTag);
+    const adminTag = member.guild.roles.cache.get(data.AdminTag);
+
+
+
+    if(channel != null){
+
+      await channel.send({content: `Hello ${member.user.username} and welcome to ${member.guild.name}! Be sure to read ${rulesChannel} and click on 🌱 at the bottom left to access the rest of the server. Then head over to ${rolesChannel} and tag yourself with the games you play. If you have any questions, please message ${adminTag} or our mods ${modTag}. Enjoy your times among the Beans!`})
+     
+    }
+    
+
+
+  })
+
+
+
   await captchaSchema.findOne({ Guild: member.guild.id }, async (err, data) => {
 
     if (!data) return;
