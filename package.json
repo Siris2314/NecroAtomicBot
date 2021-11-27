@@ -78,7 +78,7 @@
 
     "discord-giveaways": "^5.0.1",
 
-    "discord-music-player": "^8.1.0",
+    "discord-music-player": "^8.3.1",
 
     "discord-rpc": "^4.0.1",
 
@@ -168,7 +168,7 @@
 
     "pokedex-promise-v2": "^3.3.2",
 
-    "popcat-wrapper": "^1.4.8",
+    "popcat-wrapper": "^1.5.0",
 
     "pretty-ms": "^7.0.1",
 

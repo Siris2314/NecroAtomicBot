@@ -13,7 +13,7 @@ module.exports =  {
 
         queue.skip()
 
-        interaction.followUp({content:`Now Playing: ${queue.nowPlaying}`})
+        interaction.followUp({content:`Now Playing: ${queue.songs[1].name}`})
 
 
 

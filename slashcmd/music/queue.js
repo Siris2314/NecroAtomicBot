@@ -1,4 +1,5 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
+const reactionMenu = require("discordv13-pagination")
 
 module.exports = {
     name:'queue',
@@ -23,6 +24,20 @@ module.exports = {
             .setTitle(`Queue in **${interaction.guild.name}**`)
             .setDescription(fullqueue)
             .setFooter(queue.nowPlaying.name)
+            .setColor("#F0EAD6")
+
+        if (embed.description.length >= 2048){
+              const newdescription = `${embed.description.substring(0, 2045)}...`;
+        
+              const nextpage = new MessageEmbed()
+                  .setTitle(`Queue - page 2`)
+                  .setDescription(newdescription)
+                  .setTimestamp()
+                  .setColor("#F0EAD6")
+                  
+               reactionMenu(interaction, [embed, nextpage]);
+                  
+        }
 
 
 

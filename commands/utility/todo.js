@@ -14,6 +14,7 @@ module.exports = {
            .addField('Adding Items to List','Usage: !necro todo add <item>')
            .addField('Removing Items from List','Usage: !necro todo remove <item>')
            .addField('Listing Your Items','Usage: !necro todo list')
+           .addField('Removing All Items','Usage: !necro todo clear')
            .setColor('#CCCCFF')
            
 
@@ -94,6 +95,19 @@ module.exports = {
           return message.channel.send(`\`\`\`\n${index+=1}. ${item}\n\`\`\``);
         });
       });
-    } 
+    }
+    else if(arg0 == "clear"){
+      if(!data) return message.channel.send("You don't have data yet")
+      if (!data.todos.length)
+        return message.channel.send("Cannot retrieve an empty todos :/");
+
+        schema.findOneAndDelete({ userID: message.author.id }, function (err, data) {
+
+             message.channel.send(`Your To-Do List has been erased`);
+
+        });
+
+
+    }
   },
 };

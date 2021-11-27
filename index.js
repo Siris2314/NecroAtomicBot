@@ -15,7 +15,7 @@ const captchaSchema = require("./schemas/captcha");
 
 const giveawaySchema = require("./schemas/giveaways");
 
-const musicschema = require("./schemas/music");
+
 
 const buttonrr = require("./schemas/buttonrr");
 
@@ -61,7 +61,7 @@ const client = new Discord.Client({
   restTimeOffset: 0,
 });
 
-const { getPreview } = require("spotify-url-info");
+
 const fs = require("fs");
 const afk = new Discord.Collection();
 const antiscam = require("./schemas/antiscam");
@@ -72,12 +72,11 @@ const glob = require("glob");
 const { promisify } = require("util");
 const globPromise = promisify(glob);
 
-const spotSchema = require("./schemas/spotify");
-const spotify = new Discord.Collection();
+
 
 const welcomeMessage = require('./schemas/welcomeMessage')
 
-client.spotify = spotify;
+
 
 const { VoiceClient } = require("djs-voice");
 
@@ -182,141 +181,91 @@ const player = new Player(client, {
 
 client.player = player;
 
+client.color = require('./colors.json')
+
 player
   .on("channelEmpty", async (queue) => {
     queue.connection.leave();
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      if (!data) return;
-
-      const channel = client.channels.cache.get(data.Channel);
-
-      channel.send(
-        `Disconnected from ${queue.connection.channel} due to empty channel`
-      );
-    });
+    queue.data.channel.send("Left Channel as no one was with me");
   })
-  .on("songFirst", async (queue, song) => {
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      const channel = client.channels.cache.get(data.Channel);
-
-      if (data.spotify == true) {
-        await spotSchema.findOne(
-          { Guild: queue.guild.id },
-          async (err, data) => {
-            if (!data) return;
-
-            const spot = data.Song;
-
-            getPreview(spot).then(async (res) => {
-              const embed = new Discord.MessageEmbed()
-                .setColor("GREEN")
-                .setDescription(
-                  "Now playing: \n" + res.title + " - " + res.artist
-                )
-                .addField("Song Duration", song.duration, false)
-                .setThumbnail(res.image)
-                .setFooter("Requested by " + data.Username);
-              return channel.send({ embeds: [embed] });
-            });
-          }
-        );
-      } else {
-        if (song.name.includes("(Official Video)")) {
-          const newname = song.name.replace("(Official Video)", "");
-          const embed = new Discord.MessageEmbed()
-            .setColor("GREEN")
-            .setDescription("Now playing: \n" + newname + "")
-            .addField("Song Duration", song.duration, false)
-            .setFooter("Requested by " + data.Username);
-          channel.send({ embeds: [embed] });
-        } else if (song.name.includes("(Lyric Video)")) {
-          const newname = song.name.replace("(Lyric video)", "");
-          const embed = new Discord.MessageEmbed()
-            .setColor("GREEN")
-            .setDescription("Now playing: \n" + newname + "")
-            .addField("Song Duration", song.duration, false)
-            .setFooter("Requested by " + data.Username);
-          channel.send({ embeds: [embed] });
-        } else {
-          const newname = song.name.replace("(Official Audio)", "");
-          const embed = new Discord.MessageEmbed()
-            .setColor("GREEN")
-            .setDescription("Now playing: \n" + newname + "")
-            .addField("Song Duration", song.duration, false)
-            .setFooter("Requested by " + data.Username);
-          channel.send({ embeds: [embed] });
-        }
-      }
-    });
+  .on("queueDestroyed", async (queue) => {
+    queue.connection.leave();
   })
-  .on("playlistAdd", async (queue, playlist) => {
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      var amount = 1;
-      const description = await playlist.queue.songs
-        .map((song) => `${amount++} **${song.name}**`)
-        .join("\n");
-      const channel = client.channels.cache.get(data.Channel);
-
-      const musicembed = new Discord.MessageEmbed()
-        .setTitle(`${playlist.name}`)
-        .setDescription(description)
-        .setFooter(`Requested by: ${data.Username}`);
-
-      channel.send({ embeds: [musicembed] });
-    });
+  .on('clientDisconnect',(queue) =>{
+    queue.connection.leave();
   })
-  .on("songAdd", async (queue, song) => {
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      if (!data) return;
+  .on("songFirst", async(queue, song) => {
 
-      const channel = client.channels.cache.get(data.Channel);
+   if(song.isFirst){
+    if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
+      const newname = song.name.replace("(Official Video)", "") || song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
 
-      if (!song.isFirst) {
         const embed = new Discord.MessageEmbed()
-          .setTitle(`Track queued`)
-          .setDescription(`[${song.name}](${song.url}) - ${song.duration}`)
-          .setThumbnail(song.thumbnail)
-          .setColor(queue.guild.me.displayColor || "#00FFFF");
-        channel.send({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
-      }
-    });
+        .setColor(client.color.invis)
+        .setTitle('**Now Playing**')
+        .addField("Song Name: ", newname)
+        .addField("Song Duration", song.duration, false)
+        .setThumbnail(song.thumbnail)
+        .setTimestamp()
+        await queue.data.channel.send({embeds:[embed]})
+    }
+  
+
+    else{
+
+      const embed = new Discord.MessageEmbed()
+        .setColor(client.color.invis)
+        .addField("Song Name: ", song.name)
+        .setTitle('**Now Playing**')
+        .addField("Song Duration", song.duration, false)
+        .setThumbnail(song.thumbnail)
+        .setTimestamp()
+      queue.data.channel.send({embeds:[embed]})
+    }
+  }
+    
   })
-  .on("queueEnd", async (queue) => {
-    client.spotify.length = 0;
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      await spotSchema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-        if (!data) return;
-
-        data.delete();
-      });
-
-      if (!data) return;
-
-      const channel = client.channels.cache.get(data.Channel);
-
-      channel.send(`Queue has ended`);
-    });
-  })
-  .on("clientDisconnect", async (queue) => {
-    await musicschema.findOne({ Guild: queue.guild.id }, async (err, data) => {
-      const channel = client.channels.cache.get(data.Channel);
-      if (!data) return;
-      await data.delete();
-
-      channel.send({
-        content: `Disconnected from ${queue.connection.channel}`,
-      });
-    });
-  })
-  .on("channelEmpty", (queue) => {
+  .on("playlist", async (raw, queue,requestedBy) => {
     const embed = new Discord.MessageEmbed()
-      .setColor("BLUE")
-      .setDescription("Everyone left the voice channel so I left!");
-    queue.message.channel.send({ embeds: [embed] });
-  });
+      .setColor(client.color.invis)
+      .setTitle('**Playlist Added**')
+      .addField("Playlist Name: ", raw.name)
+      .addField('Number of Songs', raw.songs)
+      .addField("Song Duration", raw.duration, false)
+      .setThumbnail(raw.thumbnail)
+      .setTimestamp()
+    await queue.data.channel.send({embeds:[embed]})
+
+  })
+  .on("songAdd", async(queue, song) => {
+
+  if(!song.isFirst){
+    if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
+      const newname = song.name.replace("(Official Video)", "") ||song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
+
+        const embed = new Discord.MessageEmbed()
+        .setColor(client.color.invis)
+        .setTitle('**Added Song to Queue**')
+        .addField("Song Name: ", newname)
+        .addField("Song Duration", song.duration, false)
+        .setThumbnail(song.thumbnail)
+        .setTimestamp()
+        await queue.data.channel.send({embeds:[embed]})
+    }
+
+    else{
+      const embed = new Discord.MessageEmbed()
+        .setColor(client.color.invis)
+        .addField("Song Name: ", song.name)
+        .setTitle('**Added Song to Queue**')
+        .addField("Song Duration", song.duration, false)
+        .setThumbnail(song.thumbnail)
+        .setTimestamp()
+        await queue.data.channel.send({embeds:[embed]})
+    }
+    }
+  })
+
 
 client.commands = new Discord.Collection();
 

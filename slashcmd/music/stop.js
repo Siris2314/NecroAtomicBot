@@ -13,7 +13,6 @@ module.exports =  {
 
         queue.stop()
 
-
         interaction.followUp({content:`Stopped Music and Disconnected from ${vc}`})
 
 
