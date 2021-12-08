@@ -20,7 +20,7 @@ module.exports =  {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
  
-        const volume = interaction.options.getNumber('NUMBER')
+        const volume = interaction.options.getNumber('volume')
 
         queue.setVolume(volume)
 

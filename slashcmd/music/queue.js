@@ -15,6 +15,8 @@ module.exports = {
       
         const arr = queue.songs
 
+        const len = queue.songs.length 
+
         let fullqueue =  arr.map((song,id) =>
         `**${id + 1}**. ${song.name} - \`${song.duration}\``
         ).join("\n");
@@ -26,18 +28,7 @@ module.exports = {
             .setFooter(queue.nowPlaying.name)
             .setColor("#F0EAD6")
 
-        if (embed.description.length >= 2048){
-              const newdescription = `${embed.description.substring(0, 2045)}...`;
         
-              const nextpage = new MessageEmbed()
-                  .setTitle(`Queue - page 2`)
-                  .setDescription(newdescription)
-                  .setTimestamp()
-                  .setColor("#F0EAD6")
-                  
-               reactionMenu(interaction, [embed, nextpage]);
-                  
-        }
 
 
 

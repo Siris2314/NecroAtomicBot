@@ -45,11 +45,7 @@ module.exports =  {
        reactionMenu(interaction, [embed, nextpage]);
           
     }
-
-    // interaction.followUp({embeds:[embed]})
-
     
-
 
     }
 }

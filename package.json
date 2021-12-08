@@ -40,6 +40,8 @@
 
     "captcha-canvas": "^3.1.0",
 
+    "chalk": "^5.0.0",
+
     "chartjs-node-canvas": "^4.1.4",
 
     "chatbot-zero": "^1.1.0",

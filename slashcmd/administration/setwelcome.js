@@ -7,7 +7,7 @@ module.exports = {
   permission: "ADMINISTRATOR",
   options: [
     {
-      name: "channel",
+      name: "welcomechannel",
       description: "The channel that posts the message",
       type: "CHANNEL",
       required: true,

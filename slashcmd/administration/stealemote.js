@@ -35,8 +35,6 @@ module.exports = {
         console.log(args)
 
         const parsedEmoji = Util.parseEmoji(args[0]?.value)
-
-        console.log(parsedEmoji)
     
         if(parsedEmoji.id){
             const extension = parsedEmoji.animated ? ".gif" : ".png";

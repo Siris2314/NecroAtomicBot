@@ -8,8 +8,8 @@ const botname = process.env.botname;
 const colors = require("colors");
 const fetch = require("node-fetch");
 const logger = require("./logger");
+const { red, green, blue, yellow, cyan } = require('colors');
 const ascii = require("ascii-table");
-
 const { Captcha } = require("captcha-canvas");
 const captchaSchema = require("./schemas/captcha");
 
@@ -173,9 +173,9 @@ client.slashCommands = new Discord.Collection();
 module.exports = { blacklistedWords, afk, starboardcollection };
 const { Player } = require("discord-music-player");
 const player = new Player(client, {
-  leaveOnEmpty: false,
+  leaveOnEmpty: true,
   deafenOnJoin: true,
-  timeout: 600000,
+  timeout: 60000,
   volume: 100,
 });
 
@@ -201,12 +201,12 @@ player
       const newname = song.name.replace("(Official Video)", "") || song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
 
         const embed = new Discord.MessageEmbed()
-        .setColor(client.color.invis)
-        .setTitle('**Now Playing**')
-        .addField("Song Name: ", newname)
-        .addField("Song Duration", song.duration, false)
-        .setThumbnail(song.thumbnail)
-        .setTimestamp()
+          .setColor(client.color.invis)
+          .setTitle('**Now Playing**')
+          .addField("Song Name: ", newname)
+          .addField("Song Duration", song.duration, false)
+          .setThumbnail(song.thumbnail)
+          .setTimestamp()
         await queue.data.channel.send({embeds:[embed]})
     }
   
@@ -276,11 +276,42 @@ client.embed = async (message, options) => {
 
 client.on("ready", async () => {
   console.log(botname);
-  console.log(`Dashboard launched on port 3000`);
+
+  const loading = String.raw`
+  __         ______   __    __  __    __   ______   __    __  ______  __    __   ______  
+ /  |       /      \ /  |  /  |/  \  /  | /      \ /  |  /  |/      |/  \  /  | /      \ 
+ $$ |      /$$$$$$  |$$ |  $$ |$$  \ $$ |/$$$$$$  |$$ |  $$ |$$$$$$/ $$  \ $$ |/$$$$$$  |
+ $$ |      $$ |__$$ |$$ |  $$ |$$$  \$$ |$$ |  $$/ $$ |__$$ |  $$ |  $$$  \$$ |$$ | _$$/ 
+ $$ |      $$    $$ |$$ |  $$ |$$$$  $$ |$$ |      $$    $$ |  $$ |  $$$$  $$ |$$ |/    |
+ $$ |      $$$$$$$$ |$$ |  $$ |$$ $$ $$ |$$ |   __ $$$$$$$$ |  $$ |  $$ $$ $$ |$$ |$$$$ |
+ $$ |_____ $$ |  $$ |$$ \__$$ |$$ |$$$$ |$$ \__/  |$$ |  $$ | _$$ |_ $$ |$$$$ |$$ \__$$ |
+ $$       |$$ |  $$ |$$    $$/ $$ | $$$ |$$    $$/ $$ |  $$ |/ $$   |$$ | $$$ |$$    $$/ 
+ $$$$$$$$/ $$/   $$/  $$$$$$/  $$/   $$/  $$$$$$/  $$/   $$/ $$$$$$/ $$/   $$/  $$$$$$/  
+                                                                                                                                                                                      
+`;
   try {
     let slash = [];
     let table = new ascii("Slash commands");
     console.log("Slash Commands Loaded");
+    console.log(red(`Starting ${client.user.tag}, hold on ...`))
+    console.log(red(loading))
+    const prefix = "!necro";
+    console.log(``);
+    console.log(green(`                                                    An Ok Bot`));
+    console.log(``);
+    console.log(``);
+    console.log(yellow('               + ================================================================================== +'));
+    console.log(cyan(`                                [i] :: ${prefix} help                :: Displays commands.                   `));
+    console.log(cyan(`                                [i] :: ${prefix} ping                :: Displays bots ping.                  `));
+    console.log(yellow('               + ================================Commands========================================== +'));
+    console.log(cyan(`                       Author   [i] :: Programmed by [Arihant Tripathi]    :: © 2021 Necro Development                   `));
+    console.log(cyan(`                       Bot info [i] :: Status                       :: ✅ Online                           `));
+    console.log(cyan(`                       Users    [i] ::                              :: ${client.users.cache.size}  Users   `));
+    console.log(cyan(`                       Guilds   [i] ::                              :: ${client.guilds.cache.size} Guilds  `));
+
+
+    
+console.log(red("Press [CTRL + C] to stop the Terminal ..."))
     fs.readdirSync("./slashcmd/").forEach((dir) => {
       const commands = fs
         .readdirSync(`./slashcmd/${dir}/`)
@@ -314,6 +345,7 @@ client.on("ready", async () => {
       useFindAndModify: true,
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      autoIndex: false,
     })
     .then(console.log("Connected to Mongo"));
 
@@ -353,7 +385,8 @@ client.on("ready", async () => {
   setInterval(() => {
     if (index == arrayOfStatus.length) index = 0;
     const status = arrayOfStatus[index];
-    client.user.setActivity(status);
+    client.user.setActivity('Helping Out', { type: 'WATCHING' });
+    client.user.setPresence({ activities: [{ name: status }], status: 'dnd' });
     index++;
   }, 5000);
 });
