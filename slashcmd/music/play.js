@@ -17,6 +17,9 @@ module.exports =  {
     ],
 
     run: async(client, interaction) => {
+
+
+    try{
         const vc = interaction.member.voice.channel
 
         if(!vc) return interaction.followUp({content:'Must be in VC to play command'})
@@ -45,6 +48,10 @@ module.exports =  {
         });
         interaction.followUp({content:'Queueing your songs......'})
     }
+
+    }catch(e){
+        return interaction.followUp({content:'Failed To Play Song, Error Code 403'})
+  } 
 
 
     
