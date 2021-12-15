@@ -4,8 +4,7 @@
 
 
 # **Welcome to the All-New NecroAtomic Bot**
-![version](https://img.shields.io/github/package-json/v/Siris2314/NecroAtomicBot) ![stars](https://img.shields.io/github/stars/Siris2314/NecroAtomicBot?color=yellow) ![forks](https://img.shields.io/github/forks/Siris2314/NecroAtomicBot) ![repo size](https://img.shields.io/github/repo-size/Siris2314/NecroAtomicBot) ![top-language](https://img.shields.io/github/languages/top/Siris2314/NecroAtomicBot)
-
+![version](https://img.shields.io/github/package-json/v/Siris2314/NecroAtomicBot) ![stars](https://img.shields.io/github/stars/Siris2314/NecroAtomicBot?color=yellow) ![forks](https://img.shields.io/github/forks/Siris2314/NecroAtomicBot)
    #### NecroAtomic Bot is a multipurpose bot made to cut the plethora of bots that exist on discord servers, it encapsulates a ton of features into one powerful bot made by a user for users. Currently their exists nine category of commands:
                
                - Moderation: Server Moderation and Setup Commands(Will be split into a new category called Server Setup at a later date)
