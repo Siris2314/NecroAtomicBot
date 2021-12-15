@@ -1,4 +1,7 @@
-![image](https://user-images.githubusercontent.com/25334323/126577098-0970905b-6721-4609-8289-4fbad4732eae.png)
+<p align="center">
+  <img width="700" alt="image" src="https://user-images.githubusercontent.com/25334323/126577098-0970905b-6721-4609-8289-4fbad4732eae.png">
+</p>
+
 
 # **Welcome to the All-New NecroAtomic Bot**
 ![version](https://img.shields.io/github/package-json/v/Siris2314/NecroAtomicBot) ![stars](https://img.shields.io/github/stars/Siris2314/NecroAtomicBot?color=yellow) ![forks](https://img.shields.io/github/forks/Siris2314/NecroAtomicBot) ![repo size](https://img.shields.io/github/repo-size/Siris2314/NecroAtomicBot) ![top-language](https://img.shields.io/github/languages/top/Siris2314/NecroAtomicBot)
