@@ -201,46 +201,6 @@ module.exports = (c) => {
         )
       );
     });
-    // c.on("guildMemberUpdate", function(oldMember, newMember){
-    //     let options = {}
-
-    //   if (options[newMember.guild.id]) {
-    //       options = options[newMember.guild.id]
-    //   }
-
-    //   if (typeof options.excludedroles === "undefined") options.excludedroles = new Array([])
-    //   if (typeof options.trackroles === "undefined") options.trackroles = true
-    //   const oldMemberRoles = oldMember.roles.cache.keyArray()
-    //   const newMemberRoles = newMember.roles.cache.keyArray()
-    //   const oldRoles = oldMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !newMemberRoles.includes(x))
-    //   const newRoles = newMemberRoles.filter(x => !options.excludedroles.includes(x)).filter(x => !oldMemberRoles.includes(x))
-    //   const rolechanged = (newRoles.length || oldRoles.length)
-
-    //   if (rolechanged) {
-    //       let roleadded = ""
-    //       if (newRoles.length > 0) {
-    //           for (let i = 0; i < newRoles.length; i++) {
-    //               if (i > 0) roleadded += ", "
-    //               roleadded += `<@&${newRoles[i]}>`
-    //           }
-    //       }
-    //       let roleremoved = ""
-    //       if (oldRoles.length > 0) {
-    //           for (let i = 0; i < oldRoles.length; i++) {
-    //               if (i > 0) roleremoved += ", "
-    //               roleremoved += `<@&${oldRoles[i]}>`
-    //           }
-    //       }
-    //       let text = `${roleremoved ? `❌ ROLE REMOVED: \n${roleremoved}` : ""}${roleadded ? `✅ ROLE ADDED:\n${roleadded}` : ""}`
-    //       send_log(c,
-    //         oldMember.guild,
-    //         `${roleadded ? "GREEN" : "RED"}`,
-    //         "Member ROLES Changed",
-    //         `Member: ${newMember.user}\nUser: \`${oldMember.user.tag}\`\n\n${text}`,
-    //         )
-    //   }
-
-    // })
     c.on("messageDelete", function (message) {
       if (message.author == null || message.author.bot) return;
       if (!message.channel.type == "GUILD_TEXT") return;
@@ -467,7 +427,6 @@ module.exports = (c) => {
 
     c.on("threadDelete", function (thread) {
       const guild = thread.guild;
-
       const member = guild.members.cache.get(thread.ownerId);
 
       const archive = thread.autoArchiveDuration / 60;
@@ -475,12 +434,6 @@ module.exports = (c) => {
       const name = thread.name;
 
       const parent = thread.parent;
-
-      if (thread.locked) {
-        locked = "Thread is Locked";
-      } else {
-        locked = "Thread is not Locked";
-      }
 
       send_log(
         c,

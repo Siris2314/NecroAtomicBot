@@ -1,0 +1,24 @@
+{
+	"channel": [
+		{
+			"nativeName": "Chillsky",
+			"name": "chillsky",
+			"uri": "http://188.165.237.19:8043/autodj"
+		},
+		{
+			"nativeName": "Radio Art - Jazz Piano",
+			"name": "radioartjazz",
+			"uri": "http://air-tunein.radioart.com/fJazz_piano.mp3"
+		},
+		{
+			"nativeName": "Smooth Jazz 24/7",
+			"name": "smoothjazz247",
+			"uri": "http://edge1.peta.live365.net/b75154_128mp3"
+		},
+		{
+			"nativeName": "MEGATON CAFE RADIO",
+			"name": "megatoncafe",
+			"uri": "http://us2.internet-radio.com:8443/stream"
+		}
+	]
+}
