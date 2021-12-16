@@ -1,3 +1,18 @@
+//Discord Client,with all intents and permissions set 
+const Discord = require("discord.js");
+const client = new Discord.Client({
+  partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
+  intents: 32767,
+  allowedMentions: {
+    parse: ["users", "roles"],
+    repliedUser: false,
+  },
+  restTimeOffset: 0,
+});
+
+
+
+/* All Module Imports for the Bot */
 require("dotenv").config();
 const token = process.env.token;
 const mongoPath = process.env.mongoPath;
@@ -12,22 +27,16 @@ const { red, green, blue, yellow, cyan } = require('colors');
 const ascii = require("ascii-table");
 const { Captcha } = require("captcha-canvas");
 const captchaSchema = require("./schemas/captcha");
-
+const { table } = require("table");
 const giveawaySchema = require("./schemas/giveaways");
-
-
-
 const buttonrr = require("./schemas/buttonrr");
-
 const antiraid = require("./schemas/antiraid");
 const ownerID = process.env.ownerid;
 const { format } = require("./functions2");
 const axios = require("axios");
 const counterSchema = require("./schemas/count");
-const Discord = require("discord.js");
 const path = require("path");
 const nsfwschema = require("./schemas/nsfw");
-
 const { GiveawaysManager } = require("discord-giveaways");
 const deepai = require("deepai");
 const banner = "./assets/bot_long_banner.png";
@@ -35,33 +44,6 @@ require("dotenv").config();
 const nsfwtoken = process.env.nsfw;
 deepai.setApiKey(nsfwtoken);
 const starboardSchema = require("./schemas/starboard");
-const client = new Discord.Client({
-  partials: ["CHANNEL", "MESSAGE", "GUILD_MEMBER", "REACTION"],
-  intents: [
-    Discord.Intents.FLAGS.GUILDS,
-    Discord.Intents.FLAGS.GUILD_MEMBERS,
-    Discord.Intents.FLAGS.GUILD_BANS,
-    Discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-    Discord.Intents.FLAGS.GUILD_WEBHOOKS,
-    Discord.Intents.FLAGS.GUILD_INVITES,
-    Discord.Intents.FLAGS.GUILD_VOICE_STATES,
-    Discord.Intents.FLAGS.GUILD_PRESENCES,
-    Discord.Intents.FLAGS.GUILD_MESSAGES,
-    Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Discord.Intents.FLAGS.GUILD_MESSAGE_TYPING,
-    Discord.Intents.FLAGS.DIRECT_MESSAGES,
-    Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-    Discord.Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-  ],
-  allowedMentions: {
-    parse: ["users", "roles"],
-    repliedUser: false,
-  },
-  restTimeOffset: 0,
-});
-
-
 const fs = require("fs");
 const afk = new Discord.Collection();
 const antiscam = require("./schemas/antiscam");
@@ -71,74 +53,8 @@ const Levels = require("discord-xp");
 const glob = require("glob");
 const { promisify } = require("util");
 const globPromise = promisify(glob);
-
-
-
 const welcomeMessage = require('./schemas/welcomeMessage')
-
-
-
 const { VoiceClient } = require("djs-voice");
-
-const voiceClient = new VoiceClient({
-  allowBots: false,
-  client: client,
-  debug: false,
-  mongooseConnectionString: mongoPath,
-});
-
-const Dashboard = require("discord-easy-dashboard");
-
-const dashboard = new Dashboard(client, {
-  name: "NecroAtomicBot",
-  description:
-    "A powerful discord bot that allows for secure moderation of discord servers, while also providing other features such as music and utility commands",
-  serverUrl: "https://discord.gg/jY8Esuxfh9",
-  secret: process.env.secret,
-});
-
-client.dashboard = dashboard;
-
-const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
-  async getAllGiveaways() {
-    return await giveawaySchema.find().lean().exec();
-  }
-
-  async saveGiveaway(messageId, giveawayData) {
-    await giveawaySchema.create(giveawayData);
-
-    return true;
-  }
-
-  async editGiveaway(messageId, giveawayData) {
-    await giveawaySchema
-      .updateOne({ messageId }, giveawayData, { omitUndefined: true })
-      .exec();
-
-    return true;
-  }
-
-  async deleteGiveaway(messageId) {
-    await giveawaySchema.deleteOne({ messageId }).exec();
-
-    return true;
-  }
-};
-
-const manager = new GiveawaysManager(client, {
-  default: {
-    botsCanWin: false,
-    embedColor: "#FF0000",
-    embedColorEnd: "#000000",
-    reaction: "🎉",
-  },
-});
-
-client.giveawaysManager = manager;
-
-client.vcclient = voiceClient;
-Levels.setURL(mongoPath);
-
 const afkschema = require("./schemas/afk");
 
 client.snipes = new Discord.Collection();
@@ -170,8 +86,81 @@ const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 
-module.exports = { blacklistedWords, afk, starboardcollection };
-const { Player } = require("discord-music-player");
+
+//VoiceClient for the Voice Channel Leveling System
+const voiceClient = new VoiceClient({
+  allowBots: false, //Bots Will Not Be Counted
+  client: client, //Discord Client
+  debug: false,
+  mongooseConnectionString: mongoPath, //Mongo Database Connection
+});
+
+
+//Giveaway System, that uses a Mongo Database to Store Giveaways for a Server
+const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
+
+
+  //Function that returns all current Giveaways for a Server
+  async getAllGiveaways() {
+    return await giveawaySchema.find().lean().exec();
+  }
+
+  //Saves a Giveaway for a Server to the database
+  async saveGiveaway(messageId, giveawayData) {
+    await giveawaySchema.create(giveawayData);
+
+    return true;
+  }
+
+
+  //Edits an ongoing giveaway
+  async editGiveaway(messageId, giveawayData) {
+    await giveawaySchema
+      .updateOne({ messageId }, giveawayData, { omitUndefined: true })
+      .exec();
+
+    return true;
+  }
+
+  //Remove a Giveaway from the database
+  async deleteGiveaway(messageId) {
+    await giveawaySchema.deleteOne({ messageId }).exec();
+
+    return true;
+  }
+};
+
+//Set's the Giveaway Manager with Deafult Settings
+const manager = new GiveawaysManager(client, {
+  default: {
+    botsCanWin: false,
+    embedColor: "#FF0000",
+    embedColorEnd: "#000000",
+    reaction: "🎉",
+  },
+});
+
+
+client.giveawaysManager = manager; //Global Giveaway Variable
+
+client.vcclient = voiceClient; //Global Voice Leveling System Variable
+
+
+client.commands = new Discord.Collection(); //Message Commands Collection
+
+
+
+client.color = require('./colors.json') //Global Variable for Color JSON for ease of access to multiple colors
+
+
+Levels.setURL(mongoPath); //Connection to the Mongo Database for Leveling System
+
+
+module.exports = { blacklistedWords, afk, starboardcollection }; //Exporting Discord Collections for Usage Outside of Main File
+
+
+const { Player } = require("discord-music-player"); //Import Music Player Client 
+
 const player = new Player(client, {
   leaveOnEmpty: true,
   deafenOnJoin: true,
@@ -179,24 +168,35 @@ const player = new Player(client, {
   volume: 100,
 });
 
+
+
+//Global Variable for Music Bot
 client.player = player;
 
-client.color = require('./colors.json')
-
+//Events for the Music Bot
 player
+  
+  //Event for When Only Bot is Present in Voice Channel
   .on("channelEmpty", async (queue) => {
     queue.connection.leave();
     queue.data.channel.send("Left Channel as no one was with me");
   })
+
+  //Event for when Music Queue is Manually Shut Down
   .on("queueDestroyed", async (queue) => {
     queue.connection.leave();
   })
+
+  //Event for When Music Client is Manually Stopped/Destroyed
   .on('clientDisconnect',(queue) =>{
     queue.connection.leave();
   })
-  .on("songFirst", async(queue, song) => {
 
+  //Event for the First Song in the Queue
+  .on("songFirst", async(queue, song) => {
    if(song.isFirst){
+
+    //Removes Tags from YouTube Music Videos
     if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
       const newname = song.name.replace("(Official Video)", "") || song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
 
@@ -212,7 +212,6 @@ player
   
 
     else{
-
       const embed = new Discord.MessageEmbed()
         .setColor(client.color.invis)
         .addField("Song Name: ", song.name)
@@ -225,6 +224,8 @@ player
   }
     
   })
+
+  //Event for When a YouTube or Spotify Playlist is added to the queue
   .on("playlist", async (raw, queue,requestedBy) => {
     const embed = new Discord.MessageEmbed()
       .setColor(client.color.invis)
@@ -237,6 +238,8 @@ player
     await queue.data.channel.send({embeds:[embed]})
 
   })
+
+  //Events for when a Song is Added to the queue
   .on("songAdd", async(queue, song) => {
 
   if(!song.isFirst){
@@ -265,18 +268,58 @@ player
     }
     }
   })
+//End Of Music Bot Stuff
 
 
-client.commands = new Discord.Collection();
-
+//Embed Generator that makes Embeds easier to use
 client.embed = async (message, options) => {
   const embed = new Discord.MessageEmbed(options);
   message.channel.send({ embeds: [embed] });
 };
 
+
+//Ready Event
 client.on("ready", async () => {
+
+  /* Just a Bunch of Decorative Stuff for my terminal */
+  const data = [
+    ["LOGGED IN AS", `${red(client.user.tag)}`, "The bot that I am logged in as."],
+    ["SERVERS", `${yellow(client.guilds.cache.size.toLocaleString())}`, "The amount of servers that I am in."],
+    ["USERS", `${green(client.users.cache.size.toLocaleString())}`, "The amount of users using my commands."],
+    ["COMMANDS", `${cyan(client.commands.size.toLocaleString())}`, "Commands Loaded"]
+  ]
+  
+  //Table Setup for my Terminal
+  const config = {
+    border: {
+      topBody: `─`,
+      topJoin: `┬`,
+      topLeft: `┌`,
+      topRight: `┐`,
+  
+      bottomBody: `─`,
+      bottomJoin: `┴`,
+      bottomLeft: `└`,
+      bottomRight: `┘`,
+  
+      bodyLeft: `│`,
+      bodyRight: `│`,
+      bodyJoin: `│`,
+  
+      joinBody: `─`,
+      joinLeft: `├`,
+      joinRight: `┤`,
+      joinJoin: `┼`
+    }, 
+    header: {
+      alignment: 'center',
+      content: "CLIENT DATA"
+    }
+  };
+  console.log(table(data, config))
   console.log(botname);
 
+  //Random Ascii Art
   const loading = String.raw`
   __         ______   __    __  __    __   ______   __    __  ______  __    __   ______  
  /  |       /      \ /  |  /  |/  \  /  | /      \ /  |  /  |/      |/  \  /  | /      \ 
@@ -312,34 +355,41 @@ client.on("ready", async () => {
 
     
 console.log(red("Press [CTRL + C] to stop the Terminal ..."))
-    fs.readdirSync("./slashcmd/").forEach((dir) => {
+
+
+//Slash Command Registration
+fs.readdirSync("./slashcmd/").forEach((dir) => {
+
+      //Read From Files in Slash Command Directory
       const commands = fs
         .readdirSync(`./slashcmd/${dir}/`)
         .filter((file) => file.endsWith(".js"));
 
+      //Loop through each file and load
       for (let file of commands) {
         let pull = require(`./slashcmd/${dir}/${file}`);
 
+        //Condition to Make Sure Slash Command has a name set to it
         if (pull.name) {
+
+          //Set SlashCommands to Collection
           client.slashCommands.set(pull.name, pull);
-          slash.push(pull);
-          table.addRow(file, "✅");
+          slash.push(pull);  //Push Files to Slash Command Array
+          table.addRow(file, "✅"); //Add a Check for Each Slash Command Registered
         } else {
-          table.addRow(file, `❌  -> missing command parameters`);
+          table.addRow(file, `❌  -> missing command parameters`); //Add a X for Each Slash Command Missing
           continue;
         }
       }
     });
-    console.log(table.toString());
-    client.slashCommands.forEach((command) => {
-      client.dashboard.registerCommand(command.name, command.description);
-    });
-
-    await client.application.commands.set(slash);
+    console.log(table.toString()); //Log the Table in Terminal
+    await client.application.commands.set(slash); //Register the slash commands
   } catch (error) {
     console.log(error);
   }
 
+
+  //Mongo Database Registration
   await mongoose
     .connect(mongoPath, {
       useFindAndModify: true,
@@ -347,33 +397,42 @@ console.log(red("Press [CTRL + C] to stop the Terminal ..."))
       useNewUrlParser: true,
       autoIndex: false,
     })
-    .then(console.log("Connected to Mongo"));
+    .then(console.log("Connected to Mongo")); //Prompt when Connection to Mongo is Successful
 
-  if (!mongoPath) return;
+  if (!mongoPath) return; //If Mongo Path is not set, continue
 
+
+
+
+  //Bad Word System Configuration
   blacklistSchema.find().then((data) => {
+    //Loop Through Bad Word Data for Server and Set it to the BlacklistWords Collection
     data.forEach((val) => {
       blacklistedWords.set(val.Guild, val.Words);
     });
   });
+
+  //Member Count Channel Registration
   setInterval(() => {
     countSchema.find().then((data) => {
       if (!data && !data.length) return;
       data.forEach((value) => {
-        const guild = client.guilds.cache.get(value.Guild);
-        const memberCount = guild.memberCount;
-        if (value.Member != memberCount) {
-          const channel = guild.channels.cache.get(value.Channel);
+        const guild = client.guilds.cache.get(value.Guild); // Retrieve Server From Databse
+        const memberCount = guild.memberCount; //Retrieve Current Server Member Count
+        if (value.Member != memberCount) { //If Member Count is not equal to the one in the Database
+          const channel = guild.channels.cache.get(value.Channel); //Retrieve Channel from Database
 
-          channel.setName(`Members: ${memberCount}`);
+          channel.setName(`Members: ${memberCount}`); //Update Member Count
 
-          value.Member = memberCount;
-          value.save();
+          value.Member = memberCount; //Update Member Count in Database
+          value.save(); 
         }
       });
     });
   }, ms("15 Minutes"));
 
+
+  //Bot Activity List
   const arrayOfStatus = [
     `Multi-Purpose Bot`,
     `Watching Over Everyone`,
@@ -381,12 +440,14 @@ console.log(red("Press [CTRL + C] to stop the Terminal ..."))
     "/help for slash commands",
   ];
 
+
+  //Changinging Bot Status Randomly Every 5 Seconds
   let index = 0;
   setInterval(() => {
     if (index == arrayOfStatus.length) index = 0;
     const status = arrayOfStatus[index];
-    client.user.setActivity('Helping Out', { type: 'WATCHING' });
-    client.user.setPresence({ activities: [{ name: status }], status: 'dnd' });
+    client.user.setActivity('Helping Out', { type: 'WATCHING' }); //Set to Watching Prescence
+    client.user.setPresence({ activities: [{ name: status }], status: 'dnd' }); //Set Do Not Disturb Status
     index++;
   }, 5000);
 });
@@ -395,6 +456,7 @@ client.once("disconnect", () => {
   console.log("Disconnect");
 });
 
+//RPC Token for Local Usage
 // rpc.on('ready', () => {
 //     rpc.setActivity({
 //         details: 'Working',
@@ -414,20 +476,29 @@ client.once("disconnect", () => {
 //     clientId: rpctoken
 // });
 
-var welcome = {};
-welcome.create = Canvas.createCanvas(1024, 500);
-welcome.context = welcome.create.getContext("2d");
-welcome.context.font = "72px sans-serif";
-welcome.context.fillStyle = "#ffffff";
 
-Canvas.loadImage("./assets/background.jpg").then(async (img) => {
-  welcome.context.drawImage(img, 0, 0, 1024, 500);
+//Welcome Image Creation for The Welcome Image System
+var welcome = {};
+welcome.create = Canvas.createCanvas(1024, 500); //Uses Canvas to Create a 1024x500 Image
+welcome.context = welcome.create.getContext("2d"); //Set the Image Context to 2d, so we can create the image
+welcome.context.font = "72px sans-serif"; //Setting Font on Image
+welcome.context.fillStyle = "#ffffff"; //Setting the Font Color Style
+
+Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Background image from the assets folder 
+
+  /*
+  * Drawing on the Background Image itself, making sure there is space to draw the avatar of the user joining and the text on top of the image
+  * Fills in the color and font set earlier on the image
+  */
+  welcome.context.drawImage(img, 0, 0, 1024, 500); 
   welcome.context.fillText("Welcome", 360, 360);
   welcome.context.beginPath();
   welcome.context.arc(512, 166, 128, 0, Math.PI * 2, true);
   welcome.context.fill();
 });
 
+
+//Anti-Crash System that I use from time to time
 // process.on("unhandledRejection", (reason, p) => {
 //     console.log(" [antiCrash] :: Unhandled Rejection/Catch");
 //     // console.log(reason, p);
@@ -445,20 +516,30 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => {
 //     // console.log(type, promise, reason);
 // });
 
+
+//Message Event
 client.on("messageCreate", async (message) => {
   if (!message.guild || message.author.bot) {
     return;
   }
 
+  //Not Quite Nitro System
+
+  //Random Function that Helps With Getting Ids of Emojis a lot of easier
   function randomNumber(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  //Check to see if the message content itself is an emoji, hence starts and ends with a :
   if (message.content.startsWith(":") && message.content.endsWith(":")) {
+
+    //Find the Emoji itself
     let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g);
     if (!emojis) return;
+
+    //Loop Through All Possible Emoji's with the name and see which Server it was sent in
     emojis.forEach((m) => {
       let emoji = client.emojis.cache.find((x) => x.name === m);
       if (!emoji) return;
@@ -475,6 +556,7 @@ client.on("messageCreate", async (message) => {
         );
     });
 
+    //Create a Webhook for the emoji itself, that way a user without Nitro can still use it
     let webhook = await message.channel.fetchWebhooks();
     let number = randomNumber(1, 2);
     webhook = webhook.find((x) => x.name === "NQN" + number);
@@ -501,13 +583,15 @@ client.on("messageCreate", async (message) => {
     });
   }
 
-  const randomXP = Math.floor(Math.random() * 29) + 1;
+  //User Message Level System
+  const randomXP = Math.floor(Math.random() * 29) + 1; //Random XP Value between 1 and 29 that will be given on each message sent by a user in the server
   const hasLeveledUp = await Levels.appendXp(
     message.author.id,
     message.guild.id,
     randomXP
-  );
+  ); //Appends and Saves XP to the Database Upon Each User Leveling Up
 
+  //FxTwitter System for a Personal Server
   if (
     message.content.includes("https://twitter.com/") &&
     message.guild.id === "684462232679219242"
@@ -519,20 +603,29 @@ client.on("messageCreate", async (message) => {
     message.channel.send({ content: newstr });
   }
 
+  //Anti-Scam Link System that uses a Database to Retrieve Punishments Set by Admins for Sending Scam Links
   await antiscam.findOne({ Guild: message.guild.id }, async (err, data) => {
-    if (!data) return;
+    if (!data) return; //If Anti-Scam Link was not set, do nothing
+ 
+    const punishment = String(data.Punishment); //Get The Punishment Set by the Admin
 
-    const punishment = String(data.Punishment);
+    //Loop Through the JSON File of UnSafe Links and see if any user has sent them
     unsafe.forEach(async (item) => {
       if (message.content === item || message.content.startsWith(item)) {
-        message.delete();
-        const Member = await message.guild.members.fetch(message.author.id);
-        message.channel.send(`Scam link sent by ${message.author.username}`);
 
+        message.delete(); //Remove The Message Immediately if done so
+
+        const Member = await message.guild.members.fetch(message.author.id); //Find the Person who sent the message
+
+        message.channel.send(`Scam link sent by ${message.author.username}`); //Alert in the channel itself who sent the scam link
+
+        //If the punishment is to mute the user
         if (punishment === "mute") {
           const role = message.guild.roles.cache.find(
             (role) => role.name.toLowerCase() === "muted"
-          );
+          ); //Find Muted Role in the Server 
+
+          //If no muted Role, create one
           if (!role) {
             try {
               message.channel.send({
@@ -553,7 +646,7 @@ client.on("messageCreate", async (message) => {
                     SEND_MESSAGES: false,
                     ADD_REACTIONS: false,
                   });
-                });
+                }); //Set Muted Perms, to allow the user to not send messages and react to messages in all text channels
               message.channel.send({
                 content: "Muted role has sucessfully been created.",
               });
@@ -561,16 +654,29 @@ client.on("messageCreate", async (message) => {
               console.log(error);
             }
           }
+
+          //Find the Muted Role in the Server
           let role2 = message.guild.roles.cache.find(
             (r) => r.name.toLowerCase() === "muted"
           );
+
+          //If the User has already been muted, do nothing, send message that they are already muted
           if (Member.roles.cache.has(role2.id))
             return message.channel.send({
               content: `${Member.displayName} has already been muted.`,
             });
+
+          //Else Give User Muted role, hence muting them
           await Member.roles.add(role2);
-        } else if (punishment === "warn") {
+
+        } 
+        //If the punshment is to warn the user
+        else if (punishment === "warn") {
+
+          //Set Reason for Warning
           const reason = "Sending Scam Links";
+
+          //Send the Warning to the User
           Member.send({
             embeds: [
               new MessageEmbed()
@@ -578,8 +684,12 @@ client.on("messageCreate", async (message) => {
                 .setDescription(`${reason}`),
             ],
           });
-        } else if (punishment === "ban") {
-          Member.ban({ reason: "Sending Scam Links" });
+        } 
+        //If the punishment is to ban the user
+        else if (punishment === "ban") {
+          Member.ban({ reason: "Sending Scam Links" }); //Ban the User, with reasoning of Sending Scam Links
+
+          //Send a more detailed explanation to user
           Member.send({
             embeds: [
               new MessageEmbed()
@@ -587,8 +697,13 @@ client.on("messageCreate", async (message) => {
                 .setDescription(`Sending Scam Links`),
             ],
           });
-        } else if (punishment === "kick") {
-          Member.kick({ reason: "Sending Scam Links" });
+        
+      } 
+       //If the punishment is to kick the user
+        else if (punishment === "kick") {
+          Member.kick({ reason: "Sending Scam Links" }); //Kick the User, with reasoning of Sending Scam Links
+
+          //Send a more detailed explanation to user
           Member.send({
             embeds: [
               new MessageEmbed()
@@ -601,32 +716,47 @@ client.on("messageCreate", async (message) => {
     });
   });
 
+
+
+  //Anti-Invite System
   await inviteschema.findOne(
     { Server: message.guild.id },
     async (err, data) => {
-      if (!data) return;
+      if (!data) return; //If No Invite System is set, do nothing
+
+      //Find Server that is Stored in Database
       if (data.Server === message.guild.id) {
+
         const InviteLinks = [
           "discord.gg/",
           "discord.com/invite/",
           "discordapp.com/invite/",
-        ];
+        ]; //Types of Discord Server Invite Links
 
+        //Check to see if one of the Invite Links is in the message
         if (
           InviteLinks.some((link) =>
             message.content.toLowerCase().includes(link)
           )
         ) {
+
+          //Decode the User code out of the Invite Link
           const UserCode = message.content.split(
             "discord.gg/" || "discord.com/invite/" || "discordapp.com/invite/"
           )[1];
+
+          //Fetch Invites Sent in the Server
           message.guild.fetchInvites().then((invites) => {
             let InviteArray = [];
             for (let inviteCode of invites) {
               InviteArray.push(inviteCode[0]);
             }
+
+            //Check to see if the User Code is in the Invite Array, if it is, do nothing, if not its an outside server Invite
             if (!InviteArray.includes(UserCode)) {
-              message.delete();
+
+              message.delete(); //Delete The Message Upon Getting An Outside Server Invite
+
               return message.channel.send({
                 content: "Please do not send links to other servers",
               });
@@ -637,52 +767,67 @@ client.on("messageCreate", async (message) => {
     }
   );
 
-  const splittedMsgs = message.content.split(" ");
+  const splittedMsgs = message.content.split(" "); //Split message into arrat of words
 
-  let deleting = false;
+  let deleting = false; //Set Auto-Deletion to False
 
   await Promise.all(
     splittedMsgs.map((content) => {
       if (
-        blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase())
+        blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase()) // If The Message Contains Any Blacklisted Word set by Server
       )
-        deleting = true;
+        deleting = true; //Set Auto-Deletion to True
     })
   );
 
-  if (deleting) return message.delete();
+  if (deleting) return message.delete(); //Delete Message if Auto Deletion is set to True
 
+  //Counting game system, that tracks the current number via a Database
   await counterSchema.findOne(
     { Guild: message.guild.id },
     async (err, data) => {
+
+      //If No Counting Game is Set, Do Nothing
       if (data == null) return;
+
       if (message.channel.id !== data.Channel) return;
 
-      let number = parseInt(message.content);
-      let current = parseInt(data.Count);
-      if (!isNaN(number)) {
-        if (message.author.id == data.UserID) {
-          data.Count = 0;
-          await data.save();
-          message.react("❌");
-          data.UserID = null;
-          await data.save();
+      let number = parseInt(message.content); //Convert the current Message from a String to an Integer
+
+      let current = parseInt(data.Count); //Convert the Current Number from a String to an Integer
+
+      if (!isNaN(number)) { 
+
+        if (message.author.id == data.UserID) { //If the next Number sent is by the same user
+
+          data.Count = 0; //Reset Game to 0
+
+          await data.save(); //Save Data in Database
+
+          message.react("❌"); //React with Error
+
+          data.UserID = null; //Reset User ID in Database to Null
+
+          await data.save(); //Save Data in Database
+
           return message.channel.send({
             content: `${message.author.username} has messed it up, stopped at ${
               number - 1
             } ,resetting game to start at 1`,
-          });
-        } else {
-          if (number == current + 1) {
-            data.Count = data.Count + 1;
-            data.UserID = message.author.id;
+          }); 
+        } else { //Different User Sent a Number
+          if (number == current + 1) { //Checks to see if number sent is one greater than the current number
+            data.Count = data.Count + 1; //Set the new number in the database
+            data.UserID = message.author.id; //Set the user's ID to the database
+            await data.save(); 
+            message.react("✅"); //React with Success
+          } 
+          
+          else { //Number Sent is not one greater than the current number
+            data.Count = 0; //Reset Game to 0
+            data.UserID = null; //Reset User ID in Database
             await data.save();
-            message.react("✅");
-          } else {
-            data.Count = 0;
-            data.UserID = null;
-            await data.save();
-            message.react("❌");
+            message.react("❌"); 
             message.channel.send({
               content: `${message.author.username} has messed it up, stopped at ${current} ,resetting game to start at 1`,
             });
@@ -692,41 +837,60 @@ client.on("messageCreate", async (message) => {
     }
   );
 
+
+
+  //Ghost Ping Detector
   await ghostpingschema.findOne(
     { Guild: message.guild.id },
     async (err, data) => {
+      //If System is not enabled, do nothig
       if (!data || data.Guild == null) return;
+
+      //If no user is ping, do nothing
       if (!message.mentions.members.first()) return;
+
+      //If the user pings itself, do nothing
       if (message.mentions.members.first().id === message.author.id) return;
+
+      //Ghost Ping Timer
       const time = 50000;
 
+      //Set the GhostPing into the Ghost-Ping Collection, with the ID of user who pinged
       if (message.guild.id === data.Guild) {
         Pings.set(
           `pinged:${message.mentions.members.first().id}`,
           Date.now() + time
-        );
-
+        ); 
+        
+        //Delete the Ghost-Ping after the timer has passed
         setTimeout(() => {
           Pings.delete(`pinged:${message.mentions.members.first().id}`);
-        }, time);
+        }, time); 
       }
     }
   );
-
+  
+  //Ant-NSFW System
   if (message.attachments.first()) {
     await nsfwschema.findOne(
       { Server: message.guild.id },
       async (err, data) => {
-        if (!data || !data.Server == null) return;
 
-        const image = message.attachments.first().url;
+        //If No NSFW System is Set, Do Nothing
+        if (!data || !data.Server == null) return;
+ 
+        const image = message.attachments.first().url; //Get the first image sent in the channel by a user
 
         let response = await deepai.callStandardApi("nsfw-detector", {
           image: image,
-        });
-        const score = response.output.nsfw_score;
+        }); //Get the DeepAi NSFW Detection Method
+
+        const score = response.output.nsfw_score; //Record Probability of NSFW Score
+
 
         if (score + 0.2 >= 0.5) {
+
+          //If Score Meets the Threshold, delete the image
           message.delete();
           message.channel.send({ content: "NO NSFW Images allowed" });
         }
@@ -734,13 +898,20 @@ client.on("messageCreate", async (message) => {
     );
   }
 
+
+  //Chatbot System with Database Implementation
   await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
+
+    //If No Chatbot System is Set, Do Nothing
     if (!data) return;
 
+    
     if (message.channel.id !== data.Channel) return;
 
+    //Method that makes it look like the bot is typing
     message.channel.sendTyping();
 
+    //Fetch the Chatbot API
     fetch(
       `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(
         message.content
@@ -748,15 +919,21 @@ client.on("messageCreate", async (message) => {
     )
       .then((res) => res.json())
       .then((data) => {
+        //Reply with the chatbot API message
         message.reply(`${data.message}`);
       });
   });
 
+
+
+  //AFK System, this one prompts when a user is in AFK mode and types in a message
   afkschema.findOne(
     { Guild: message.guild.id, Member: message.author.id },
     async (err, data) => {
       if (err) throw err;
       if (data) {
+
+        //If user data exists in Database, delete it
         data.delete();
         const afk = new Discord.MessageEmbed()
           .setTitle("Afk Removed")
@@ -773,15 +950,19 @@ client.on("messageCreate", async (message) => {
       }
     }
   );
-
+  
+  //AFK System, this one prompts when a user is in AFK mode and is pinged by another user
   if (message.mentions.members.first()) {
     afkschema.findOne(
       { Guild: message.guild.id, Member: message.mentions.members.first().id },
       async (err, data) => {
         if (err) throw err;
-        if (!data) return;
+
+        if (!data) return; //If user data does not exist in Database, do nothing
+        
+        
         if (data) {
-          const member = message.guild.members.cache.get(data.Member);
+          const member = message.guild.members.cache.get(data.Member); //Get the member who is AFK via the bot's cache
           const afk = new Discord.MessageEmbed()
             .setTitle(`${member.user.tag} is Afk`)
             .setDescription(
@@ -799,21 +980,23 @@ client.on("messageCreate", async (message) => {
     );
   }
 
+
+  //Custom Prefix System
   const settings = await guildSchema.findOne(
     {
       guildID: message.guild.id,
     },
     (err, guild) => {
       if (err) console.error(err);
-      if (!guild) {
+      if (!guild) { //If a server does not exist in the database
         const newGuild = new guildSchema({
           _id: mongoose.Types.ObjectId(),
-          guildID: message.guild.id,
-          guildName: message.guild.name,
-          prefix: process.env.prefix,
+          guildID: message.guild.id, //Set the server's ID to the database
+          guildName: message.guild.name,  //Set the server's name to the database
+          prefix: process.env.prefix, //Set the default prefix to the database
         });
         newGuild
-          .save()
+          .save() //Save Data to the database
           .then((result) => console.log(result))
           .catch((err) => console.error(err));
 
@@ -829,7 +1012,7 @@ client.on("messageCreate", async (message) => {
 
   var prefix = "";
   try {
-    prefix = settings.prefix || process.env.prefix;
+    prefix = settings.prefix || process.env.prefix; //Set the bot prefix to the custom one set, or the default one
   } catch (err) {
     return message.channel
       .send({
@@ -839,10 +1022,14 @@ client.on("messageCreate", async (message) => {
       .then((m) => m.delete({ timeout: 10000 }));
   }
 
-  if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix)) return; //Does not run commands if prefix not given
 
+
+
+
+  //Bot Ping System
   try {
-    if (message.mentions.has(client.user.id) && !message.mentions.everyone) {
+    if (message.mentions.has(client.user.id) && !message.mentions.everyone) { //If a user pings the bot and it is not an @everyone ping
       client.embed(message, {
         title: `Greetings ${message.author.username}`,
         description: `Your prefix in this server is **${prefix}**\n\n To get started you can do **${prefix} help**\n\n To use slash commands, simply type in /help`,
@@ -859,41 +1046,57 @@ client.on("messageCreate", async (message) => {
     }
   } catch (err) {}
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const command = args.shift().toLowerCase();
+
+
+
+  //Registering Message Commands
+  const args = message.content.slice(prefix.length).trim().split(/ +/); //Register Arguments to prevent mixup with bot prefix
+
+  const command = args.shift().toLowerCase(); //Register Command itself
+   
   var getDirectories = function (src, callback) {
     glob(src + "/**/*", callback);
-  };
+  }; //Get Each Sub Directory in Commands Folder
+
+
+  //Get Each Command File in the Sub-Directory
   getDirectories("./commands", async function (err, res) {
     if (err) {
       console.log(err);
     } else {
-      var commandFiles = [];
-      commandFiles = res.filter((v, i) => v.endsWith(".js"));
+      var commandFiles = []; //Array of Command Files
+      commandFiles = res.filter((v, i) => v.endsWith(".js")); //Filter out all non-js files
+
+      //Register each command file into Command Collection
       for (const file of commandFiles) {
         const command = require(file);
         client.commands.set(command.name, command);
       }
+
+      //If a command is not registered, do nothing
       if (!client.commands.has(command)) {
         return;
       }
+
       try {
+        //Running each command using execute function
         client.commands.get(command).execute(message, args, client);
       } catch (error) {
         console.error(error);
         message.reply("Issue loading command");
       }
 
+      //Bot Blacklist System
       if (command) {
         const blacklisted = await blacklistserver.findOne({
           Server: message.guild.id,
-        });
+        }); 
 
-        if (blacklisted)
+        if (blacklisted) //Checks to see if server is blacklisted from using bot commands
           return message.channel.send({
             content: "Cannot use commands as owner has blacklisted this server",
           });
-        const channel = client.channels.cache.get("800421170301501470");
+        const channel = client.channels.cache.get("800421170301501470"); //Personal Command Usage Checker, for bug testing purposes
 
         channel.send(
           `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
@@ -903,17 +1106,21 @@ client.on("messageCreate", async (message) => {
   });
 });
 
+
+//Server Member Join Event
 client.on("guildMemberAdd", async (member) => {
 
-
+  //Welcome Message, Currently Made for a specific server, will add custom message later
   await welcomeMessage.findOne({Guild:member.guild.id}, async (err, data)=>{
+
+    //If Server Message System is not enabled, do nothing
     if(!data) return;
 
-    const channel = client.channels.cache.get(data.Channel);
-    const rulesChannel = client.channels.cache.get(data.RulesChannel);
-    const rolesChannel = client.channels.cache.get(data.RolesChannel);
-    const modTag = member.guild.roles.cache.get(data.ModeratorTag);
-    const adminTag = member.guild.roles.cache.get(data.AdminTag);
+    const channel = client.channels.cache.get(data.Channel); //Retrieves Channel to Send Welcome Message In
+    const rulesChannel = client.channels.cache.get(data.RulesChannel); //Retrieves the Rules Channel
+    const rolesChannel = client.channels.cache.get(data.RolesChannel); //Retrieves the Roles Channel
+    const modTag = member.guild.roles.cache.get(data.ModeratorTag); //Retrieves the Moderator Tag
+    const adminTag = member.guild.roles.cache.get(data.AdminTag); //Retrives the Admin Tag
 
 
 
@@ -928,12 +1135,18 @@ client.on("guildMemberAdd", async (member) => {
   })
 
 
-
+  //captcha verification
   await captchaSchema.findOne({ Guild: member.guild.id }, async (err, data) => {
 
+    //If Captcha System is not enabled, do nothing
     if (!data) return;
 
-    const captcha = new Captcha();
+    
+    const captcha = new Captcha(); //New Captcha Object
+
+    /*
+      Draws Captcha with the following parameters
+    */
     captcha.async = true;
     captcha.addDecoy();
     captcha.drawTrace();
@@ -944,6 +1157,7 @@ client.on("guildMemberAdd", async (member) => {
       "captcha.png"
     );
 
+    //Sends Captcha to the user upon them joining the server
     const msg = await member.send({
       files: [attachment],
       content:
@@ -951,14 +1165,18 @@ client.on("guildMemberAdd", async (member) => {
     });
 
 
+    //Retrieves the Role that the Admin had set for Captcha System
     const role = member.guild.roles.cache.get(data.Role);
 
+
+    //Checks to see if the captcha was answered correctly
     const filter = (message) => {
       if (message.author.id !== member.id) return;
       if (message.content == captcha.text) return true;
       else member.send(`:x: Wrong Captcha Answer`);
     };
 
+    //Message Collector to Collect User Input 
     const collector = await msg.channel.awaitMessages({
       filter,
       max: 1,
@@ -966,33 +1184,42 @@ client.on("guildMemberAdd", async (member) => {
       errors: ["time"],
     });
 
+    //If the captcha was answered correctly, add the role to the user
     if (collector) {
       member.roles.add(role);
       member.send(`Thank you for verifying, welcome to ${member.guild.name}`);
     }
   });
+
+  //Welcome Image
   Schema.findOne({ Guild: member.guild.id }, async (e, data) => {
+
+    //If welcome system was not set, do nothing
     if (!data) return;
+
+  
     const user = member.user;
 
+
+    //Retrieves the Welcome Image that was drawn earlier in code
     let canvas = welcome;
     (canvas.context.font = "42px sans-serif"),
       (canvas.context.textAlign = "center"),
-      canvas.context.fillText(user.username, 512, 410);
-    canvas.context.font = "32px sans-serif";
+      canvas.context.fillText(user.username, 512, 410); //Fills Text Section with Username of the User joining the server
+    canvas.context.font = "32px sans-serif"; //Sets Font for Text
     canvas.context.fillText(
-      `The ${member.guild.memberCount}th member to join this server`,
+      `The ${member.guild.memberCount}th member to join this server`, //Fills Text Section with the position of the new member
       512,
       455
     );
-    canvas.context.beginPath();
-    canvas.context.arc(512, 166, 119, 0, Math.PI * 2, true);
-    canvas.context.closePath();
+    canvas.context.beginPath(); //Begin Draw Path
+    canvas.context.arc(512, 166, 119, 0, Math.PI * 2, true); //Draws a circular shape equivalent to the size of a discord avatar
+    canvas.context.closePath(); //Closes the Draw Path
     canvas.context.clip();
     await Canvas.loadImage(
-      user.displayAvatarURL({ dynamic: false, format: "png", size: 1024 })
+      user.displayAvatarURL({ dynamic: false, format: "png", size: 1024 }) //Load the new member avatar image
     ).then((img) => {
-      canvas.context.drawImage(img, 393, 47, 238, 238);
+      canvas.context.drawImage(img, 393, 47, 238, 238); //Draws the new member avatar image onto the welcome image
     });
 
     let image = new Discord.MessageAttachment(
@@ -1001,34 +1228,44 @@ client.on("guildMemberAdd", async (member) => {
     );
 
     try {
-      const channel = client.channels.cache.get(data.Channel);
+      const channel = client.channels.cache.get(data.Channel); //Find the channel to send the Welcome Image to
       channel.send({ files: [image] });
     } catch (err) {
       console.log(err);
     }
   });
 
-  const data = await muteschema.findOne({ Guild: member.guild.id });
-  if (!data) return;
-  const user = data.Users.findIndex((prop) => prop === member.id);
-  if (user == -1) return;
+  //Mute System
+  const data = await muteschema.findOne({ Guild: member.guild.id }); //Check to see if mute system is enabled
+
+  if (!data) return; //If mute system is not enabled, do nothing
+
+  const user = data.Users.findIndex((prop) => prop === member.id); //Find the user in the mute system
+
+  if (user == -1) return; //If user is not in the mute system, do nothing
+
   const role = member.guild.roles.cache.find(
     (role) => role.name.toLowerCase() === "muted"
-  );
-  member.roles.add(role.id);
+  ); //Find Muted Role
 
+  member.roles.add(role.id); //When user joins server back and was muted, add the muted role back to the user
+  
+
+  //Auto-Role System that auto adds a role upon a new member joining a server
   autoroleschema.findOne({ Guild: member.guild.id }, async (err, data) => {
-    if (!data) return;
+    if (!data) return; //IF Auto-Role System is not enabled, do nothing
 
-    const role = member.guild.roles.cache.get(data.Role);
+    const role = member.guild.roles.cache.get(data.Role); //Find Role in Database
 
     member.roles.add(role);
   });
 
-
+  //Anti-Raid System
   antiraid.findOne({ Guild: member.guild.id }, async (err, data) => {
-    const kickReason = "Anti-raidmode activated";
-    if (!data) return;
+    const kickReason = "Anti-raidmode activated"; //Set Kick Reason when Server Raid occurs
+
+    if (!data) return; //If Anti-Raid System is not enabled, do nothing
+
     if (data) {
       try {
         member.send({
@@ -1044,26 +1281,33 @@ client.on("guildMemberAdd", async (member) => {
       } catch (e) {
         throw e;
       }
-      member.kick(kickReason);
+      member.kick(kickReason); //Kick Member as soon as they join the server, when this system is enabled
     }
   });
 
+
+  //Anti-Alt System
   altschema.findOne({ Guild: member.guild.id }, async (err, data) => {
+
+    //If Anti-Alt System is not enabled, do nothing
     if (!data) return;
 
-    const days = data.Days;
-    const option = data.Option;
+    const days = data.Days; //Number of Days Since Account Creation to Check for
+    const option = data.Option; //Action to Take Upon Alt Account Detection
 
-    const channel = member.guild.channels.cache.get(data.Channel);
+    const channel = member.guild.channels.cache.get(data.Channel); //Find Channel to Send Alt Account Warning to
 
-    const timeSpan = ms(`${days} days`);
+    const timeSpan = ms(`${days} days`); //Convert Days to Milliseconds
 
-    const createdAt = new Date(member.user.createdAt).getTime();
-    const difference = Date.now() - createdAt;
+    const createdAt = new Date(member.user.createdAt).getTime(); //Get the joined Member's Account Creation Date
+    const difference = Date.now() - createdAt; //Find the difference between the current date and the joined Member's Account Creation Date
 
+
+    //If the time span set for alt account detection is greater than the difference between the current date and the joined Member's Account Creation Date, proc the Alt Account System
     if (difference < timeSpan) {
       member.send("Alt Account Detected");
 
+      //If the punishment is to kick the user
       if (option.toLowerCase() == "kick") {
         const id = member.id;
         await member.kick();
@@ -1079,7 +1323,9 @@ client.on("guildMemberAdd", async (member) => {
               .setTimestamp(),
           ],
         });
-      } else if (option.toLowerCase() == "ban") {
+      }
+      //If the punishment is to ban the user 
+      else if (option.toLowerCase() == "ban") {
         const id = member.id;
         member.ban();
 
@@ -1094,7 +1340,9 @@ client.on("guildMemberAdd", async (member) => {
               .setTimestamp(),
           ],
         });
-      } else {
+      } 
+      else {
+        //Sends to the log channel a warning that an alt account has been detected
         channel.send({
           embeds: [
             new Discord.MessageEmbed()
@@ -1111,24 +1359,32 @@ client.on("guildMemberAdd", async (member) => {
   });
 });
 
+
+//Message Delete Event
 client.on("messageDelete", async (message) => {
+
+  //Snipes Event, detects when a message has been deleted, and upon usage of snipe command, sets a snipe embed
   client.snipes.set(message.channel.id, {
-    content: message.content,
-    author: message.author,
+    content: message.content, //Checks for Deleted Content
+    author: message.author, //Checks for Who Deleted the Message Content
     image: message.attachments.first()
       ? message.attachments.first().proxyURL
-      : null,
+      : null, //Checks to see if an image was deleted
   });
 
+
+  //Ghostping Event, that triggers upon a Ghost Ping
   await ghostpingschema.findOne(
     { Guild: message.guild.id },
     async (err, data) => {
+
+      //If Ghost Ping System is not enabled, do nothing
       if (!data) return;
 
+      //If no user was mentioned, do nothing
       if (!message.mentions.members.first()) return;
 
-      console.log("Mentioned");
-
+      //Check to see if the collection has the Ghost Ping in it, if it does send the Ghost Ping Embed
       if (Pings.has(`pinged:${message.mentions.members.first().id}`)) {
         const embed = new Discord.MessageEmbed()
           .setTitle("Ghost Ping Detected")
@@ -1147,11 +1403,19 @@ client.on("messageDelete", async (message) => {
   );
 });
 
-client.on("guildCreate", async (guild) => {
-  const id = guild.ownerId;
 
+//New Guild Event for when bot joins a new servers
+client.on("guildCreate", async (guild) => {
+
+  //Find the Server's Owner ID
+  const id = guild.ownerId;
+  
+
+  //Find the Bot's Banner Image
   let attachments = new Discord.MessageAttachment(banner, "banner.png");
 
+
+  //Send a Welcome Message to the Owner of the Server
   client.users.fetch(id).then((user) => {
     user.send({
       content: `\`\`\`Greetings ${user.username}, thank you for inviting me to your server, I am NecroAtomicBot a multiple purpose bot built to serve all your Discord needs.\nMy default prefix is !necro to change it simply use **!necro** prefix <custom prefix> to change it. Thanks again for inviting me \`\`\``,
@@ -1160,50 +1424,72 @@ client.on("guildCreate", async (guild) => {
   });
 });
 
+
+
+
+//Interaction Command System
 client.on("interactionCreate", async (interaction) => {
+
+  //Slash Command Stuff
   if (interaction.isCommand()) {
     await interaction.deferReply({ ephemeral: false }).catch(() => {});
 
+
+    //Get the command name from the SlashCommand Collection
     const cmd = client.slashCommands.get(interaction.commandName);
 
+    //Check to see if the command has a name
     if (!cmd)
       return interaction.followUp({
         content: "Error Interacting With Slash Commands",
       });
-
+    
+    //Check to see if a permission has been set on the command
     if (cmd.permission) {
+
+      //Check Permission of Member using the command
       const authorPerms = interaction.channel.permissionsFor(
         interaction.member
       );
+
+      //Check to see if the Member has the permission to use the command
       if (!authorPerms || !authorPerms.has(cmd.permission))
         return interaction.followUp({
           content: "You do not have perms to run this command",
         });
     }
 
-    // function replyOrEdit(interaction, ...data) {
-    //   if (interaction.replied || interaction.deferred)
-    //     return interaction.editReply(...data);
-    //   else interaction.reply(...data);
-    // }
-
+    //Run Function to Run interaction commands
     cmd.run(client, interaction);
   }
+
+  //Check to see if a command interaction is a Context Menu
   if (interaction.isContextMenu()) {
     await interaction.deferReply({ ephemeral: false });
+
+    //Get the command name from the Slash Collection
     const command = client.slashCommands.get(interaction.commandName);
+
+    //Run Command
     if (command) command.run(client, interaction);
   }
 
+  //Check to see if a command interaction is a Button
   if (interaction.isButton()) {
-    // if(interaction.customId !== 'reaction_role_menu'){
-    //   return;
-    // }
 
+
+    /*
+      The Following Code is for the Button Role Reaction System, that is currently still in development due to glitches.
+    */
+    
+    //Retrieve Emoji from Button Component
     const emoji = interaction?.component?.emoji;
 
+    //Find the Button Menu Through the Database
     const menu = await buttonrr.findOne({ message: interaction.message.id });
 
+
+    //If no reaction menu is found, do nothing
     if (
       !menu ||
       menu.roles.length == 0 ||
@@ -1212,15 +1498,22 @@ client.on("interactionCreate", async (interaction) => {
       return;
     }
 
+    //Fetch Member who will use the Button
     const member = interaction.guild.members.cache.get(interaction.user.id);
 
+
+    //Loop Through Role Menu and check for the emojis and roles
     menu.roles.forEach((v) => {
+
+      //Get Each Role from the Menu
       const role = interaction.guild.members.cache.get(v.role);
 
+      //If there is no emoji to match with a role, do nothing
       if ((v.emoji !== emoji.name && v.emoji !== emoji.id) || !role) {
         return;
       }
 
+      //Check to see if the Member already has the role
       if (!member.roles.cache.has(role.id)) {
         member.roles
           .add(role)
@@ -1236,7 +1529,9 @@ client.on("interactionCreate", async (interaction) => {
               ephemeral: true,
             });
           });
-      } else {
+      } 
+      //If the Member already has the role, remove the role from them
+      else {  
         member.roles
           .remove(role)
           .then(() => {
@@ -1255,50 +1550,90 @@ client.on("interactionCreate", async (interaction) => {
     });
   }
 
+  //Select Menu System for Select Menu Command Interactions
   if (interaction.isSelectMenu()) {
+
+
+    /*
+
+      The Following Code is for the Select Menu Role Reaction System
+    */
+
+    //Check to see if the ID of Select Menu matches with the Role Reaction ID
     if (interaction.customId !== "reaction-roles") {
       return;
     }
+
     await interaction.deferReply({ ephemeral: true });
+
+
+    //Find the Role ID
     const roleId = interaction.values[0];
+
+
+  
     const role = interaction.guild.roles.cache.get(roleId);
 
+
+    //Find All the roles of the member who is reacting
     const allroles = interaction.member.roles;
 
+    //Check to see if the Member already has the role
     const obtained = allroles.cache.has(roleId);
 
+
+    //If the Member already has the role, remove the role from them
     if (obtained) {
       allroles.remove(roleId);
       interaction.followUp(`${role.name} has been removed from you`);
-    } else {
+    }
+    //If the Member does not already have the role, add the role to them
+    else {
       allroles.add(roleId);
       interaction.followUp(`${role.name} has been given to you`);
     }
   }
 });
 
+//Event upon bot leaving a server
 client.on("guildDelete", async (guild) => {
+  //Delete the Server from the Database
   await guildSchema.findOne({ guildID: guild.id }, async (err, data) => {
     if (!data) return;
     data.delete();
   });
 });
 
-const voiceCollection = new Discord.Collection();
 
+//Voice State Change event
 client.on("voiceStateUpdate", async (oldState, newState) => {
+
+  //VC Leveling System, that checks for when a member joins or leaves VC and calculates XP based on that
   voiceClient.startListener(oldState, newState);
 });
 
+
+//New Reaction to Messages Event
 client.on("messageReactionAdd", async (reaction, user) => {
+
+  //Starboard System
   const handleStarboard = async () => {
     starboardSchema.findOne(
       { Guild: reaction.message.guild.id },
       async (err, data) => {
+
+        //If there is starboard system is not set, do nothing
         if (data == null) return;
+
+        //Retrieve Starboard Channel ID from Database
         const starboardchannel = data.Channel;
+
+        //Retrieve Channel from Bot Cache
         const starboard = client.channels.cache.get(starboardchannel);
+
+        //Fetch Last 100 Messages in the Starboard Channel
         const msgs = await starboard.messages.fetch({ limit: 100 });
+
         const existingMsg = msgs.find((msg) =>
           msg.embeds.length === 1
             ? msg.embeds[0].footer.text.startsWith(reaction.message.id)
@@ -1306,6 +1641,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
               : false
             : false
         );
+
+        //Counts and Updates the Number of Stars to a Channel
         if (existingMsg)
           existingMsg.edit(
             `${reaction.count} - ⭐ | ${reaction.message.channel}`
@@ -1326,11 +1663,13 @@ client.on("messageReactionAdd", async (reaction, user) => {
                 " - " +
                 new Date(reaction.message.createdTimestamp)
             );
-
+          
+          //Check to see if the starred message is an image
           if (reaction.message.attachments.array().length > 0) {
             embed.setImage(reaction.message.attachments.first().url);
           }
 
+          //Send the Starred Content to Starboard Channel
           if (starboard)
             starboard.send(
               { content: `1 - ⭐ | ${reaction.message.channel}` },
@@ -1340,6 +1679,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
       }
     );
   };
+
+  //If the reacted message is a star, keep the loop going and allow for more reactions
   if (reaction.emoji.name === "⭐") {
     starboardSchema.findOne(
       { Guild: reaction.message.guild.id },
@@ -1360,17 +1701,30 @@ client.on("messageReactionAdd", async (reaction, user) => {
 
   if (reaction.message.partial) await reaction.message.fetch();
   if (reaction.partial) await reaction.fetch();
+
+  //Do not allow bot to react
   if (user.bot) return;
 });
 
+
+//Removing Reactions from Messages Event
 client.on("messageReactionRemove", async (reaction, user) => {
+
+  //Update to Starboard System, this time for removing stars
   const handleStarboard = async () => {
     starboardSchema.findOne(
       { Guild: reaction.message.guild.id },
       async (err, data) => {
+        //If starboard system was never enabled, do nothing
         if (data == null) return;
+
+        //Retrieve Starboard Channel ID from Database
         const starboardchannel = data.Channel;
+
+        //Retrieve Channel from Bot Cache
         const starboard = client.channels.cache.get(starboardchannel);
+
+        //Fetch Last 100 Messages in the Starboard Channel
         const msgs = await starboard.messages.fetch({ limit: 100 });
         const existingMsg = msgs.find((msg) =>
           msg.embeds.length === 1
@@ -1379,9 +1733,12 @@ client.on("messageReactionRemove", async (reaction, user) => {
               : false
             : false
         );
+
+        //Set Star Count to 0 if all stars removed
         if (existingMsg) {
           if (reaction.count === 0) existingMsg.delete({ timeout: 2500 });
           else
+            //Update the Star Count
             existingMsg.edit(
               `${reaction.count} - | ${reaction.message.channel}`
             );
@@ -1389,7 +1746,8 @@ client.on("messageReactionRemove", async (reaction, user) => {
       }
     );
   };
-
+  
+  //Check to see if Reaction is a star
   if (reaction.emoji.name === "⭐") {
     starboardSchema.findOne(
       { Guild: reaction.message.guild.id },
@@ -1413,5 +1771,9 @@ client.on("messageReactionRemove", async (reaction, user) => {
   if (user.bot) return;
 });
 
+
+//Modlogs System
 logger(client);
+
+//Discord Login System
 client.login(token);
