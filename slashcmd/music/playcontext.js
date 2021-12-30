@@ -1,36 +1,37 @@
-const {CommandInteraction, Client, MessageEmbed, MessageButton, MessageActionRow} = require('discord.js')
+const {Client, CommandInteraction, ContextMenuInteraction} = require('discord.js')
+
+module.exports = {
+    name:'playcontext',
+    type:'MESSAGE',
+
+    /**
+     * 
+     * 
+     * 
+     * 
+     * @param {Client} client
+     * @param {ContextMenuInteraction} interaction
+     * 
+     * 
+     */
 
 
+    run: async (client, interaction) => {
 
+        const msg = await interaction.channel.messages.fetch(interaction.targetId);
 
-module.exports =  {
-    name:'play',
-    description:'Plays Music In a Channel',
-    options:[
-
-        {
-        name:'song',
-        description:'Song to Play(YouTube or Spotify Link)',
-        type:'STRING',
-        required:true
-        }
-    ],
-
-    run: async(client, interaction) => {
-
-
-    try{
         const vc = interaction.member.voice.channel
 
         if(!vc) return interaction.followUp({content:'Must be in VC to play command'})
-
-        const query = interaction.options.getString('song')
 
 
 
         let queue = client.player.createQueue(interaction.guild.id,  {
             data: interaction});
         await queue.join(vc)
+
+
+        const query = String(msg);
 
 
 
@@ -46,19 +47,9 @@ module.exports =  {
             if(!queue)
                 queue.stop();
         });
-        if(song.isFirst){
-            interaction.followUp({content:'Queueing your songs......'})
-        }
-  
+        interaction.followUp({content:'Queueing your songs......'})
+
+
     }
-
-    }catch(e){
-        return interaction.followUp({content:'Failed To Play Song, Error Code 403'})
-  } 
-
-
-    
-    
-        
-    }
+}
 }

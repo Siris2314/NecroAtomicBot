@@ -49,6 +49,23 @@ module.exports = (c) => {
         }\`\`\``
       );
     });
+
+    c.on("userUpdate", async(oldUser, newUser) => {
+
+      if (oldUser.username !== newUser.username) {
+        send_log(
+          c,
+          newUser.guild,
+          "YELLOW",
+          "Username Updated",
+          `\`\`\`yaml\nOld Username: ${oldUser.username} \nUserId: ${oldUser.id} \nNew Username: ${newUser.username} \nUserNewId: ${newUser.id}\`\`\``
+        );
+      }
+
+
+      
+      
+    })
     c.on("channelPinsUpdate", function (channel, time) {
       send_log(
         c,
@@ -477,6 +494,7 @@ module.exports = (c) => {
 
 async function send_log(client, guild, color, title, description, thumb) {
   try {
+    if(!guild) return;
     await Schema.findOne({ Guild: guild.id }, async (err, data) => {
       const logembed = new Discord.MessageEmbed()
         .setColor(color ? color : "RANDOM")
