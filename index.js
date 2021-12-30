@@ -28,7 +28,6 @@ const ascii = require("ascii-table");
 const { Captcha } = require("captcha-canvas");
 const captchaSchema = require("./schemas/captcha");
 const { table } = require("table");
-const giveawaySchema = require("./schemas/giveaways");
 const buttonrr = require("./schemas/buttonrr");
 const antiraid = require("./schemas/antiraid");
 const ownerID = process.env.ownerid;
@@ -37,12 +36,11 @@ const axios = require("axios");
 const counterSchema = require("./schemas/count");
 const path = require("path");
 const nsfwschema = require("./schemas/nsfw");
-const { GiveawaysManager } = require("discord-giveaways");
-const deepai = require("deepai");
 const banner = "./assets/bot_long_banner.png";
 require("dotenv").config();
 const nsfwtoken = process.env.nsfw;
-deepai.setApiKey(nsfwtoken);
+const tf = require('@tensorflow/tfjs-node')
+const nsfw = require('nsfwjs')
 const starboardSchema = require("./schemas/starboard");
 const fs = require("fs");
 const afk = new Discord.Collection();
@@ -56,6 +54,8 @@ const globPromise = promisify(glob);
 const welcomeMessage = require('./schemas/welcomeMessage')
 const { VoiceClient } = require("djs-voice");
 const afkschema = require("./schemas/afk");
+
+const Nuggies = require('nuggies');
 
 client.snipes = new Discord.Collection();
 const Canvas = require("canvas");
@@ -93,55 +93,34 @@ const voiceClient = new VoiceClient({
   client: client, //Discord Client
   debug: false,
   mongooseConnectionString: mongoPath, //Mongo Database Connection
-});
+}); 
 
 
-//Giveaway System, that uses a Mongo Database to Store Giveaways for a Server
-const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
-
-
-  //Function that returns all current Giveaways for a Server
-  async getAllGiveaways() {
-    return await giveawaySchema.find().lean().exec();
-  }
-
-  //Saves a Giveaway for a Server to the database
-  async saveGiveaway(messageId, giveawayData) {
-    await giveawaySchema.create(giveawayData);
-
-    return true;
-  }
-
-
-  //Edits an ongoing giveaway
-  async editGiveaway(messageId, giveawayData) {
-    await giveawaySchema
-      .updateOne({ messageId }, giveawayData, { omitUndefined: true })
-      .exec();
-
-    return true;
-  }
-
-  //Remove a Giveaway from the database
-  async deleteGiveaway(messageId) {
-    await giveawaySchema.deleteOne({ messageId }).exec();
-
-    return true;
-  }
+const defaultGiveawayMessages = {
+	dmWinner: true,
+	giveaway: '🎉🎉 **GIVEAWAY!** 🎉🎉',
+	giveawayDescription: '🎁 Prize: **{prize}**\n🎊 Hosted by: {hostedBy}\n⏲️ Winner(s): `{winners}`\n\nRequirements: {requirements}',
+	endedGiveawayDescription : '🎁 Prize: **{prize}**\n🎊 Hosted by: {hostedBy}\n⏲️ Winner(s): {winners}',
+	giveawayFooterImage: 'https://cdn.discordapp.com/emojis/843076397345144863.png',
+	winMessage: 'Congrats {winners}! you won `{prize}`!! Total `{totalParticipants}` members participated and your winning percentage was `{winPercentage}%`',
+	rerolledMessage: 'Rerolled! {winner} is the new winner of the giveaway!',
+	toParticipate: '**Click the Enter button to enter the giveaway!**',
+	newParticipant: 'You have successfully entered for this giveaway! your win percentage is `{winPercentage}%` among `{totalParticipants}` other participants', // no placeholders | ephemeral
+	alreadyParticipated: 'You already entered this giveaway!', 
+	noParticipants: 'There are not enough people in the giveaway!',
+	noRole: 'You do not have the required role(s)\n{requiredRoles}\n for the giveaway!',
+	dmMessage: 'You have won a giveaway in **{guildName}**!\nPrize: [{prize}]({giveawayURL})',
+	noWinner: 'Not enough people participated in this giveaway.', 
+	alreadyEnded: 'The giveaway has already ended!',
+	dropWin: '{winner} Won The Drop!!',
 };
 
-//Set's the Giveaway Manager with Deafult Settings
-const manager = new GiveawaysManager(client, {
-  default: {
-    botsCanWin: false,
-    embedColor: "#FF0000",
-    embedColorEnd: "#000000",
-    reaction: "🎉",
-  },
-});
+Nuggies.Messages(client, { giveawayOptions: defaultGiveawayMessages })
+Nuggies.connect(mongoPath);
+Nuggies.handleInteractions(client)
+Nuggies.giveaways.startAgain(client);
 
 
-client.giveawaysManager = manager; //Global Giveaway Variable
 
 client.vcclient = voiceClient; //Global Voice Leveling System Variable
 
@@ -870,8 +849,34 @@ client.on("messageCreate", async (message) => {
     }
   );
   
-  //Ant-NSFW System
+  //Anti-NSFW System
   if (message.attachments.first()) {
+
+    /* 
+      Function that uses Neural Networks to determine if an image is NSFW.
+      Further classification of image is done via an api that checks to see if the image is truly NSFW or just provocative 
+    */
+    async function isnsfw(url) {
+      let r = false;
+    const pic = await axios.get(url, {
+      responseType: 'arraybuffer',
+    })
+    const model = await nsfw.load() //Load NSFW Classification Model
+    const image = await tf.node.decodeImage(pic.data,3) //Decode Image into Multiple Neural Network Nodes
+    const predictions = await model.classify(image)
+
+    image.dispose()
+
+
+    predictions.map((pr) => {   //Make a probability map to determine if an image is NSFW
+      pr.probability = Math.round(pr.probability * 100)
+      console.log(pr.className, pr.probability)
+      if(pr.className == "Hentai" && pr.probability > 35) r = true
+      if(pr.className == "Porn" && pr.probability > 35) r = true
+      if(pr.className == "Sexy" && pr.probability > 80) r = true
+    })
+    return r
+  }
     await nsfwschema.findOne(
       { Server: message.guild.id },
       async (err, data) => {
@@ -881,19 +886,15 @@ client.on("messageCreate", async (message) => {
  
         const image = message.attachments.first().url; //Get the first image sent in the channel by a user
 
-        let response = await deepai.callStandardApi("nsfw-detector", {
-          image: image,
-        }); //Get the DeepAi NSFW Detection Method
+         let r = isnsfw(image); //Check if the image is NSFW
 
-        const score = response.output.nsfw_score; //Record Probability of NSFW Score
-
-
-        if (score + 0.2 >= 0.5) {
-
-          //If Score Meets the Threshold, delete the image
-          message.delete();
-          message.channel.send({ content: "NO NSFW Images allowed" });
-        }
+         if(r){
+            await message.delete();
+            return message.channel.send({content: "Please do not send NSFW content"});
+         }
+         else{
+            //Do Nothing
+         }
       }
     );
   }
@@ -1022,10 +1023,6 @@ client.on("messageCreate", async (message) => {
       .then((m) => m.delete({ timeout: 10000 }));
   }
 
-  if (!message.content.startsWith(prefix)) return; //Does not run commands if prefix not given
-
-
-
 
   //Bot Ping System
   try {
@@ -1045,6 +1042,12 @@ client.on("messageCreate", async (message) => {
       });
     }
   } catch (err) {}
+
+
+  if (!message.content.startsWith(prefix)) return; //Does not run commands if prefix not given
+
+
+
 
 
 
@@ -1477,6 +1480,43 @@ client.on("interactionCreate", async (interaction) => {
   //Check to see if a command interaction is a Button
   if (interaction.isButton()) {
 
+
+    if(interaction.customId == "pause"){
+     let queue = client.player.getQueue(interaction.guild.id);
+
+     if(!queue) return interaction.followUp({content:`No Songs Playing`})
+      queue.setPaused(true);
+
+      await interaction.deferReply({ ephemeral: true });
+
+      
+    }
+    else if(interaction.customId == "resume"){
+
+      let queue = client.player.getQueue(interaction.guild.id);
+      if(!queue) return interaction.followUp({content:`No Songs Playing`})
+      queue.setPaused(false);
+
+      await interaction.deferReply({ ephemeral: true });
+
+      
+    }
+    else if(interaction.customId == "skip"){
+
+        
+        let queue = client.player.getQueue(interaction.guild.id);
+
+        if(!queue) return interaction.followUp({content:`No Songs Playing`})
+        if(queue.songs.length == 1){
+          await interaction.deferReply({ ephemeral: true });
+          interaction.channel.send('Cannot Skip With Singular Song Queue')
+        
+        }
+        else{
+          queue.skip();
+          interaction.channel.send({content:`Now Playing: ${queue.songs[1].name}`})
+        }
+    }
 
     /*
       The Following Code is for the Button Role Reaction System, that is currently still in development due to glitches.

@@ -83,7 +83,7 @@ module.exports = {
                             .setDisabled(),
                     new MessageButton()
                             .setCustomId("second")
-                            .setLabel(`${res.questions[1].question}: `+ " "+ `${res.questions[1].question}%`)
+                            .setLabel(`${res.questions[1].question}: `+ " "+ `${res.questions[1].percentage}%`)
                             .setStyle("DANGER")
                             .setDisabled(),
                     );

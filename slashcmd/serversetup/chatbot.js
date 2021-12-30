@@ -47,11 +47,6 @@ module.exports = {
         }
       });
     } else if (choice.toLowerCase() === "disable") {
-      if (!data)
-        return interaction.followUp({
-          content: "Anti-Scam System Was Never Enabled",
-        });
-
       Schema.findOne({ Guild: interaction.guild.id }, async (err, data) => {
         if (!data)
           interaction.followUp({ content: "ChatBot System was never enabled" });

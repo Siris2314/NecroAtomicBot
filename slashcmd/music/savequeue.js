@@ -38,6 +38,7 @@ module.exports = {
         else{
 
             await Schema.findOne({Guild: interaction.guild.id}, async(data, err)=>{
+                if(data) data.delete();
                 new Schema({
                     Guild: interaction.guild.id,
                     Name:name,
