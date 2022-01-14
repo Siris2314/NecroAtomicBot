@@ -11,9 +11,16 @@ module.exports =  {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
 
+        if(queue.songs.length == 1) {
+            return interaction.followUp({content:`Cannot Skip with only one song in queue`});
+        }
+
+        else{
+
         queue.skip()
 
         interaction.followUp({content:`Now Playing: ${queue.songs[1].name}`})
+        }
 
 
 

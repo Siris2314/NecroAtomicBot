@@ -127,7 +127,7 @@ module.exports = {
         await reaction.users.remove(message.author.id);
       });
     } else {
-      return;
+      return message.channel.send("Bot Owner Only!");
     }
   }
 };

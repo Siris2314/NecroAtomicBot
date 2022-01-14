@@ -143,7 +143,7 @@ const { Player } = require("discord-music-player"); //Import Music Player Client
 const player = new Player(client, {
   leaveOnEmpty: true,
   deafenOnJoin: true,
-  timeout: 60000,
+  timeout: 600000,
   volume: 100,
 });
 
@@ -323,8 +323,8 @@ client.on("ready", async () => {
     console.log(``);
     console.log(``);
     console.log(yellow('               + ================================================================================== +'));
-    console.log(cyan(`                                [i] :: ${prefix} help                :: Displays commands.                   `));
-    console.log(cyan(`                                [i] :: ${prefix} ping                :: Displays bots ping.                  `));
+    console.log(cyan(`                                [i] :: ${prefix} help       :: Displays commands.                   `));
+    console.log(cyan(`                                [i] :: /help                :: Displays slash commands                `));
     console.log(yellow('               + ================================Commands========================================== +'));
     console.log(cyan(`                       Author   [i] :: Programmed by [Arihant Tripathi]    :: © 2021 Necro Development                   `));
     console.log(cyan(`                       Bot info [i] :: Status                       :: ✅ Online                           `));
@@ -854,7 +854,7 @@ client.on("messageCreate", async (message) => {
 
     /* 
       Function that uses Neural Networks to determine if an image is NSFW.
-      Further classification of image is done via an api that checks to see if the image is truly NSFW or just provocative 
+      Further classification of image is done via tensorflow using neural networks to determine if an Image is NSFW.
     */
     async function isnsfw(url) {
       let r = false;
@@ -871,11 +871,18 @@ client.on("messageCreate", async (message) => {
     predictions.map((pr) => {   //Make a probability map to determine if an image is NSFW
       pr.probability = Math.round(pr.probability * 100)
       console.log(pr.className, pr.probability)
-      if(pr.className == "Hentai" && pr.probability > 35) r = true
-      if(pr.className == "Porn" && pr.probability > 35) r = true
-      if(pr.className == "Sexy" && pr.probability > 80) r = true
+      if(pr.className == "Hentai" && pr.probability > 30) {
+        r = true
+      }
+      if(pr.className == "Porn"  && pr.probability > 30){
+        r = true
+      }
+     if(pr.className == "Sexy"  && pr.probability > 80){
+        r = true
+      }
+   
     })
-    return r
+    return r;
   }
     await nsfwschema.findOne(
       { Server: message.guild.id },
@@ -888,12 +895,9 @@ client.on("messageCreate", async (message) => {
 
          let r = isnsfw(image); //Check if the image is NSFW
 
-         if(r){
+         if(r == true){
             await message.delete();
             return message.channel.send({content: "Please do not send NSFW content"});
-         }
-         else{
-            //Do Nothing
          }
       }
     );
@@ -1814,6 +1818,8 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 //Modlogs System
 logger(client);
+
+require("./dashboard/server");
 
 //Discord Login System
 client.login(token);

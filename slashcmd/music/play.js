@@ -34,7 +34,7 @@ module.exports =  {
 
 
 
-       if(query.includes('https://open.spotify.com/playlist/') || query.includes('https://www.youtube.com/playlist')){
+       if(query.includes('https://open.spotify.com/playlist/') || query.includes('https://www.youtube.com/playlist') || query.includes("https://open.spotify.com/album")){
         let song = await queue.playlist(query).catch(_ => {
             if(!queue)
                 queue.stop();
@@ -48,6 +48,9 @@ module.exports =  {
         });
         if(song.isFirst){
             interaction.followUp({content:'Queueing your songs......'})
+        }
+        else{
+            interaction.followUp({content:'Added to Queue'});
         }
   
     }

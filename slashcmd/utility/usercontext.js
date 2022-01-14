@@ -1,4 +1,4 @@
-const {Client, CommandInteraction, ContextMenuInteraction} = require('discord.js')
+const {Client, CommandInteraction, ContextMenuInteraction, MessageEmbed} = require('discord.js')
 require('dotenv').config()
 const token = process.env.token
 const axios = require('axios')
@@ -23,7 +23,7 @@ module.exports = {
 
     run: async (client, interaction) => {
 
-        const user = await interaction.channel.user.fetch();
+        const user = await interaction.user.fetch()
 
         const flags = {
             DISCORD_EMPLOYEE: 'Discord Employee',
@@ -110,7 +110,7 @@ module.exports = {
         
         const embeduserinfo = new MessageEmbed()
             .setThumbnail(member.user.displayAvatarURL({dynamic: true, size:512}))
-            .setAuthor("Information about: " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({dynamic: true}))
+            .setAuthor({name:"Information about: " + member.user.username + "#" + member.user.discriminator}, {iconUrl: member.user.displayAvatarURL({dynamic: true})})
             .setColor("RANDOM")
             .addField('**Username:**', `\`${member.user.username}#${member.user.discriminator}\``,true)
             .addField('**ID:**',`\`${member.id}\``,true)
@@ -150,7 +150,7 @@ module.exports = {
                 .join("\n");
             const embeduserinfo = new MessageEmbed()
                 .setThumbnail(member.user.displayAvatarURL({dynamic: true, size:512}))
-                .setAuthor("Information about: " + member.user.username + "#" + member.user.discriminator, member.user.displayAvatarURL({dynamic: true}))
+                .setAuthor({name:"Information about: " + member.user.username + "#" + member.user.discriminator}, {iconUrl: member.user.displayAvatarURL({dynamic: true})})
                 .setColor("RANDOM")
                 .addField('**Username:**', `\`${member.user.username}#${member.user.discriminator}\``,true)
                 .addField('**ID:**',`\`${member.id}\``,true)

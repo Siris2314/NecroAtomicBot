@@ -25,7 +25,7 @@ module.exports =  {
         queue.setVolume(volume)
 
 
-        interaction.followUp({content:`Volume has been changed to ${volume}`})
+        interaction.followUp({content:`Volume has been changed to **${volume}**`})
 
 
     }
