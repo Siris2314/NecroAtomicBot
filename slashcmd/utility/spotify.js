@@ -3,9 +3,7 @@ const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, NoSubscriberBehavior } = require('@discordjs/voice');
 
 module.exports = {
-
-
-    name:'spotinfo',
+    name:'spotify',
     description:"Returns spotify info on a track and plays in a voice channel",
     options:[{
         name:'url',

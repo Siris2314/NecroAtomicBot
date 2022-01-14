@@ -34,33 +34,29 @@ module.exports = {
 
         if(choice == "enable"){
 
-            let starboard = await Schema.findOne({guildID: interaction.message.guild.id})
+            let starboard = await Schema.findOne({Guild: interaction.guild.id})
 
             if(!starboard){
 
                 let starboard = new Schema({
-                    guildID: interaction.guild.id,
-                    channelID: interaction.channel.id,
-                    messageID: interaction.id,
-                    enabled: true
+                    Guild: interaction.guild.id,
+                    Channel: interaction.channel.id
                 })
 
                 await starboard.save()
 
                 interaction.followUp({embeds:[new MessageEmbed()
-                .setColor(client.config.color)
+                .setColor("GREEN")
                 .setTitle("Starboard System Enabled")
-                .setDescription(`Starboard System has been enabled in ${interaction.message.channel}`)
-                .setFooter(`${client.config.name} | ${client.config.version}`)
+                .setDescription(`Starboard System has been enabled in ${interaction.channel}`)
                 .setTimestamp()]})
 
             }else{
 
                 interaction.followUp({embeds:[(new MessageEmbed()
-                .setColor(client.config.color)
+                .setColor("GREEN")
                 .setTitle("Starboard System Already Enabled")
-                .setDescription(`Starboard System is already enabled in ${interaction.message.channel}`)
-                .setFooter(`${client.config.name} | ${client.config.version}`)
+                .setDescription(`Starboard System is already enabled in ${interaction.channel}`)
                 .setTimestamp())]})
 
             }
@@ -69,17 +65,16 @@ module.exports = {
         }
         else if(choice == "disable"){
 
-            let starboard = await Schema.findOne({guildID: interaction.message.guild.id})
+            let starboard = await Schema.findOne({Guild: interaction.guild.id})
 
             if(starboard){
                        
-                    await Schema.deleteOne({guildID: interaction.message.guild.id})
+                    await Schema.deleteOne({Guild: interaction.guild.id})
     
                 interaction.followUp({embeds:[new MessageEmbed()
-                    .setColor(client.config.color)
+                    .setColor("RED")
                     .setTitle("Starboard System Disabled")
-                    .setDescription(`Starboard System has been disabled in ${interaction.message.channel}`)
-                    .setFooter(`${client.config.name} | ${client.config.version}`)
+                    .setDescription(`Starboard System has been disabled in ${interaction.channel}`)
                     .setTimestamp()]})
                                          
 
@@ -87,10 +82,9 @@ module.exports = {
             else{
 
                 interaction.followUp({embeds:[new MessageEmbed()
-                    .setColor(client.config.color)
+                    .setColor("RED")
                     .setTitle("Starboard System Not Enabled")
-                    .setDescription(`Starboard System is not enabled in ${interaction.message.channel}`)
-                    .setFooter(`${client.config.name} | ${client.config.version}`)
+                    .setDescription(`Starboard System is not enabled in ${interaction.channel}`)
                     .setTimestamp()]})
 
 

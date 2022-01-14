@@ -12,7 +12,7 @@ module.exports = {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
         
-        const song = queue.songs[0]
+        const song = queue.nowPlaying
         const progressbar = queue.createProgressBar()
 
         const row = new MessageActionRow().addComponents(
@@ -64,6 +64,7 @@ module.exports = {
         let total = song.milliseconds;
         let stream = queue.connection.player._state.resource.playbackDuration;
 
+
         let seconds = Math.floor(stream / 1000);
         if (seconds === 86400) {
             time = sf.convert(seconds).format("D day");
@@ -81,16 +82,12 @@ module.exports = {
                 .setTitle(`**Currently Playing**`)
                 .setColor(client.color.invis)
                 .addField('Song Name', newname)
-                .setDescription(progressBar(
-                    `${progressBar(
-                        total,
-                        stream,
-                        18,
-                        "▬",
-                        "▬",
-                        "🔘"
-                      )} ${time}/${song.duration}`
-                    ))
+                .setDescription(`${progressBar(
+                    total,
+                    stream,
+                    18,
+                    "▬",
+                  )} ${time}/${song.duration}`)
                 .setThumbnail(song.thumbnail)
                 .setTimestamp()
 
@@ -102,7 +99,13 @@ module.exports = {
                 .setTitle(`**Currently Playing**`)
                 .setColor(client.color.invis)
                 .addField('Song Name', song.name)
-                .setDescription(progressbar.prettier.toString())
+                .setDescription( `${progressBar(
+                    total,
+                    stream,
+                    18,
+                    "▬",
+                  )} ${time}/${song.duration}`
+          )
                 .setThumbnail(song.thumbnail)
                 .setTimestamp()
 

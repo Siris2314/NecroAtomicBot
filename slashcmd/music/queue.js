@@ -1,5 +1,4 @@
 const {CommandInteraction, Client, MessageEmbed, MessageActionRow, MessageButton} = require('discord.js')
-const reactionMenu = require("discordv13-pagination")
 const { ButtonPaginator } = require('@psibean/discord.js-pagination');
 
 module.exports = {
@@ -89,33 +88,49 @@ module.exports = {
 
 
         const newarr2  = arr.slice(0,20);
-        const newarr = arr.slice(21, len);
+        const newarr = arr.slice(20,51);
+        const newarr3 = arr.slice(51, 82);
 
 
-        console.log(newarr);
-        let fullqueue2 =  newarr.map((song,id) =>
+
+      
+        let fullqueue2 =  newarr2.map((song,id) =>
         `**${id + 1}**. ${song.name} - \`${song.duration}\``
         ).join("\n");
 
-        let fullqueue3 =  newarr2.map((song,id) =>
+        let fullqueue3 =  newarr.map((song,id) =>
         `**${id + 1}**. ${song.name} - \`${song.duration}\``
         ).join("\n");
+
+        let fullqueue4 =  newarr3.map((song,id) =>
+        `**${id +   1}**. ${song.name} - \`${song.duration}\``
+        ).join("\n");
+
+
 
 
         const newembed2 = new MessageEmbed()
             .setTitle(`Queue in **${interaction.guild.name}**`)
-            .setDescription(fullqueue3)
+            .setDescription(fullqueue2)
             .setFooter(queue.nowPlaying.name)
             .setColor("#F0EAD6")
 
         const newembed = new MessageEmbed()
             .setTitle(`2nd Page of Queue in **${interaction.guild.name}**`)
-            .setDescription(fullqueue2)
+            .setDescription(fullqueue3)
             .setFooter(queue.nowPlaying.name)
             .setColor("#F0EAD6")
 
+        const newembed3 = new MessageEmbed()
+            .setTitle(`3rd Page of Queue in **${interaction.guild.name}**`)
+            .setDescription(fullqueue4)
+            .setFooter(queue.nowPlaying.name)
+            .setColor("#F0EAD6")
+
+
         pages.push(newembed2);
         pages.push(newembed);
+        pages.push(newembed3);
 
         interaction.followUp('Showing Page Queue.......')
         const buttonPaginator = new ButtonPaginator(interaction, {pages});

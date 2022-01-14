@@ -11,10 +11,15 @@ module.exports =  {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
 
+        if(queue.songs.length == 1) {
+            return interaction.followUp({content:`Cannot Shuffle with only one song in queue`});
+        }
+        else{
+
         queue.shuffle()
 
-
-        interaction.followUp({content:`Shuffled to ${queue.nowPlaying}`})
+        interaction.followUp({content:`Shuffled to ${queue.songs[1].name}`})
+        }
 
 
     }

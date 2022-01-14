@@ -35,8 +35,6 @@ module.exports =  {
         const args = interaction.options.data
         const choice = args[0]?.value
 
-        console.log(choice);
-
         if(!vc) return interaction.followUp({content:'Must be in VC to use command'})
 
         let queue = client.player.getQueue(interaction.guild.id);
