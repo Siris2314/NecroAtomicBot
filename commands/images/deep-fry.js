@@ -10,7 +10,7 @@ module.exports = {
 
   async execute(message,args,client){
 
-    let image = message.attachments.array();
+    let image = message.attachments.first()
     if(image.length == 0 ){
       return message.channel.send("Please provide an image")
     }

@@ -1,118 +1,241 @@
-const { MessageEmbed } = require('discord.js');
-const { Aki } = require('aki-api');
-const { list, verify } = require('../../functions');
-const regions = ['person', 'object', 'animal'];
+const { Aki } = require("aki-api")
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js")
+const isPlaying = new Set()
 
 module.exports = {
+    name: "akinator",
+    description: "Starts a game of Akinator.",
+    async execute(message, args,client){
+		await message.channel.sendTyping();
+        if (isPlaying.has(message.author.id)) return message.reply("You are already playing a game of Akinator. Please complete or cancel that game to start a new game.").catch(err => { })
 
-		name: 'akinator',
-	
-		description: 'Think About A Real or Fictional Character, I Will Try To Guess It',
-	
-	async execute(message,args,client){
-		if (!message.channel.permissionsFor(client.user).has('EMBED_LINKS')) return message.channel.send('**Missing Permissions - [EMBED_LINKS]!**');
-		if (!args[0]) return message.channel.send(`**What Category Do You Want To Use? Either \`${list(regions, 'or')}\`!**`);
-		let stringAki = args[0].toLowerCase();
-		let region;
-		if (stringAki === 'person'.toLocaleLowerCase()) region = 'en';
-		if (stringAki === 'object'.toLocaleLowerCase()) region = 'en_objects';
-		if (stringAki === 'animal'.toLocaleLowerCase()) region = 'en_animals';
-		if (!regions.includes(stringAki)) return message.channel.send(`**What Region Do You Want To Use? Either \`${list(regions, 'or')}\`!**`);
-		try {
-			const aki = new Aki({region});
-			let ans = null;
-			let win = false;
-			let timesGuessed = 0;
-			let guessResetNum = 0;
-			let wentBack = false;
-			let forceGuess = false;
-			const guessBlacklist = [];
-			while (timesGuessed < 3) {
-				if (guessResetNum > 0) guessResetNum--;
-				if (ans === null) {
-					await aki.start();
-				} else if (wentBack) {
-					wentBack = false;
-				} else {
-					try {
-						await aki.step(ans);
-					} catch {
-						await aki.step(ans);
-					}
-				}
-				if (!aki.answers || aki.currentStep >= 79) forceGuess = true;
-				const answers = aki.answers.map(answer => answer.toLowerCase());
-				answers.push('end');
-				if (aki.currentStep > 0) answers.push('back');
-				const embed = new MessageEmbed()
-					.setAuthor(message.author.username, message.author.displayAvatarURL())
-					.setColor('GREEN')
-					.setDescription(`**Q${aki.currentStep + 1} - ${aki.question}**\n${aki.answers.join(' | ')}${aki.currentStep > 0 ? ` | Back` : ''} | End`)
-					.setFooter(`Yes/No To Confirm | Progress - ${Math.round(Number.parseInt(aki.progress, 10))}%`)
-                await message.channel.send({embeds:[embed]});
-				const filter = res => res.author.id === message.author.id && answers.includes(res.content.toLowerCase());
-				const messages = await message.channel.awaitMessages(filter, {
-					max: 1,
-					time: 30000
-				});
-				if (!messages.size) {
-					await message.channel.send('**Time Up!**');
-					win = 'time';
-					break;
-				}
-				const choice = messages.first().content.toLowerCase();
-				if (choice.toLowerCase() === 'end'.toLocaleLowerCase()) {
-					forceGuess = true;
-				} else if (choice.toLowerCase() === 'back'.toLocaleLowerCase()) {
-					if (guessResetNum > 0) guessResetNum++;
-					wentBack = true;
-					await aki.back();
-					continue;
-				} else {
-					ans = answers.indexOf(choice);
-				}
-				if ((aki.progress >= 90 && !guessResetNum) || forceGuess) {
-					timesGuessed++;
-					guessResetNum += 10;
-					await aki.win();
-					const guess = aki.answers.filter(g => !guessBlacklist.includes(g.id))[0];
-					if (!guess) {
-						await message.channel.send('**I Can\'t Think of Anyone!**');
-						win = true;
-						break;
-					}
-					guessBlacklist.push(guess.id);
-					const embed = new MessageEmbed()
-						.setAuthor(message.author.username, message.author.displayAvatarURL())
-						.setColor('RED')
-						.setTitle(`I'm ${Math.round(guess.proba * 100)}% Sure It's...`)
-						.setDescription(`**${guess.name}${guess.description ? `\nProfession - ${guess.description}` : ''}\nRanking - ${guess.ranking}\nType Yes/No To Confirm!**`)
-						.setImage(guess.absolute_picture_path || null)
-						.setFooter(forceGuess ? 'Final Guess' : `Guesses - ${timesGuessed}`);
-					await message.channel.send({embeds:[embed]});
-					const verification = await verify(message.channel, message.author);
-					if (verification === 0) {
-						win = 'time';
-						break;
-					} else if (verification) {
-						win = false;
-						break;
-					} else {
-						const exmessage = timesGuessed >= 3 || forceGuess ? 'I Give Up!' : 'I Can Keep Going!';
-						await message.channel.send(`**Hmm... Is That so? ${exmessage}**`);
-						if (timesGuessed >= 3 || forceGuess) {
-							win = true;
-							break;
-						}
-					}
-				}
-			}
-			if (win === 'time') return message.channel.send('**I Guess Your Silence Means I Have Won!**');
-			if (win) return message.channel.send('**You Have Defeated Me This Time!**');
-			return message.channel.send('**Guessed Right One More Time! I Love Playing With You!**');
-		} catch (err) {
-            console.log(err)
-			return message.channel.send(`**Server Down, Try again later!**`);
-		};
-	}
-};
+        isPlaying.add(message.author.id)
+
+
+
+        const region = 'en'
+        const childMode = false
+        const proxy = undefined
+
+        const aki = new Aki({ region, childMode, proxy })
+
+        const waitEmbed = new MessageEmbed()
+            .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+            .setTitle("Please Wait")
+            .setThumbnail(client.user.displayAvatarURL())
+            .setDescription(`Starting a new game of Akinator for ${message.author.tag}!`)
+            .setColor("RANDOM")
+            .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+        const waitMessage = await message.reply({ embeds: [waitEmbed] })
+
+        await aki.start()
+
+        const startEmbed = new MessageEmbed()
+            .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+            .setTitle(`Question ${aki.currentStep + 1}`)
+            .addFields(
+                {
+                    name: "Question",
+                    value: `${aki.question}`
+                },
+                {
+                    name: "Progress",
+                    value: `${aki.progress}%`
+                }
+            )
+            .setColor("RANDOM")
+            .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+        const row1 = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setStyle("PRIMARY")
+                .setLabel("Yes")
+                .setEmoji("✅")
+                .setCustomId("y"),
+
+            new MessageButton()
+                .setStyle("PRIMARY")
+                .setLabel("No")
+                .setEmoji("❌")
+                .setCustomId("n"),
+
+            new MessageButton()
+                .setStyle("PRIMARY")
+                .setLabel("Don't Know")
+                .setEmoji("❓")
+                .setCustomId("idk")
+        )
+
+        const row2 = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setStyle("PRIMARY")
+                .setLabel("Probably")
+                .setEmoji("🤔")
+                .setCustomId("pb"),
+
+            new MessageButton()
+                .setStyle("PRIMARY")
+                .setLabel("Probaby Not")
+                .setEmoji("🙄")
+                .setCustomId("pn"),
+
+            new MessageButton()
+                .setStyle("DANGER")
+                .setLabel("Stop")
+                .setEmoji("🛑")
+                .setCustomId("stop"),
+        )
+
+        const startMessage = await waitMessage.edit({ embeds: [startEmbed], components: [row1, row2] })
+
+        const filter = (interaction) => {
+            if (interaction.user.id === message.author.id) return true;
+            return interaction.reply({
+                content: `Only ${message.author.tag} can use this interaction!`,
+                ephemeral: true,
+            });
+        };
+
+        const collector = startMessage.createMessageComponentCollector({
+            filter,
+            componentType: "BUTTON",
+            time: 60000 * 5
+        })
+
+        collector.on("collect", async (interaction) => {
+            if (interaction.customId === "y") {
+                await aki.step(0)
+            }
+            if (interaction.customId === "n") {
+                await aki.step(1)
+            }
+            if (interaction.customId === "idk") {
+                await aki.step(2)
+            }
+            if (interaction.customId === "pb") {
+                await aki.step(3)
+            }
+            if (interaction.customId === "pn") {
+                await aki.step(4)
+            }
+            if (interaction.customId === "stop") {
+
+                row1.components[0].setDisabled(true)
+                row1.components[1].setDisabled(true)
+                row1.components[2].setDisabled(true)
+                row2.components[0].setDisabled(true)
+                row2.components[1].setDisabled(true)
+                row2.components[2].setDisabled(true)
+
+                await startMessage.edit({ content: "This game has been stopped", components: [row1, row2] })
+
+                collector.stop()
+                isPlaying.delete(message.author.id)
+            }
+
+            if (aki.progress >= 90 || aki.currentStep >= 48) {
+                await aki.win()
+
+                collector.stop()
+                isPlaying.delete(message.author.id)
+
+                const guessEmbed = new MessageEmbed()
+                    .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+                    .setTitle("Is this your character?")
+                    .setDescription(`**Name:** ${aki.answers[0].name}\n\n${aki.answers[0].description}`)
+                    .setImage(aki.answers[0].absolute_picture_path)
+                    .setColor("RANDOM")
+                    .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+                const row3 = new MessageActionRow().addComponents(
+                    new MessageButton()
+                        .setStyle("SUCCESS")
+                        .setLabel("Yes")
+                        .setEmoji("✅")
+                        .setCustomId("yes"),
+
+                    new MessageButton()
+                        .setStyle("DANGER")
+                        .setLabel("No")
+                        .setEmoji("❌")
+                        .setCustomId("no"),
+                )
+
+                const guessMessage = await interaction.update({ embeds: [guessEmbed], components: [row3] })
+
+                const buttoncollector = startMessage.createMessageComponentCollector({
+                    filter,
+                    componentType: "BUTTON",
+                    time: 60000
+                })
+
+                buttoncollector.on("collect", async (interaction) => {
+                    if (interaction.customId === "yes") {
+                        const yesEmbed = new MessageEmbed()
+                            .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+                            .setTitle("Guessed it correctly!")
+                            .addFields(
+                                {
+                                    name: `Name`,
+                                    value: `${aki.answers[0].name}`,
+                                    inline: true
+                                },
+                                {
+                                    name: `Description`,
+                                    value: `${aki.answers[0].description}`,
+                                    inline: true
+                                },
+                                {
+                                    name: `Ranking`,
+                                    value: `${aki.answers[0].ranking}`,
+                                    inline: true
+                                }
+                            )
+                            .setColor("#39FF14")
+                            .setThumbnail(client.user.displayAvatarURL())
+                            .setImage(aki.answers[0].absolute_picture_path)
+                            .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+                        row3.components[0].setDisabled(true)
+                        row3.components[1].setDisabled(true)
+
+                        interaction.update({ embeds: [yesEmbed], components: [row3] })
+                    }
+                    if (interaction.customId === "no") {
+                        const yesEmbed = new MessageEmbed()
+                            .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+                            .setTitle("You win!")
+                            .setDescription(`You win this time, but I will definitely with the next time!\n\nWell Played!`)
+                            .setColor("#FF0000")
+                            .setThumbnail(client.user.displayAvatarURL())
+                            .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+                        row3.components[0].setDisabled(true)
+                        row3.components[1].setDisabled(true)
+
+                        interaction.update({ embeds: [yesEmbed], components: [row3] })
+                    }
+                })
+            } else {
+                const continueEmbed = new MessageEmbed()
+                    .setAuthor({ name: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true }) })
+                    .setTitle(`Question ${aki.currentStep + 1}`)
+                    .addFields(
+                        {
+                            name: "Question",
+                            value: `${aki.question}`
+                        },
+                        {
+                            name: "Progress",
+                            value: `${aki.progress}%`
+                        }
+                    )
+                    .setColor("RANDOM")
+                    .setFooter({ text: `Akinator game requested by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+
+                interaction.update({ embeds: [continueEmbed], components: [row1, row2] })
+            }
+        })
+    }
+}

@@ -21,7 +21,7 @@ module.exports = {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
 
-        const index = interaction.options.getNumber('index')
+        let index = interaction.options.getNumber('index')
 
         if(index <= 0) return interaction.followUp({content:`Cannot have smaller than 0 index`})
 
@@ -29,9 +29,11 @@ module.exports = {
 
         if(index > queue.songs.length) return interaction.followUp({content:`Index ${index} is out of range`})
 
-        queue.songs[0] = queue.songs[index];
-
-        interaction.followUp({content:`Now Playing: ${queue.songs[0].name}`})
+        while(index){
+            await queue.skip();
+            index--;
+        }
+        return interaction.followUp({content:`Now Playing: ${queue.songs[1].name}`})
 
     }
 }

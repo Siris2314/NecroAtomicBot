@@ -16,25 +16,31 @@ module.exports = {
     ],
 
     run:async(client, interaction) =>{
+
+
         const name = interaction.options.getString('name');
 
-        await Schema.findOne({Guild:interaction.guild.id, name:name}, async (data, err)=> {
+        const vc = interaction.member.voice.channel
+        await Schema.findOne({Guild:interaction.guild.id, Name:String(name)}, async (err, data)=> {
+
+            let queue = client.player.createQueue(interaction.guild.id,  {
+                data: interaction});
+            await queue.join(vc)
+            if(!vc) return interaction.followUp({content:'Must be in VC to use command'});
             if(!data) return interaction.followUp({content:`Queue with name ${name} not found`});
 
-            let queue = client.player.getQueue(interaction.guild.id);
+    
             const loadqueue = data.Queue;
 
-            if(queue){ 
-                interaction.followUp({content:`Queue already in VC, cannot override with current one`});
-            }
-            else {
-                let song = await queue.playlist(loadqueue).catch(_ => {
+            interaction.followUp({content:`Loaded queue ${name}`})
+            for(let i = 0; i < loadqueue.length; i++){
+                await queue.play(loadqueue[i]).catch(_ => {
                     if(!queue)
                         queue.stop();
                 });
-
-                interaction.followUp({content:`Loaded queue ${name}`});
             }
+
+            
 
 
            

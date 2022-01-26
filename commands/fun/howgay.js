@@ -23,7 +23,7 @@ module.exports = {
             .setColor("#000000")
             .setImage(image)
             .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
-            .setFooter(message.client.user.username, message.client.user.avatarURL())
+            .setFooter({text:message.client.user.username, iconURL: message.client.user.avatarURL()})
             message.channel.send({embeds:[embed]})
             
 
@@ -35,7 +35,7 @@ module.exports = {
             .setTitle("Gayrate Machine")
             .setColor("RANDOM")
             .setDescription(`${member.username} is \`${gayrate}%\` gay 🏳️‍🌈`)
-            .setFooter(message.client.user.username, message.client.user.avatarURL())
+            .setFooter({text:message.client.user.username, iconURL: message.client.user.avatarURL()})
         message.channel.send({embeds:[embed]})
      }
     

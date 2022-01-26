@@ -54,6 +54,9 @@ const globPromise = promisify(glob);
 const welcomeMessage = require('./schemas/welcomeMessage')
 const { VoiceClient } = require("djs-voice");
 const afkschema = require("./schemas/afk");
+const weebytoken = process.env.weeby;
+const WeebyAPI = require('weeby-js');
+const weeby = new WeebyAPI(weebytoken);
 
 const Nuggies = require('nuggies');
 
@@ -73,6 +76,7 @@ const rpctoken = process.env.rpc;
 const RPC = require("discord-rpc");
 const rpc = new RPC.Client({ transport: "ipc" });
 
+const customSchema = require("./schemas/custom-welcome");
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
 const blacklistserver = require("./schemas/blacklist-server");
@@ -1103,7 +1107,7 @@ client.on("messageCreate", async (message) => {
           return message.channel.send({
             content: "Cannot use commands as owner has blacklisted this server",
           });
-        const channel = client.channels.cache.get("800421170301501470"); //Personal Command Usage Checker, for bug testing purposes
+        const channel = client.channels.cache.get("935287575441199224"); //Personal Command Usage Checker, for bug testing purposes
 
         channel.send(
           `**${message.author.tag}** has used ${command} command in **${message.guild.name}**`
@@ -1241,6 +1245,41 @@ client.on("guildMemberAdd", async (member) => {
       console.log(err);
     }
   });
+
+  customSchema.findOne({Guild:member.guild.id}, async(err, data)=>{
+      if(!data) return;
+
+
+      const channel = client.channels.cache.get(data.Channel);
+
+  
+      const background = data.Background;
+      const greetings = data.Greetings;
+      const message = data.Message ? data.Message : '';
+      const greetcolor = data.GreetColor ? data.GreetColor : '';
+      const messagecolor = data.messageColor ? data.messageColor : '';
+      const namecolor = data.NameColor ? data.NameColor : '';
+      const avatarcolor = data.AvatarColor ? data.AvatarColor : '';
+      const font = data.font ? data.font : '';
+
+      let image = ''
+
+      console.log(member.user.avatarURL({dynamic:false, format:'png'}))
+      image = await weeby.custom.greeting(member.user.avatarURL({dynamic:false, format:'png'}),background ,member.user.username, greetings, message, greetcolor, namecolor, avatarcolor,messagecolor, font)
+        .then(img => {
+          
+        const attachment = new Discord.MessageAttachment(
+          await (img),
+          "greetings.png"
+        );
+          
+          channel.send({files:[attachment]})
+
+    })
+
+
+
+  })
 
   //Mute System
   const data = await muteschema.findOne({ Guild: member.guild.id }); //Check to see if mute system is enabled

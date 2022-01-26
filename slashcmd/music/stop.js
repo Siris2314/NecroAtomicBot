@@ -11,6 +11,7 @@ module.exports =  {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
 
+        interaction.guild.me.voice.disconnect()
         queue.stop()
 
         interaction.followUp({content:`Stopped Music and Disconnected from ${vc}`})

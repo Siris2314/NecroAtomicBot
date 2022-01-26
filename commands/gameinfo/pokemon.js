@@ -23,7 +23,7 @@ module.exports = {
         return response;
       })
       .catch(function (error) {
-        message.inlineReply("I did't find that pokemon!");
+        message.channel.send("I didn't find that pokemon!");
       });
 
     let moves = "";
@@ -66,10 +66,10 @@ module.exports = {
     var n = pokemon.moves.length;
 
     const embed = new MessageEmbed()
-      .setAuthor(
-        capitalize(pokemon.name),
-        "http://pngimg.com/uploads/pokemon_logo/pokemon_logo_PNG12.png"
-      )
+      .setAuthor({
+        name: capitalize(pokemon.name),
+        iconURL: "http://pngimg.com/uploads/pokemon_logo/pokemon_logo_PNG12.png"
+      })
 
       .setThumbnail(pokemon.sprites.front_default)
       .setColor("BLUE")

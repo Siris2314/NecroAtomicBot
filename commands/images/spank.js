@@ -7,7 +7,7 @@ module.exports = {
 
     async execute(message, args) {
         let avatar = message.author.displayAvatarURL({ dynamic: false, format: "png" });
-        let avatar1 = message.mentions.users.array()[0];
+        let avatar1 = message.mentions.users.first()
         avatar1pic = avatar1.displayAvatarURL({ format: "png" });
         let image = await canva.Canvas.spank(avatar, avatar1pic);
         let spank = new Discord.MessageAttachment(image, "spank.png");

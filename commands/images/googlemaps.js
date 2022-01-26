@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const fetch = require("node-fetch");
 
 module.exports = {
-  name: 'maps',
+  name: 'googlemaps',
   description:'Returns map of a location provided',
 
 

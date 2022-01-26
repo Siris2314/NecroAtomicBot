@@ -52,7 +52,7 @@ module.exports = {
                 .addField("Total Exquisite Chests Collected", String(ecn))
                 .addField("Total Common Chests Collected", String(ccn))
                 .setTimestamp()
-                .setFooter('Powered by Mihoyo')
+                .setFooter({text:'Powered by Mihoyo'})
 
             interaction.followUp({embeds:[embed]})
         })
