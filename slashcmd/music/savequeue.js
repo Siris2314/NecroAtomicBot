@@ -37,12 +37,19 @@ module.exports = {
         }
         else{
 
-            await Schema.findOne({Guild: interaction.guild.id}, async(data, err)=>{
+            let links = [];
+
+            for(let i = 0; i < songs.length; i++){
+                links.push(songs[i].url);
+            
+     }
+
+            await Schema.findOne({Guild: interaction.guild.id, Name:name}, async(err, data)=>{
                 if(data) data.delete();
                 new Schema({
                     Guild: interaction.guild.id,
                     Name:name,
-                    Queue:songs
+                    Queue:links
                 }).save();
             })
 

@@ -37,7 +37,7 @@ module.exports = {
       )
 
       .setTimestamp()
-      .setFooter(message.author.tag, message.author.displayAvatarURL({dynamic:true}))
+      .setFooter({text:message.author.tag, iconURL:message.author.displayAvatarURL({dynamic: true})})
 
 
 
