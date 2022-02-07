@@ -2,9 +2,10 @@
 const fetch = require('node-fetch');
 
 module.exports = {
-    name: "joke",
+    name: "jokes",
     description: "Get jokes",
     async execute(message,args,client) {
+     try{
         fetch("https://official-joke-api.appspot.com/random_joke")
             .then(function (response) {
                 return response.json();
@@ -23,5 +24,8 @@ module.exports = {
                 };
                 msg.channel.send({ embeds: [jokes] });
             });
+        } catch(err){
+            message.channel.send("API Error")
+        }
     },
 }

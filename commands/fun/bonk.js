@@ -5,6 +5,8 @@ module.exports = {
     name: "bonk",
     description: "Bonk another user",
     async execute(message, args, client) {
+
+    try{
         const user = message.mentions.members.first() || message.guild.members.cache.get(args[0])
 
         if(!user){
@@ -21,6 +23,10 @@ module.exports = {
 
 
         return message.channel.send({embeds:[embed]});
+
+    } catch(err){
+        message.channel.send({content:'API ERROR'})
+    }
 
     }
 }

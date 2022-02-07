@@ -57,6 +57,7 @@ const afkschema = require("./schemas/afk");
 const weebytoken = process.env.weeby;
 const WeebyAPI = require('weeby-js');
 const weeby = new WeebyAPI(weebytoken);
+const chalkAnimation = require('chalk-animation')
 
 const Nuggies = require('nuggies');
 
@@ -79,6 +80,8 @@ const rpc = new RPC.Client({ transport: "ipc" });
 const customSchema = require("./schemas/custom-welcome");
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
+
+const jointocreate = require('./schemas/jointocreatevc');
 const blacklistserver = require("./schemas/blacklist-server");
 const inviteschema = require("./schemas/anti-invite");
 const blacklistedWords = new Discord.Collection();
@@ -90,6 +93,8 @@ const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 
+
+client.voicetemp = new Discord.Collection();
 
 //VoiceClient for the Voice Channel Leveling System
 const voiceClient = new VoiceClient({
@@ -177,6 +182,7 @@ player
 
   //Event for the First Song in the Queue
   .on("songFirst", async(queue, song) => {
+  try{
    if(song.isFirst){
 
     //Removes Tags from YouTube Music Videos
@@ -205,8 +211,12 @@ player
       queue.data.channel.send({embeds:[embed]})
     }
   }
+ }catch(err){
+   queue.data.channel.send({content:'An Error Has Occurred'})
+ }
     
   })
+
 
   //Event for When a YouTube or Spotify Playlist is added to the queue
   .on("playlist", async (raw, queue,requestedBy) => {
@@ -224,6 +234,8 @@ player
 
   //Events for when a Song is Added to the queue
   .on("songAdd", async(queue, song) => {
+
+try{
 
   if(!song.isFirst){
     if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
@@ -250,6 +262,9 @@ player
         await queue.data.channel.send({embeds:[embed]})
     }
     }
+   }catch(err){
+    queue.data.channel.send({content:'An Error Has Occured'})
+   }
   })
 //End Of Music Bot Stuff
 
@@ -1690,6 +1705,42 @@ client.on("guildDelete", async (guild) => {
 
 //Voice State Change event
 client.on("voiceStateUpdate", async (oldState, newState) => {
+  
+  //Join to Create VC System
+  const schema = await jointocreate.findOne({
+    guildId: oldState.guild.id ||newState.guild.id,
+  })
+
+  if(!schema)return;
+
+
+   if(newState?.channelId == schema?.channelId){
+     const {guild, user, voice, id} = newState.member
+     const parent = newState.channel?.parentId  
+     const parentId = parent ? {parent} : {};
+     
+     const voicechannel = await guild.channels.create(`${user.username}'s Voice Channel`,{
+       type:'GUILD_VOICE',
+       ...parentId,
+       permissionOverwrites:[
+         {
+           id: id,
+           allow:["MANAGE_CHANNELS"]
+         }
+       ]
+     });
+
+     client.voicetemp.set(voicechannel.id, newState.member);
+     voice.setChannel(voicechannel.id);
+
+
+   }
+
+   if(client.voicetemp.get(oldState.channelId) && !oldState.channel.members.size){
+     oldState.channel.delete();
+     return;
+   }
+
 
   //VC Leveling System, that checks for when a member joins or leaves VC and calculates XP based on that
   voiceClient.startListener(oldState, newState);

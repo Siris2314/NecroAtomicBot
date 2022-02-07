@@ -90,7 +90,7 @@ module.exports = {
 
           if(banner){
             const extension = banner.startsWith("a_") ? '.gif' : '.png'
-            url = `https://cdn.discordapp.com/banners/${member.user.id}/${banner}${extension}`
+            url = `https://cdn.discordapp.com/banners/${member.user.id}/${banner}${extension}?size=1024`
 
 
         let userflags = [];
@@ -123,7 +123,7 @@ module.exports = {
             .addField('**Status:**',`\`${(status[member.presence.status]) ? (status[member.presence.status]) : 'Offline'}\``,true)
             .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
             .addField('Currently On Device', `\`${Object.entries(devices).length > 0 ? entries : 'None'}\``)
-            .addField('**Game**:',`\`${member.presence.activity ? member.presence.activity.name : 'Not Currently Playing a Game.'}\``,true)
+            .addField('**Game**:',`\`${member.presence.activities[0] ? member.presence.activities[0].name : 'Not Currently Playing a Game.'}\``,true)
             .addField('**Highest Role:**',`${member.roles.highest.id === interaction.guild.id ? 'None' : member.roles.highest}`,true)
             .addField(`\`${roles.length}\` **Roles:**`,`${getRoles(roles)}`)
             .setColor("RANDOM")
@@ -160,10 +160,10 @@ module.exports = {
                 .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
                 .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
                 .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
-                .addField('**Status:**',`\`${status[member.presence.status] ? status[member.presence.status] : 'Offline'}\``,true)
+                .addField('**Status:**',`\`${member.presence.status ? status[member.presence.status] : 'Offline'}\``,true)
                 .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
                 .addField('Currently On Device(s)', `\`${Object.entries(devices).length > 0 ? entries : 'None'}\``)
-                .addField('**Game**:',`\`${(member.presence.activity) ? ((member.presence.activity.name)) : 'Not Playing A Game'}\``,true)
+                .addField('**Game**:',`\`${member.presence.activities[0] ? member.presence.activities[0].name : 'Not Currently Playing a Game.'}\``,true)
                 .addField('**Highest Role:**',`${member.roles.highest.id === interaction.guild.id ? 'None' : member.roles.highest}`,true)
                 .addField(`\`${roles.length}\` **Roles:**`,`${getRoles(roles)}`)
                 .setColor(accent_color)

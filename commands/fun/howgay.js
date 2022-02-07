@@ -5,6 +5,8 @@ module.exports = {
     name: 'howgay',
     description: 'Gay Rate Command',
     async execute(message, args,client){
+
+    try{
         const member = message.mentions.users.first() || message.author;
         const user = member.displayAvatarURL({dynamic:false, format:'png'})
         let gayrate = Math.floor(Math.random() * 101)
@@ -38,6 +40,8 @@ module.exports = {
             .setFooter({text:message.client.user.username, iconURL: message.client.user.avatarURL()})
         message.channel.send({embeds:[embed]})
      }
-    
+    } catch(err){
+        message.channel.send("API Error")
+    }
 }
 }

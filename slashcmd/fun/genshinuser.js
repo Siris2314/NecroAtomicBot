@@ -20,12 +20,15 @@ module.exports = {
 
     run: async (client, interaction) => {
 
+  
+
         const uid = interaction.options.getString('uid')
         App.loginWithCookie(cookie);
         App.setServerType('os');
 
         App.getUserInfo(Number(uid)).then((res) => {
 
+            console.log(res)
             const adn = res.stats.active_day_number;
             const achnum = res.stats.achievement_number;
             const anemonum = res.stats.anemoculus_number;
@@ -55,9 +58,10 @@ module.exports = {
                 .setFooter({text:'Powered by Mihoyo'})
 
             interaction.followUp({embeds:[embed]})
-        })
+        }).catch(err => 
+            interaction.followUp({content:'An error has occurred'}))
 
-        
+    
 
     }
 

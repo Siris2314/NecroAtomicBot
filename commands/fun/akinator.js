@@ -6,6 +6,8 @@ module.exports = {
     name: "akinator",
     description: "Starts a game of Akinator.",
     async execute(message, args,client){
+
+     try{
 		await message.channel.sendTyping();
         if (isPlaying.has(message.author.id)) return message.reply("You are already playing a game of Akinator. Please complete or cancel that game to start a new game.").catch(err => { })
 
@@ -237,5 +239,9 @@ module.exports = {
                 interaction.update({ embeds: [continueEmbed], components: [row1, row2] })
             }
         })
+
+     }catch(err){
+         message.channel.send("Stopping Game Due to Command Error, Please Wait a Few Minutes Before Restarting")
+     }
     }
 }
