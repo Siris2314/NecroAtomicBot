@@ -7,10 +7,10 @@ module.exports = {
   async execute (message, args,client) {
     
 
-  // if(!message.channel.nsfw){
-  //       return message.channel.send(`Can only run this command in a NSFW channel`);
-  // }
-  //  else{
+  if(!message.channel.nsfw){
+        return message.channel.send(`Can only run this command in a NSFW channel`);
+  }
+   else{
     const query = `${args}`;
     if (!query)
       return message.reply('Please add a search query!');
@@ -49,6 +49,6 @@ module.exports = {
         message.channel.send({embeds:[malEmbed]});
 
       })
-    
+   }
   }
 }

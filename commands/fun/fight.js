@@ -1,8 +1,5 @@
 module.exports = {
     name: 'fight',
-    args: true,
-    usage: '<user>',
-    aliases: ['ffight'],
     description: 'Fight someone in the old dank memer style!',
 
     async execute(message, args,client) {
