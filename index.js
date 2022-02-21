@@ -35,6 +35,7 @@ const { format } = require("./functions2");
 const axios = require("axios");
 const counterSchema = require("./schemas/count");
 const path = require("path");
+const blacklistWords = require('./schemas/FilterDB');
 const nsfwschema = require("./schemas/nsfw");
 const banner = "./assets/bot_long_banner.png";
 require("dotenv").config();
@@ -84,16 +85,14 @@ const autoroleschema = require("./schemas/autorole");
 const jointocreate = require('./schemas/jointocreatevc');
 const blacklistserver = require("./schemas/blacklist-server");
 const inviteschema = require("./schemas/anti-invite");
-const blacklistedWords = new Discord.Collection();
 const ghostpingschema = require("./schemas/ghostping");
 const Pings = new Discord.Collection();
 const chatschema = require("./schemas/chatbot-channel");
 const muteschema = require("./schemas/mute");
-const blacklistSchema = require("./schemas/blacklist");
 const starboardcollection = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
-
-
+client.filters = new Discord.Collection()
+client.filtersLog = new Discord.Collection()
 client.voicetemp = new Discord.Collection();
 
 //VoiceClient for the Voice Channel Leveling System
@@ -144,7 +143,7 @@ client.color = require('./colors.json') //Global Variable for Color JSON for eas
 Levels.setURL(mongoPath); //Connection to the Mongo Database for Leveling System
 
 
-module.exports = { blacklistedWords, afk, starboardcollection }; //Exporting Discord Collections for Usage Outside of Main File
+module.exports = {afk, starboardcollection }; //Exporting Discord Collections for Usage Outside of Main File
 
 
 const { Player } = require("discord-music-player"); //Import Music Player Client 
@@ -400,15 +399,18 @@ fs.readdirSync("./slashcmd/").forEach((dir) => {
   if (!mongoPath) return; //If Mongo Path is not set, continue
 
 
+   blacklistWords.find().then((documents)=>{
+     documents.forEach((doc)=>{
+       client.filters.set(doc.Guild, doc.Words);
+       client.filtersLog.set(doc.Guild, doc.Words)
+     })
+   })
 
 
-  //Bad Word System Configuration
-  blacklistSchema.find().then((data) => {
-    //Loop Through Bad Word Data for Server and Set it to the BlacklistWords Collection
-    data.forEach((val) => {
-      blacklistedWords.set(val.Guild, val.Words);
-    });
-  });
+
+
+
+  
 
   //Member Count Channel Registration
   setInterval(() => {
@@ -528,58 +530,47 @@ client.on("messageCreate", async (message) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  } 
+
 
   //Check to see if the message content itself is an emoji, hence starts and ends with a :
-  if (message.content.startsWith(":") && message.content.endsWith(":")) {
 
-    //Find the Emoji itself
-    let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g);
-    if (!emojis) return;
+if(message.content.startsWith(':') && message.content.endsWith(':')){
+  let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g)
+  if (!emojis) return;
+  emojis.forEach(m => {
+    let emoji = client.emojis.cache.find(x => x.name === m)
+    if (!emoji) return;
+    let temp = emoji.toString()
+    if (new RegExp(temp, "g").test(message.content)) message.content = message.content.replace(new RegExp(temp, "g"), emoji.toString())
+    else message.content = message.content.replace(new RegExp(":" + m + ":", "g"), emoji.toString());
+  })
 
-    //Loop Through All Possible Emoji's with the name and see which Server it was sent in
-    emojis.forEach((m) => {
-      let emoji = client.emojis.cache.find((x) => x.name === m);
-      if (!emoji) return;
-      let temp = emoji.toString();
-      if (new RegExp(temp, "g").test(message.content))
-        message.content = message.content.replace(
-          new RegExp(temp, "g"),
-          emoji.toString()
-        );
-      else
-        message.content = message.content.replace(
-          new RegExp(":" + m + ":", "g"),
-          emoji.toString()
-        );
-    });
+  if (message.content === message.content) return;
 
-    //Create a Webhook for the emoji itself, that way a user without Nitro can still use it
-    let webhook = await message.channel.fetchWebhooks();
-    let number = randomNumber(1, 2);
-    webhook = webhook.find((x) => x.name === "NQN" + number);
+  let webhook = await message.channel.fetchWebhooks();
+  let number = randomNumber(1, 2);
+  webhook = webhook.find(x => x.name === "NQN" + number);
 
-    if (!webhook) {
-      webhook = await message.channel.createWebhook(`NQN` + number, {
-        avatar: client.user.displayAvatarURL({ dynamic: true }),
-      });
-    }
-
-    await webhook.edit({
-      name: message.member.nickname
-        ? message.member.nickname
-        : message.author.username,
-      avatar: message.author.displayAvatarURL({ dynamic: true }),
-    });
-
-    message.delete().catch((err) => {});
-    webhook.send(message.content).catch((err) => {});
-
-    await webhook.edit({
-      name: `NQN` + number,
-      avatar: client.user.displayAvatarURL({ dynamic: true }),
+  if (!webhook) {
+    webhook = await message.channel.createWebhook(`NQN` + number, {
+      avatar: client.user.displayAvatarURL({ dynamic: true })
     });
   }
+
+  await webhook.edit({
+    name: message.member.nickname ? message.member.nickname : message.author.username,
+    avatar: message.author.displayAvatarURL({ dynamic: true })
+  })
+
+  message.delete().catch(err => { })
+  webhook.send(message.content).catch(err => { })
+
+  await webhook.edit({
+    name: `NQN` + number,
+    avatar: client.user.displayAvatarURL({ dynamic: true })
+  })
+}
 
   //User Message Level System
   const randomXP = Math.floor(Math.random() * 29) + 1; //Random XP Value between 1 and 29 that will be given on each message sent by a user in the server
@@ -588,6 +579,53 @@ client.on("messageCreate", async (message) => {
     message.guild.id,
     randomXP
   ); //Appends and Saves XP to the Database Upon Each User Leveling Up
+
+  const messageContent = message.content.toLowerCase().split(" ")
+  
+
+  const blacklistchecker = await blacklistWords.findOne({Guild:message.guild.id})
+  const filter = client.filters.get(message.guild.id);
+  if(!filter) return;
+  const wordsUsed = [];
+
+  let shouldDelete = false;
+
+  messageContent.forEach((word) => {
+    if(filter.includes(word)){
+      wordsUsed.push(word);
+      shouldDelete = true;
+    }
+
+  })
+
+  if(shouldDelete){
+      message.delete().catch(()=> {})
+  }
+
+  if(wordsUsed.length){
+    const channelID = blacklistchecker.Log
+    if(!channelID) return;
+    const channelObject = message.guild.channels.cache.get(channelID)
+    if(!channelObject) return;
+
+    const embed = new Discord.MessageEmbed()
+      .setColor("RED")
+      .setAuthor({
+        name: message.author.tag,
+        iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      })
+      .setDescription([
+        `Used ${wordsUsed.length} blacklisted word(s) in the message: ${message.channel} => `,
+        `\`${wordsUsed.map((w) => w)}\``,
+      ].join("\n"))
+
+      channelObject.send({embeds:[embed]})
+  }
+
+
+
+  
+
 
   //FxTwitter System for a Personal Server
   if (
@@ -765,20 +803,7 @@ client.on("messageCreate", async (message) => {
     }
   );
 
-  const splittedMsgs = message.content.split(" "); //Split message into arrat of words
 
-  let deleting = false; //Set Auto-Deletion to False
-
-  await Promise.all(
-    splittedMsgs.map((content) => {
-      if (
-        blacklistedWords.get(message.guild.id)?.includes(content.toLowerCase()) // If The Message Contains Any Blacklisted Word set by Server
-      )
-        deleting = true; //Set Auto-Deletion to True
-    })
-  );
-
-  if (deleting) return message.delete(); //Delete Message if Auto Deletion is set to True
 
   //Counting game system, that tracks the current number via a Database
   await counterSchema.findOne(

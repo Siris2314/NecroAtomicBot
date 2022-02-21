@@ -167,6 +167,8 @@ module.exports = {
      ],
 
      run: async (client, interaction) => {
+
+      try{
         const title = interaction.options.getString("title");
         const channel = interaction.options.getChannel("channel");
         const description = interaction.options.getString("description");
@@ -197,9 +199,7 @@ module.exports = {
             .setImage(image)
             .setThumbnail(thumbnails)
             .setTimestamp();
-          interaction.guild.channels.cache
-            .get(channel.id)
-            .send({ embeds: [embed2] });
+          interaction.guild.channels.cache.get(channel.id).send({ embeds: [embed2] });
         } else if (timesm === "no") {
           await interaction.followUp({
             ephemeral: true,
@@ -219,10 +219,13 @@ module.exports = {
             .setImage(image)
             .setThumbnail(thumbnails)
             .setFooter(footer);
-          interaction.guild.channels.cache
-            .get(channel.id)
-            .send({ embeds: [embed] });
+
+          
+          interaction.guild.channels.cache.get(channel.id).send({ embeds: [embed] });
         }
+      } catch (err) {
+        interaction.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
+      }
      }
 
 }

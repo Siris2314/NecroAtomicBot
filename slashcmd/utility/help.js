@@ -1,6 +1,7 @@
 const {CommandInteraction, Client, MessageEmbed, MessageActionRow, MessageSelectMenu} = require('discord.js')
 const fs = require('fs')
 const image = `https://cdn.discordapp.com/attachments/867151384703795241/867465639262027776/bot_long_banner.png`
+const emojis = require('../../emojis.json')
 module.exports = {
     name:'help',
     description:'Slash Help Command',
@@ -27,7 +28,7 @@ module.exports = {
 
             directories.push(categories)
 
-            console.log(command)
+
 
             commands.push(command)
             
@@ -110,7 +111,7 @@ module.exports = {
 
                 }
                 else if(directory === 'music'){
-                    catEmbed.setTitle(`${directory} :musical_note:`)
+                    catEmbed.setTitle(`${directory}` + ` ${emojis.categories.music}`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
                         commands[2].map((cmd) => {

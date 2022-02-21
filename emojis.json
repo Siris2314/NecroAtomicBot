@@ -1,0 +1,38 @@
+{
+    "signs": {
+      "success": "<a:success:797783550078091267>",
+      "fail": "<:failed:797785009406476288>",
+      "info": "<:Information:859675243454660628>",
+      "color": ":art:",
+      "ping": "<:Ping:804131592062632008>",
+      "servers": "<:Servers:804133920324452392>",
+      "users": "<:Users:804135471269412884>",
+      "bot": "<:Bot:804127527248855060>",
+      "plus": "<:Plus:860781076519714836>",
+      "channel": "<:Channel:826292829588291625>",
+      "members": "<:Members:826293236393181184>",
+      "online": "<a:Online:826299954993299487>",
+      "dnd": "<a:DND:826304752664838164>",
+      "idle": "<a:Idle:826296331182014464>",
+      "offline": "<a:Offline:826298405269405757>",
+      "reload": "<:HurricanoReload:837568492101828608>",
+      "world": "<:HurricanoWorld:837569079346200614>",
+      "key": "<:HurricanoKey:837569123861004288>",
+      "topgg": "<:TopGG:860781808920166430>",
+      "database": "<:Database:860782779896692752>"
+    },
+    "categories": {
+      "config": "<:Config:859675238873694258>",
+      "economy": "<:Economy:859675245980024832>",
+      "fun": "<:Fun:859675245828243506>",
+      "giveaways": "<:Giveaways:859675246801453056>",
+      "image": "<:Image:859675240460189737>",
+      "information": "<:Information:859675243454660628>",
+      "levelling": "<:Levelling:859675244993708033>",
+      "moderation": "<:Moderation:859675243999395851>",
+      "music": "<:Music:859675245929037824>",
+      "owner": "<:Owner:859675244183683072>",
+      "suggestions": "<:Suggestions:859675239548977152>",
+      "utility": "<:Utility:859675240064876544>"
+    }
+  }

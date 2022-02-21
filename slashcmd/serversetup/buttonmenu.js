@@ -95,6 +95,8 @@ module.exports = {
             const role = interaction.options.getRole('role');
             const channel = interaction.options.getChannel('channel');
 
+        try{
+
             if(option === 'create'){
                 if(menu){
                     return interaction.editReply({content:`Role Menu is already with that name, please make a new one with a different name`})
@@ -189,6 +191,11 @@ module.exports = {
 
                 interaction.editReply({content:`Removed Role \`${role.name}\` from menu: \`${menu.name}\``})
             }
+
+        }catch(err){
+
+            interaction.editReply({content:`Something went wrong`})
+        }
 
 
 
