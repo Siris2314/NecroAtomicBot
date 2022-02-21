@@ -3,10 +3,10 @@ const { MessageEmbed } = require("discord.js")
 
 
 module.exports = {
-    name: "anitrace",
+    name: "trace",
     description: "Traces Image to Return Anime name",
 
-    async execute(message,client,args) {
+     async execute(message, args,client){
 
     try{
         const image = message.attachments.size > 0 ? message.attachments.first().url : null;
