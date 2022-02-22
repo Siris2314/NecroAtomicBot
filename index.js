@@ -605,14 +605,15 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   }
 
   if(wordsUsed.length){
-    const channelID = blacklistchecker.Log
+    const channelID = blacklistchecker.Log || null
     if(!channelID){
       //Do Nothing
     }
-    const channelObject = message.guild.channels.cache.get(channelID)
+    const channelObject = message.guild.channels.cache.get(channelID) || null
     if(!channelObject){
       //Do Nothing
     }
+    else{
 
     const embed = new Discord.MessageEmbed()
       .setColor("RED")
@@ -626,6 +627,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       ].join("\n"))
 
       channelObject.send({embeds:[embed]})
+    }
   }
 
 
