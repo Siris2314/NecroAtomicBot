@@ -23,11 +23,11 @@ module.exports = {
     let badge = user.user.flags.toArray()
     let badges = badge.length ? badge.map(f => flags[f]).join(" ") : "No Badges";
 
-    let status = user.presence?.status
-    if (status === "dnd") status = client.emotes.Presence['dnd'];
-    if (status === "idle") status = client.emotes.Presence['idle'];
-    if (status === "online") status = client.emotes.Presence['online'];
-    if (status === "offline" || status === "invisible" || status === undefined) status = client.emotes.Presence['offline']
+    let status = user.presence?.status || 'Null'
+    if (status === "dnd") status = 'Do not Disturb'
+    if (status === "idle") status = 'Idle'
+    if (status === "online") status = 'Online'
+    if (status === "offline" || status === "invisible" || status === undefined) 'Offline'
 
     let activity = user.presence?.activities[0].name || "No Activity"
 

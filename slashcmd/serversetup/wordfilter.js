@@ -81,7 +81,7 @@ module.exports = {
 
         const subCommand = options.getSubcommand();
 
-        const logger = options.getChannel('logger').id;
+        const logger = options.getChannel('logger').id || null;
 
         switch (subCommand){
             case 'clear':
