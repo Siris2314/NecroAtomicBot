@@ -584,8 +584,10 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   
 
   const blacklistchecker = await blacklistWords.findOne({Guild:message.guild.id})
-  const filter = client.filters.get(message.guild.id);
-  if(!filter) return;
+  const filter = client.filters.get(message.guild.id) || "No Filter"
+  if(!filter){
+   
+  }
   const wordsUsed = [];
 
   let shouldDelete = false;
@@ -604,9 +606,13 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
 
   if(wordsUsed.length){
     const channelID = blacklistchecker.Log
-    if(!channelID) return;
+    if(!channelID){
+      //Do Nothing
+    }
     const channelObject = message.guild.channels.cache.get(channelID)
-    if(!channelObject) return;
+    if(!channelObject){
+      //Do Nothing
+    }
 
     const embed = new Discord.MessageEmbed()
       .setColor("RED")
