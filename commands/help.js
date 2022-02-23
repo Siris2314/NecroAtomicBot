@@ -63,10 +63,6 @@ module.exports = {
                             value: "```" + prefix + " help utility```",
                         },
                         {
-                            name: "✂ Work in Progress",
-                            value: "```" + prefix + " help wip```",
-                        },
-                        {
                             name: ":frame_photo: Images",
                             value: "```" + prefix + " help images```",
                         },
