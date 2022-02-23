@@ -81,7 +81,10 @@ module.exports = {
 
         const subCommand = options.getSubcommand();
 
-        const logger = options.getChannel('logger').id || null;
+        const logger = options.getChannel('logger').id ? options.getChannel('logger').id : "No Channel";
+        if(!logger || logger == "No Channel"){
+
+        }
 
         switch (subCommand){
             case 'clear':
@@ -118,7 +121,7 @@ module.exports = {
 
                 break;
             case 'config':
-
+                
                 const choice = options.getString('options');
                 const words = options.getString('word').toLowerCase().split(',');
                 switch (choice){

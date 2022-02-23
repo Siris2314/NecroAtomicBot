@@ -7,9 +7,16 @@ module.exports = {
   name: "ship",
   description: "Relationship Calculator",
 
-  execute: async (message,args,client) => {
-        let user1 = message.mentions.users.array()[0];
-        let user2 = message.mentions.users.array()[1];
+  async execute(message,args,client) {
+        let user1 = ' '
+        let user2 = ' '
+        let count = 0
+        message.mentions.users.forEach((user) =>{
+          count++; //Adding one onto the count variable
+          if (count >= 3) return message.channel.send('Can only ship 2 people at a time!'); 
+          if (count === 1) user1 = message.guild.members.cache.get(user.id); //Getting the first mentioned user
+          else user2 = message.guild.members.cache.get(user.id);
+        })
         let c = Math.random() * 100 + 1;
         let chance = parseInt(c);
         const canvas = Canvas.createCanvas(700, 250);
@@ -34,12 +41,11 @@ module.exports = {
             .setColor("#ff6050")
             .setImage("attachment://love.png")
             .setDescription(
-                `${user1.username} and ${user2.username} chances of a relationship are ${chance}%`
+                `${user1.user.username} and ${user2.user.username} chances of a relationship are ${chance}%`
             )
-            .setFooter(new Date())
-            .attachFiles(attachment);
+            .setTimestamp()
 
-        return message.channel.send({embeds:[embed]});
+        return message.channel.send({embeds:[embed], files:[attachment]});
 
   }
 }

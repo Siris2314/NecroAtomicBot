@@ -157,6 +157,7 @@ const player = new Player(client, {
 
 
 
+
 //Global Variable for Music Bot
 client.player = player;
 
@@ -217,8 +218,10 @@ player
   })
 
 
+
   //Event for When a YouTube or Spotify Playlist is added to the queue
   .on("playlist", async (raw, queue,requestedBy) => {
+  try{
     const embed = new Discord.MessageEmbed()
       .setColor(client.color.invis)
       .setTitle('**Playlist Added**')
@@ -228,6 +231,10 @@ player
       .setThumbnail(raw.thumbnail)
       .setTimestamp()
     await queue.data.channel.send({embeds:[embed]})
+
+  } catch(err){
+    queue.data.channel.send("An Error Has Occured")
+  }
 
   })
 
@@ -580,10 +587,16 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     randomXP
   ); //Appends and Saves XP to the Database Upon Each User Leveling Up
 
+
+  try{
+
   const messageContent = message.content.toLowerCase().split(" ")
   
 
-  const blacklistchecker = await blacklistWords.findOne({Guild:message.guild.id})
+  const blacklistchecker = await blacklistWords.findOne({Guild:message.guild.id}) ? await blacklistWords.findOne({Guild:message.guild.id}) : "No System Enabled"
+  if(!blacklistchecker || blacklistlistchecker.Blacklist === "No System Enabled"){
+
+  }
   const filter = client.filters.get(message.guild.id) || "No Filter"
   if(!filter){
    
@@ -634,6 +647,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       channelObject.send({embeds:[embed]})
     }
   }
+}catch(err){
+
+}
 
 
 
