@@ -597,6 +597,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       wordsUsed.push(word);
       shouldDelete = true;
     }
+    else{
+      
+    }
 
   })
 
@@ -604,13 +607,15 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       message.delete().catch(()=> {})
   }
 
-  if(wordsUsed.length){
-    const channelID = blacklistchecker.Log || null
-    if(!channelID){
+  if(wordsUsed.length > 0){
+    const channelID = blacklistchecker.Log ? blacklistchecker.Log : "No Log"
+    console.log(channelID)
+    if(!channelID || channelID == "No Log"){
       //Do Nothing
     }
-    const channelObject = message.guild.channels.cache.get(channelID) || null
-    if(!channelObject){
+    const channelObject = message.guild.channels.cache.get(channelID) ? message.guild.channels.cache.get(channelID) : "No Channel"
+    console.log(channelObject)
+    if(!channelObject || channelObject == "No Channel"){
       //Do Nothing
     }
     else{
@@ -629,6 +634,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       channelObject.send({embeds:[embed]})
     }
   }
+
 
 
 
