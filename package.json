@@ -198,6 +198,8 @@
 
     "random": "^3.0.6",
 
+    "random-js": "^2.1.0",
+
     "random-puppy": "^1.1.0",
 
     "random-words": "^1.1.1",
@@ -254,7 +256,7 @@
 
     "yt-search": "^2.10.1",
 
-    "ytdl-core": "^4.10.1",
+    "ytdl-core": "^4.11.0",
 
     "ytsr": "^3.6.0"
 

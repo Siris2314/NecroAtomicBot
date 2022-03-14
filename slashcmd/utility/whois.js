@@ -25,20 +25,23 @@ module.exports = {
 
     run: async (client, interaction) => {
 
-           const flags = {
-            DISCORD_EMPLOYEE: 'Discord Employee',
-            DISCORD_PARTNER: 'Discord Partner',
-            BUGHUNTER_LEVEL_1: 'Bug Hunter (Level 1)',
-            BUGHUNTER_LEVEL_2: 'Bug Hunter (Level 2)',
-            HYPESQUAD_EVENTS:'HypeSquad Events',
-            HOUSE_BRAVERY: 'House of Bravery',
-            HOUSE_BALANCE: 'House of Balance',
-            EARLY_SUPPORTER: 'Early Supporter',
-            TEAM_USER: 'Team User',
-            SYSTEM: 'System',
-            VERIFIED_BOT: 'Verified Bot',
-            VERIFIED_DEVELOPER: 'Verified Bot Developer'
-        };
+        const badges = {
+            DISCORD_EMPLOYEE: `<:staff_badge:915024656250044457>`,
+            PARTNERED_SERVER_OWNER: `<:partner_badge:915024655641886790>`,
+            BUGHUNTER_LEVEL_1: `<:discord_bug_hunter_lv1:915024656224886834>`,
+            BUGHUNTER_LEVEL_2: `<:discord_bug_hunter_lv2:915024656346521620>`,
+            HYPESQUAD_EVENTS: `<:badge_hypesquad:915024655776096307>`,
+            HOUSE_BRAVERY: `<:hypesquad_bravery:915024656224911360>`,
+            HOUSE_BRILLIANCE: `<:hypesquad_briliance:915024655880970281>`,
+            HOUSE_BALANCE: `<:hypesquad_balance:915024656245878816>`,
+            EARLY_SUPPORTER: `<:discord_early_supporter:915024655998402590`,
+            TEAM_USER: `Team User`,
+            SYSTEM: `<:verified_system:915024655859990568>`,
+            VERIFIED_BOT: `<:bot_tag:915024656510119936>`,
+            EARLY_VERIFIED_BOT_DEVELOPER: `<:bot_developpeur_verifie:915024656052924536>`
+          };
+
+
 
         const status = {
             online: "Online",
@@ -68,6 +71,10 @@ module.exports = {
         let user = interaction.options.getUser('target', false);
         if (!user) user = interaction.user;
         let member = await interaction.guild.members.fetch(user.id).catch(() => {});
+
+
+        const UserFlags = (await user.fetchFlags()).toArray().map(flag => badges[flag]).join("\n ")
+        const UserBadges = UserFlags ? `**Badges:** ${UserFlags}` : "\n";
 
 
         const roles = member.roles.cache 
@@ -119,7 +126,7 @@ module.exports = {
             .addField('**Avatar:**',`[\`Link to avatar\`](${member.user.displayAvatarURL({dynamic: true})})`,true)
             .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
             .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
-            .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
+            .addField('**Flags:**',UserBadges, true)
             .addField('**Status:**',`\`${(status[member.presence.status]) ? (status[member.presence.status]) : 'Offline'}\``,true)
             .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
             .addField('Currently On Device', `\`${Object.entries(devices).length > 0 ? entries : 'None'}\``)
@@ -159,7 +166,7 @@ module.exports = {
                 .addField('**Avatar:**',`[\`Link to avatar\`](${member.user.displayAvatarURL({dynamic: true})})`,true)
                 .addField('**Registered Date:**',`\`${moment(member.user.createdTimestamp).format('LL')} ${moment(member.user.createdTimestamp).format('LT')}, ${moment(member.user.createdTimestamp).fromNow()} \``, true)
                 .addField('**Date Joined Server:**',`\`${moment(member.joinedAt).format('LL LTS')}\``,true)
-                .addField('**Flags:**',`\`${userflags.length ? userflags.map(flag => flags[flag]).join(', ') : 'None'}\``, true)
+                .addField('**Flags:**',UserBadges, true)
                 .addField('**Status:**',`\`${member.presence.status ? status[member.presence.status] : 'Offline'}\``,true)
                 .addField('Devices Currently Using: ',`${Object.entries(devices).length}`)
                 .addField('Currently On Device(s)', `\`${Object.entries(devices).length > 0 ? entries : 'None'}\``)

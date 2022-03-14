@@ -94,6 +94,7 @@ client.slashCommands = new Discord.Collection();
 client.filters = new Discord.Collection()
 client.filtersLog = new Discord.Collection()
 client.voicetemp = new Discord.Collection();
+client.votes = new Discord.Collection();
 
 //VoiceClient for the Voice Channel Leveling System
 const voiceClient = new VoiceClient({
@@ -168,6 +169,10 @@ player
   .on("channelEmpty", async (queue) => {
     queue.connection.leave();
     queue.data.channel.send("Left Channel as no one was with me");
+  })
+
+  .on('error', async(queue)=>{
+    queue.data.channel.send('An Error Has Occured, Please Give Us a Few mins to restart and come back')
   })
 
   //Event for when Music Queue is Manually Shut Down
@@ -464,24 +469,24 @@ client.once("disconnect", () => {
 });
 
 //RPC Token for Local Usage
-// rpc.on('ready', () => {
-//     rpc.setActivity({
-//         details: 'Working',
-//         state: 'Working on stuff',
-//         startTimestamp: new Date(),
-//         largeImageKey: 'large-key',
-//         largeImageText: 'Grind Season',
-//         smallImageKey: 'small-key',
-//         smallImageText: 'Chilling',
-//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}]
-//     });
+rpc.on('ready', () => {
+    rpc.setActivity({
+        details: 'Working',
+        state: 'Working on stuff',
+        startTimestamp: new Date(),
+        largeImageKey: 'large-key',
+        largeImageText: 'Grind Season',
+        smallImageKey: 'small-key',
+        smallImageText: 'Chilling',
+        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}]
+    });
 
-//     console.log('RPC online');
-// });
+    console.log('RPC online');
+});
 
-// rpc.login({
-//     clientId: rpctoken
-// });
+rpc.login({
+    clientId: rpctoken
+});
 
 
 //Welcome Image Creation for The Welcome Image System
@@ -1593,6 +1598,89 @@ client.on("interactionCreate", async (interaction) => {
   //Check to see if a command interaction is a Button
   if (interaction.isButton()) {
 
+    if (!votes.has(`yes_${interaction.message.id}`)) votes.set(`yes_${interaction.message.id}`, new Discord.Collection());
+            if (!votes.has(`no_${interaction.message.id}`)) votes.set(`no_${interaction.message.id}`, new Discord.Collection());
+            
+            const embed = interaction.message.embeds[0]
+            const upVotes = parseInt(embed.fields[0].value)
+            const downVotes = parseInt(embed.fields[1].value),
+            totalCasts = upVotes + downVotes,
+            $true = votes.get(`yes_${interaction.message.id}`),
+            $false = votes.get(`no_${interaction.message.id}`)
+
+            if (interaction.customId == 'yes') {
+
+                if ($true.has(interaction.user.id)) return;
+                if ($false.has(interaction.user.id)) {
+                    $false.delete(interaction.user.id)
+                    $true.set(interaction.user.id, true)
+                    interaction.update({
+                        embeds: [({
+                            ...embed,
+                            fields: [
+                                {
+                                    'name': embed.fields[0].name,
+                                    'value': `${upVotes + 1} (\`${Math.round((upVotes + 1) / (totalCasts) * 100)}%\`)`,
+                                    'inline': true
+                                },
+                                {
+                                    'name': embed.fields[1].name,
+                                    'value': `${downVotes - 1} (\`${Math.round((downVotes - 1) / (totalCasts) * 100)}%\`)`,
+                                    'inline': true
+                                }
+                            ]
+                        })]
+                    })
+
+                }
+
+            }
+            if (interaction.customId == 'no') {
+
+              if ($false.has(interaction.user.id)) return;
+              if ($true.has(interaction.user.id)) {
+                  $true.delete(interaction.user.id)
+                  $false.set(interaction.user.id, true)
+                  interaction.update({
+                      embeds: [({
+                          ...embed,
+                          fields: [
+                              {
+                                  'name': embed.fields[0].name,
+                                  'value': `${upVotes - 1} (\`${Math.round((upVotes - 1) / (totalCasts) * 100)}%\`)`,
+                                  'inline': true
+                              },
+                              {
+                                  'name': embed.fields[1].name,
+                                  'value': `${downVotes + 1} (\`${Math.round((downVotes + 1) / (totalCasts) * 100)}%\`)`,
+                                  'inline': true
+                              }
+                          ]
+                      })]
+                  })
+
+              }
+          }
+
+          interaction.update({
+              embeds: [({
+                  ...embed,
+                  fields: [
+                      {
+                          'name': embed.fields[0].name,
+                          'value': interaction.customId == 'yes' ? `${upVotes + 1} (\`${Math.round((upVotes + 1) / (totalCasts + 1) * 100)}%\`)` : `${upVotes} (\`${Math.round((upVotes) / (totalCasts + 1) * 100)}%\`)`,
+                          'inline': true
+                      },
+                      {
+                          'name': embed.fields[1].name,
+                          'value': interaction.customId == 'no' ? `${downVotes + 1} (\`${Math.round((downVotes + 1) / (totalCasts + 1) * 100)}%\`)` : `${downVotes} (\`${Math.round((downVotes) / (totalCasts + 1) * 100)}%\`)`,
+                          'inline': true
+                      }
+                  ]
+              })]
+          })
+          interaction.customId == 'yes' ? votes.get(`yes_${interaction.message.id}`).set(interaction.user.id, true) : votes.get(`no_${interaction.message.id}`).set(interaction.user.id, true)
+
 
     if(interaction.customId == "pause"){
      let queue = client.player.getQueue(interaction.guild.id);
@@ -1791,8 +1879,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
    }
 
-   if(client.voicetemp.get(oldState.channelId) && !oldState.channel.members.size){
-     oldState.channel.delete();
+   if(client.voicetemp.get(oldState.channelId) && oldState.channel.members.size == 0){
+     await oldState.channel.delete();
      return;
    }
 
