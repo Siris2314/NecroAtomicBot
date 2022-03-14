@@ -11,6 +11,10 @@ module.exports =  {
         let queue = client.player.getQueue(interaction.guild.id);
         if(!queue) return interaction.followUp({content:`No Songs Playing in ${vc}`})
 
+        if(queue.setPaused(true)){
+            return interaction.followUp({content:`Music in ${vc} is already paused`});
+        }
+
         queue.setPaused(true)
 
         interaction.followUp({content:`Paused Music in ${vc}`})

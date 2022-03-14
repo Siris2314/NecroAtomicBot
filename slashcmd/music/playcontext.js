@@ -18,6 +18,9 @@ module.exports = {
 
     run: async (client, interaction) => {
 
+
+    try{
+
         const msg = await interaction.channel.messages.fetch(interaction.targetId);
 
         const vc = interaction.member.voice.channel
@@ -50,6 +53,9 @@ module.exports = {
         interaction.followUp({content:'Queueing your songs......'})
 
 
+    }
+    }catch(err){
+        interaction.channel.send('An Error Has Occured')
     }
 }
 }
