@@ -469,24 +469,24 @@ client.once("disconnect", () => {
 });
 
 //RPC Token for Local Usage
-rpc.on('ready', () => {
-    rpc.setActivity({
-        details: 'Working',
-        state: 'Working on stuff',
-        startTimestamp: new Date(),
-        largeImageKey: 'large-key',
-        largeImageText: 'Grind Season',
-        smallImageKey: 'small-key',
-        smallImageText: 'Chilling',
-        buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}]
-    });
+// rpc.on('ready', () => {
+//     rpc.setActivity({
+//         details: 'Working',
+//         state: 'Working on stuff',
+//         startTimestamp: new Date(),
+//         largeImageKey: 'large-key',
+//         largeImageText: 'Grind Season',
+//         smallImageKey: 'small-key',
+//         smallImageText: 'Chilling',
+//         buttons: [{label : 'Github', url : 'https://github.com/Siris2314'},{label : 'Invite My Bot', url : 'https://dsc.gg/necroatomic'}]
+//     });
 
-    console.log('RPC online');
-});
+//     console.log('RPC online');
+// });
 
-rpc.login({
-    clientId: rpctoken
-});
+// rpc.login({
+//     clientId: rpctoken
+// });
 
 
 //Welcome Image Creation for The Welcome Image System
@@ -1321,40 +1321,40 @@ client.on("guildMemberAdd", async (member) => {
     }
   });
 
-  customSchema.findOne({Guild:member.guild.id}, async(err, data)=>{
-      if(!data) return;
+  // customSchema.findOne({Guild:member.guild.id}, async(err, data)=>{
+  //     if(!data) return;
 
 
-      const channel = client.channels.cache.get(data.Channel);
+  //     const channel = client.channels.cache.get(data.Channel);
 
   
-      const background = data.Background;
-      const greetings = data.Greetings;
-      const message = data.Message ? data.Message : '';
-      const greetcolor = data.GreetColor ? data.GreetColor : '';
-      const messagecolor = data.messageColor ? data.messageColor : '';
-      const namecolor = data.NameColor ? data.NameColor : '';
-      const avatarcolor = data.AvatarColor ? data.AvatarColor : '';
-      const font = data.font ? data.font : '';
+  //     const background = data.Background;
+  //     const greetings = data.Greetings;
+  //     const message = data.Message ? data.Message : '';
+  //     const greetcolor = data.GreetColor ? data.GreetColor : '';
+  //     const messagecolor = data.messageColor ? data.messageColor : '';
+  //     const namecolor = data.NameColor ? data.NameColor : '';
+  //     const avatarcolor = data.AvatarColor ? data.AvatarColor : '';
+  //     const font = data.font ? data.font : '';
 
-      let image = ''
+  //     let image = ''
 
-      console.log(member.user.avatarURL({dynamic:false, format:'png'}))
-      image = await weeby.custom.greeting(member.user.avatarURL({dynamic:false, format:'png'}),background ,member.user.username, greetings, message, greetcolor, namecolor, avatarcolor,messagecolor, font)
-        .then(img => {
+  //     console.log(member.user.avatarURL({dynamic:false, format:'png'}))
+  //     image = await weeby.custom.greeting(member.user.avatarURL({dynamic:false, format:'png'}),background ,member.user.username, greetings, message, greetcolor, namecolor, avatarcolor,messagecolor, font)
+  //       .then(img => {
           
-        const attachment = new Discord.MessageAttachment(
-          await (img),
-          "greetings.png"
-        );
+  //       const attachment = new Discord.MessageAttachment(
+  //         await (img),
+  //         "greetings.png"
+  //       );
           
-          channel.send({files:[attachment]})
+  //         channel.send({files:[attachment]})
 
-    })
+  //   })
 
 
 
-  })
+  // })
 
   //Mute System
   const data = await muteschema.findOne({ Guild: member.guild.id }); //Check to see if mute system is enabled
