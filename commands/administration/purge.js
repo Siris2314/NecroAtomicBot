@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 let prefix = process.env.prefix;
-const schema = require("../../schemas/Guilds");
+const schema = require("../../schemas/Guild");
 
 
 module.exports = {

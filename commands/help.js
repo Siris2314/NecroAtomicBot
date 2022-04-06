@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
 require("dotenv").config();
-const schema = require("../schemas/Guilds");
+const schema = require("../schemas/Guild");
 const token = process.env.token;
 let prefix = process.env.prefix;
 const reactionMenu = require("discordv13-pagination")
