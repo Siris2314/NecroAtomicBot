@@ -1,4 +1,4 @@
-const guildSchema = require('../../schemas/Guilds')
+const guildSchema = require('../../schemas/Guild')
 
 module.exports = {
     name:'serverprefix',
