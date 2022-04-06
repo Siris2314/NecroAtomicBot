@@ -7,6 +7,13 @@ module.exports = {
   permission: "ADMINISTRATOR",
   options: [
     {
+      name:"welcomemessage",
+      description:"The welcome message",
+      type:"STRING",
+      required:true
+    },
+
+    {
       name: "welcomechannel",
       description: "The channel that posts the message",
       type: "CHANNEL",
@@ -44,6 +51,7 @@ module.exports = {
     const rolesChannel = interaction.options.getChannel("roleschannel");
     const moderatorTag = interaction.options.getRole("moderatortag");
     const adminTag = interaction.options.getRole("admintag");
+    const message = interaction.options.getString("STRING");
 
     await Schema.findOne({ Guild: interaction.guild.id }, async (err, data) => {
       if(data) data.delete()
@@ -55,6 +63,7 @@ module.exports = {
           RolesChannel: rolesChannel.id ? rolesChannel.id : null,
           ModeratorTag: moderatorTag.id ? moderatorTag.id : null,
           AdminTag: adminTag.id ? adminTag.id : null,
+          Message: message
     }).save()
     
      return interaction.followUp(`Welcome Message Set to ${channel}`);

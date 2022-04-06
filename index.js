@@ -55,9 +55,6 @@ const globPromise = promisify(glob);
 const welcomeMessage = require('./schemas/welcomeMessage')
 const { VoiceClient } = require("djs-voice");
 const afkschema = require("./schemas/afk");
-const weebytoken = process.env.weeby;
-const WeebyAPI = require('weeby-js');
-const weeby = new WeebyAPI(weebytoken);
 const chalkAnimation = require('chalk-animation')
 
 const Nuggies = require('nuggies');
@@ -66,7 +63,7 @@ client.snipes = new Discord.Collection();
 const Canvas = require("canvas");
 
 const Schema = require("./schemas/welcomeChannel");
-const guildSchema = require("./schemas/Guilds");
+const guildSchema = require("./schemas/Guild");
 
 const ms = require("ms");
 const altschema = require("./schemas/anti-alt");
@@ -94,7 +91,7 @@ client.slashCommands = new Discord.Collection();
 client.filters = new Discord.Collection()
 client.filtersLog = new Discord.Collection()
 client.voicetemp = new Discord.Collection();
-client.votes = new Discord.Collection();
+votes = new Discord.Collection();
 
 //VoiceClient for the Voice Channel Leveling System
 const voiceClient = new VoiceClient({
@@ -999,7 +996,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     fetch(
       `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(
         message.content
-      )}&botname=${client.user.username}&ownername=EndofLeTime#6747`
+      )}&name=${client.user.username}&user=${message.author.username}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -1022,10 +1019,10 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
         const afk = new Discord.MessageEmbed()
           .setTitle("Afk Removed")
           .setDescription(`${message.author.tag} afk has been removed`)
-          .setFooter(
-            message.author.tag,
-            message.author.displayAvatarURL({ dynamic: true })
-          )
+          .setFooter({
+            author:message.author.tag,
+            iconURL:message.author.displayAvatarURL({ dynamic: true })
+          })
           .setTimestamp();
 
         message.channel.send({ embeds: [afk] });
@@ -1070,7 +1067,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     {
       guildID: message.guild.id,
     },
-    (err, guild) => {
+    async (err, guild) => {
       if (err) console.error(err);
       if (!guild) { //If a server does not exist in the database
         const newGuild = new guildSchema({
@@ -1192,7 +1189,46 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   });
 });
 
+client.on("guildMemberUpdate", async(oldMember, newMember) => {
+  const {guild} = newMember; //destructure guild from newMember
 
+  const thankbed = new Discord.MessageEmbed()
+    .setColor('PURPLE')
+    .setAuthor({name:"Server Boost Increased"}, {iconURL:guild.iconURL()})
+
+  if(!oldMember.premiumSince && newMember.premiumSince){
+
+  const canvas = Canvas.createCanvas(800,250)
+  const ctx = canvas.getContext('2d')
+  const background = await Canvas.loadImage('./assets/N6vhJmN.png');
+  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#9B59B6";
+  ctx.strokeRect(0,0, canvas.width, canvas.height);
+  ctx.font = "38px cursive";
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillText(newMember.displayName,canvas.width/2, canvas.height/1.2);
+
+  const avatar = await Canvas.loadImage(newMember.user.displayAvatarURL({format: "jpg"}));
+  ctx.beginPath();
+  ctx.arc(125, 125, 100, 0, Math.PI*2, true);
+  ctx.closePath()
+  ctx.clip();
+  ctx.drawImage(avatar, 25, 25, 200, 200);
+
+  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'boost.png');
+
+  thankbed.setDescription('Thank you for boosting the server!')
+  thankbed.setImage('attachment://boost.png')
+
+    await guild.systemChannel.send({embeds:[thankbed], files:[attachment]});
+  }
+  
+
+
+
+
+})
 //Server Member Join Event
 client.on("guildMemberAdd", async (member) => {
 
@@ -1208,11 +1244,12 @@ client.on("guildMemberAdd", async (member) => {
     const modTag = member.guild.roles.cache.get(data.ModeratorTag); //Retrieves the Moderator Tag
     const adminTag = member.guild.roles.cache.get(data.AdminTag); //Retrives the Admin Tag
 
+    const welcomemessage = data.Message;
 
 
     if(channel != null){
 
-      await channel.send({content: `Hello ${member.user.username} and welcome to ${member.guild.name}! Be sure to read ${rulesChannel} and click on 🌱 at the bottom left to access the rest of the server. Then head over to ${rolesChannel} and tag yourself with the games you play. If you have any questions, please message ${adminTag} or our mods ${modTag}. Enjoy your times among the Beans!`})
+      await channel.send({content: welcomemessage})
      
     }
     
@@ -1321,40 +1358,6 @@ client.on("guildMemberAdd", async (member) => {
     }
   });
 
-  // customSchema.findOne({Guild:member.guild.id}, async(err, data)=>{
-  //     if(!data) return;
-
-
-  //     const channel = client.channels.cache.get(data.Channel);
-
-  
-  //     const background = data.Background;
-  //     const greetings = data.Greetings;
-  //     const message = data.Message ? data.Message : '';
-  //     const greetcolor = data.GreetColor ? data.GreetColor : '';
-  //     const messagecolor = data.messageColor ? data.messageColor : '';
-  //     const namecolor = data.NameColor ? data.NameColor : '';
-  //     const avatarcolor = data.AvatarColor ? data.AvatarColor : '';
-  //     const font = data.font ? data.font : '';
-
-  //     let image = ''
-
-  //     console.log(member.user.avatarURL({dynamic:false, format:'png'}))
-  //     image = await weeby.custom.greeting(member.user.avatarURL({dynamic:false, format:'png'}),background ,member.user.username, greetings, message, greetcolor, namecolor, avatarcolor,messagecolor, font)
-  //       .then(img => {
-          
-  //       const attachment = new Discord.MessageAttachment(
-  //         await (img),
-  //         "greetings.png"
-  //       );
-          
-  //         channel.send({files:[attachment]})
-
-  //   })
-
-
-
-  // })
 
   //Mute System
   const data = await muteschema.findOne({ Guild: member.guild.id }); //Check to see if mute system is enabled
@@ -1598,6 +1601,8 @@ client.on("interactionCreate", async (interaction) => {
   //Check to see if a command interaction is a Button
   if (interaction.isButton()) {
 
+  try{
+
     if (!votes.has(`yes_${interaction.message.id}`)) votes.set(`yes_${interaction.message.id}`, new Discord.Collection());
             if (!votes.has(`no_${interaction.message.id}`)) votes.set(`no_${interaction.message.id}`, new Discord.Collection());
             
@@ -1680,6 +1685,10 @@ client.on("interactionCreate", async (interaction) => {
               })]
           })
           interaction.customId == 'yes' ? votes.get(`yes_${interaction.message.id}`).set(interaction.user.id, true) : votes.get(`no_${interaction.message.id}`).set(interaction.user.id, true)
+
+        }catch(e){
+          interaction.channel.send(`Interaction timed out please try again later`)
+        }
 
 
     if(interaction.customId == "pause"){
@@ -2003,12 +2012,14 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
         //Fetch Last 100 Messages in the Starboard Channel
         const msgs = await starboard.messages.fetch({ limit: 100 });
+        console.log(msgs);
         const existingMsg = msgs.find((msg) =>
           msg.embeds.length === 1
             ? msg.embeds[0].footer.text.startsWith(reaction.message.id)
               ? true
               : false
             : false
+          
         );
 
         //Set Star Count to 0 if all stars removed

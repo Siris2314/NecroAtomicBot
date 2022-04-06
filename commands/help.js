@@ -51,10 +51,6 @@ module.exports = {
                             value: "```" + prefix + " help levels```",
                         },
                         {
-                            name: "🎵 Music",
-                            value: "```" + prefix + " help music```",
-                        },
-                        {
                             name: "🔒 Owner",
                             value: "```" + prefix + " help owner```",
                         },

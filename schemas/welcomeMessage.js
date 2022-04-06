@@ -7,7 +7,8 @@ const Schema = new mongo.Schema({
   RulesChannel:String,
   RolesChannel:String,
   ModeratorTag:String,
-  AdminTag:String
+  AdminTag:String,
+  Message:String,
 });
 
 module.exports = mongo.model('welcome-message', Schema)
