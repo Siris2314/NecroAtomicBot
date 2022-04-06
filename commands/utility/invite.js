@@ -24,7 +24,7 @@ module.exports = {
         embed
          .setTitle("error")
          .setDescription("This command was not used correctly")
-      message.channel.send(embed)
+      message.channel.send({embeds:[embed]})
 
 
 

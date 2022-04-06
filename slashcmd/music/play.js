@@ -35,12 +35,14 @@ module.exports =  {
 
 
         if(query.includes('https://www.youtube.com/watch' ) || query.includes('https://open.spotify.com/track')){
+            interaction.followUp(`Queueing your song......`)
             let song = await queue.play(query).catch(_ => {
                 if(!queue)
                     queue.stop();
             });
         }
         else if(query.includes('https://open.spotify.com/playlist/') || query.includes('https://www.youtube.com/playlist') || query.includes("https://open.spotify.com/album")){
+            interaction.followUp(`Queueing your playlist......`)
         let song = await queue.playlist(query).catch(_ => {
             if(!queue)
                 queue.stop();
@@ -96,7 +98,7 @@ module.exports =  {
                 collector.on('end', collected =>{
                     if(collected.size == 0){
                         interaction.channel.send('Timed Out, Failed to Collect Song Input')
-                        queue.leave();
+                        queue.stop();
                     }
                     else{
                         const song = arrsongs[text-1];
