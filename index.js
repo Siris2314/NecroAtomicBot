@@ -31,7 +31,6 @@ const { table } = require("table");
 const buttonrr = require("./schemas/buttonrr");
 const antiraid = require("./schemas/antiraid");
 const ownerID = process.env.ownerid;
-const { format } = require("./functions2");
 const axios = require("axios");
 const counterSchema = require("./schemas/count");
 const path = require("path");
@@ -39,7 +38,6 @@ const blacklistWords = require('./schemas/FilterDB');
 const nsfwschema = require("./schemas/nsfw");
 const banner = "./assets/bot_long_banner.png";
 require("dotenv").config();
-const nsfwtoken = process.env.nsfw;
 const tf = require('@tensorflow/tfjs-node')
 const nsfw = require('nsfwjs')
 const starboardSchema = require("./schemas/starboard");
@@ -58,6 +56,9 @@ const afkschema = require("./schemas/afk");
 const chalkAnimation = require('chalk-animation')
 
 const Nuggies = require('nuggies');
+
+
+
 
 client.snipes = new Discord.Collection();
 const Canvas = require("canvas");
@@ -99,7 +100,7 @@ const voiceClient = new VoiceClient({
   client: client, //Discord Client
   debug: false,
   mongooseConnectionString: mongoPath, //Mongo Database Connection
-}); 
+}) 
 
 
 const defaultGiveawayMessages = {
@@ -141,7 +142,7 @@ client.color = require('./colors.json') //Global Variable for Color JSON for eas
 Levels.setURL(mongoPath); //Connection to the Mongo Database for Leveling System
 
 
-module.exports = {afk, starboardcollection }; //Exporting Discord Collections for Usage Outside of Main File
+module.exports = {afk, starboardcollection}; //Exporting Discord Collections for Usage Outside of Main File
 
 
 const { Player } = require("discord-music-player"); //Import Music Player Client 
@@ -168,7 +169,8 @@ player
     queue.data.channel.send("Left Channel as no one was with me");
   })
 
-  .on('error', async(queue)=>{
+  .on('error', async(error,queue) => {
+    console.log(error)
     queue.data.channel.send('An Error Has Occured, Please Give Us a Few mins to restart and come back')
   })
 
@@ -398,7 +400,7 @@ fs.readdirSync("./slashcmd/").forEach((dir) => {
   //Mongo Database Registration
   await mongoose
     .connect(mongoPath, {
-      useFindAndModify: true,
+      useFindAndModify: false,
       useUnifiedTopology: true,
       useNewUrlParser: true,
       autoIndex: false,
@@ -408,12 +410,12 @@ fs.readdirSync("./slashcmd/").forEach((dir) => {
   if (!mongoPath) return; //If Mongo Path is not set, continue
 
 
-   blacklistWords.find().then((documents)=>{
-     documents.forEach((doc)=>{
-       client.filters.set(doc.Guild, doc.Words);
-       client.filtersLog.set(doc.Guild, doc.Words)
-     })
-   })
+  blacklistWords.find().then((documents)=>{
+    documents.forEach((doc)=>{
+      client.filters.set(doc.Guild, doc.Words);
+      client.filtersLog.set(doc.Guild, doc.Words)
+    })
+  })
 
 
 
@@ -507,7 +509,7 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 });
 
 
-//Anti-Crash System that I use from time to time
+// // Anti-Crash System that I use from time to time
 // process.on("unhandledRejection", (reason, p) => {
 //     console.log(" [antiCrash] :: Unhandled Rejection/Catch");
 //     // console.log(reason, p);
@@ -528,6 +530,10 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 
 //Message Event
 client.on("messageCreate", async (message) => {
+
+  if(!message.guild.me.permissions.has("ADMINISTRATOR")){
+    return message.channel.send('Must Give me Admin Perms to Use all my functionalities')
+  }
   if (!message.guild || message.author.bot) {
     return;
   }
@@ -539,7 +545,7 @@ client.on("messageCreate", async (message) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  } 
+  }   
 
 
   //Check to see if the message content itself is an emoji, hence starts and ends with a :
@@ -928,6 +934,8 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   //Anti-NSFW System
   if (message.attachments.first()) {
 
+    console.log(message.attachments.first().url);
+
     /* 
       Function that uses Neural Networks to determine if an image is NSFW.
       Further classification of image is done via tensorflow using neural networks to determine if an Image is NSFW.
@@ -938,7 +946,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       responseType: 'arraybuffer',
     })
     const model = await nsfw.load() //Load NSFW Classification Model
-    const image = await tf.node.decodeImage(pic.data,3) //Decode Image into Multiple Neural Network Nodes
+    const image = tf.node.decodeImage(pic.data,3) //Decode Image into Multiple Neural Network Nodes
     const predictions = await model.classify(image)
 
     image.dispose()
@@ -958,12 +966,13 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       }
    
     })
+
+    console.log(r)
     return r;
   }
     await nsfwschema.findOne(
       { Server: message.guild.id },
       async (err, data) => {
-
         //If No NSFW System is Set, Do Nothing
         if (!data || !data.Server == null) return;
  
@@ -974,6 +983,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
          if(r == true){
             await message.delete();
             return message.channel.send({content: "Please do not send NSFW content"});
+         }
+         else{
+
          }
       }
     );
@@ -993,6 +1005,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     message.channel.sendTyping();
 
     //Fetch the Chatbot API
+  try{
     fetch(
       `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(
         message.content
@@ -1003,6 +1016,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
         //Reply with the chatbot API message
         message.reply(`${data.message}`);
       });
+      } catch(err){
+        message.reply('API ERROR, Please try again later')
+      }
   });
 
 
@@ -1093,14 +1109,13 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
 
   var prefix = "";
   try {
-    prefix = settings.prefix || process.env.prefix; //Set the bot prefix to the custom one set, or the default one
+    prefix = settings.prefix ? settings.prefix :  process.env.prefix //Set the bot prefix to the custom one set, or the default one
   } catch (err) {
     return message.channel
       .send({
         content:
           "This server was not in our database! We have now added and you should be able to use bot commands.",
       })
-      .then((m) => m.delete({ timeout: 10000 }));
   }
 
 
@@ -1188,6 +1203,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     }
   });
 });
+
+
+console.log(client.commands.size)
 
 client.on("guildMemberUpdate", async(oldMember, newMember) => {
   const {guild} = newMember; //destructure guild from newMember
@@ -1992,6 +2010,10 @@ client.on("messageReactionAdd", async (reaction, user) => {
   if (user.bot) return;
 });
 
+client.on('error', (err) => {
+  
+})
+
 
 //Removing Reactions from Messages Event
 client.on("messageReactionRemove", async (reaction, user) => {
@@ -2064,6 +2086,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 logger(client);
 
 require("./dashboard/server");
+
 
 //Discord Login System
 client.login(token);

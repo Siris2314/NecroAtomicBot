@@ -194,7 +194,7 @@ module.exports = {
 
         }catch(err){
 
-            interaction.editReply({content:`Something went wrong`})
+            interaction.followUp({content:`Something went wrong`})
         }
 
 
