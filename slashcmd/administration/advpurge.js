@@ -14,7 +14,7 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    const messages = interaction.options.getNumber("messages");
+    let messages = interaction.options.getNumber("messages");
 
     if (messages > 100) {
       messages = messages - 100;

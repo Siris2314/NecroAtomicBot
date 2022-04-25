@@ -1,3 +1,4 @@
+include includes/mixins
 doctype html
 html(lang="en")
     head
@@ -9,7 +10,15 @@ html(lang="en")
           h1.display-3 Commands
           p.lead View Necro's Commands
           hr
-     section#Commands
-      .row
+     section#commands
+     .row
         .col-sm-3
-    
+          each category in categories
+            +category(category)
+        .col-sm-9
+          each command in commands
+              
+          ul.list-group.mb-2
+            li.list-group-item test 
+
+     
