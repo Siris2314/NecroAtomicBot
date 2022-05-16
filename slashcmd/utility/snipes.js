@@ -9,6 +9,7 @@ module.exports = {
 
         const msg = client.snipes.get(interaction.channel.id)
 
+       
       if(!msg) return interaction.followUp({ content: 'There Are No Deleted Messages' })
 
       const snipeEmbed = new MessageEmbed()

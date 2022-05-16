@@ -13,6 +13,8 @@ module.exports = {
     ],
 
     run:async (client, interaction) => {
+
+    try{
         const embed = new MessageEmbed()
         .setColor('#2c93fb')
         .setTimestamp()
@@ -36,6 +38,11 @@ module.exports = {
         .addComponents([upVote, downVote])
 
     interaction.followUp({ embeds: [embed], components: [row] })
+
+    }catch(e){
+        interaction.channel.send('An error has occured')
+
+    }
 
 
     }

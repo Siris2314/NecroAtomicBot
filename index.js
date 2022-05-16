@@ -48,6 +48,8 @@ const unsafe = require("./unsafe.json");
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+const AntiSpam = require("discord-anti-spam");
+const antispamschema = require('./schemas/antispam')
 const { promisify } = require("util");
 const globPromise = promisify(glob);
 const welcomeMessage = require('./schemas/welcomeMessage')
@@ -103,29 +105,6 @@ const voiceClient = new VoiceClient({
 }) 
 
 
-const defaultGiveawayMessages = {
-	dmWinner: true,
-	giveaway: '🎉🎉 **GIVEAWAY!** 🎉🎉',
-	giveawayDescription: '🎁 Prize: **{prize}**\n🎊 Hosted by: {hostedBy}\n⏲️ Winner(s): `{winners}`\n\nRequirements: {requirements}',
-	endedGiveawayDescription : '🎁 Prize: **{prize}**\n🎊 Hosted by: {hostedBy}\n⏲️ Winner(s): {winners}',
-	giveawayFooterImage: 'https://cdn.discordapp.com/emojis/843076397345144863.png',
-	winMessage: 'Congrats {winners}! you won `{prize}`!! Total `{totalParticipants}` members participated and your winning percentage was `{winPercentage}%`',
-	rerolledMessage: 'Rerolled! {winner} is the new winner of the giveaway!',
-	toParticipate: '**Click the Enter button to enter the giveaway!**',
-	newParticipant: 'You have successfully entered for this giveaway! your win percentage is `{winPercentage}%` among `{totalParticipants}` other participants', // no placeholders | ephemeral
-	alreadyParticipated: 'You already entered this giveaway!', 
-	noParticipants: 'There are not enough people in the giveaway!',
-	noRole: 'You do not have the required role(s)\n{requiredRoles}\n for the giveaway!',
-	dmMessage: 'You have won a giveaway in **{guildName}**!\nPrize: [{prize}]({giveawayURL})',
-	noWinner: 'Not enough people participated in this giveaway.', 
-	alreadyEnded: 'The giveaway has already ended!',
-	dropWin: '{winner} Won The Drop!!',
-};
-
-Nuggies.Messages(client, { giveawayOptions: defaultGiveawayMessages })
-Nuggies.connect(mongoPath);
-Nuggies.handleInteractions(client)
-Nuggies.giveaways.startAgain(client);
 
 
 
@@ -509,6 +488,8 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 });
 
 
+
+
 // // Anti-Crash System that I use from time to time
 // process.on("unhandledRejection", (reason, p) => {
 //     console.log(" [antiCrash] :: Unhandled Rejection/Catch");
@@ -530,12 +511,16 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 
 //Message Event
 client.on("messageCreate", async (message) => {
+  
 
-  if(!message.guild.me.permissions.has("ADMINISTRATOR")){
-    return message.channel.send('Must Give me Admin Perms to Use all my functionalities')
-  }
+
   if (!message.guild || message.author.bot) {
     return;
+  }
+
+
+  if(!message.guild.me.permissions.has("ADMINISTRATOR")){
+    return message.channel.send('Must Give me Admin Perms to Use all my functionalities').then(m=>m.delete({timeout:50000}))
   }
 
   //Not Quite Nitro System
@@ -677,6 +662,40 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     message.channel.send({ content: newstr });
   }
 
+
+  await antispamschema.findOne({Guild:message.guild.id}, async(err, data) =>{
+    if(!data){
+      return;
+    }
+    else{
+      const antiSpam = new AntiSpam({
+        warnThreshold: data.warnThreshold,
+        muteThreshold: data.muteThreshold,
+        kickThreshold: data.kickThreshold,
+        banThreshold:  data.banThreshold,
+        maxInterval: data.maxInterval,
+        warnMessage: "{@user}, Please stop spamming.",
+        kickMessage: "**{user_tag}** has been kicked for spamming.",
+        muteMessage: "**{user_tag}** has been muted for spamming.",
+        banMessage: "**{user_tag}** has been banned for spamming.",
+        maxDuplicatesWarning: data.maxDuplicatesWarning ? data.maxDuplicatesWarning : 6,
+        maxDuplicatesKick: data.maxDuplicatesKick ? data.maxDuplicatesKick : 10,
+        maxDuplicatesBan: data.maxDuplicatesBan ? data.maxDuplicatesBan : 12,
+        maxDuplicatesMute: data.maxDuplicatesMute ? data.maxDuplicatesMute : 8,
+        ignoredPermissions: ["OWNER"],
+        ignoreBots: data.ignoreBots ? data.ignoreBots : true,
+        verbose: true,
+        ignoredMembers: [],
+        unMuteTime: data.unMuteTime ? data.unMuteTime : 10,
+        removeMessages: data.removeMessage ? data.removeMessage : true,
+        modLogsEnabled: false,
+        modLogsChannelName: "mod-logs",
+        modLogsMode: "embed",
+      });
+
+      antiSpam.message(message)
+    }
+  })
   //Anti-Scam Link System that uses a Database to Retrieve Punishments Set by Admins for Sending Scam Links
   await antiscam.findOne({ Guild: message.guild.id }, async (err, data) => {
     if (!data) return; //If Anti-Scam Link was not set, do nothing
