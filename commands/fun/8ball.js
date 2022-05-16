@@ -11,7 +11,7 @@ module.exports = {
       try{
         const text = args.join(" ");
         if(!text) return message.channel.send({content:'Provide Text to play 8 Ball'})
-       await nekoclient.sfw['8Ball'](text).then(result => {
+       await nekoclient.sfw['eightBall'](text).then(result => {
             const embed = new MessageEmbed()
               .setTitle(text)
               .setDescription(result.response)
@@ -23,6 +23,7 @@ module.exports = {
 
     } catch(err){
         message.channel.send({content:'API Error'})
+        console.log(err)
     }
 
         

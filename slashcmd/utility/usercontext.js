@@ -29,12 +29,12 @@ module.exports = {
     if (status === "online") status = 'Online'
     if (status === "offline" || status === "invisible" || status === undefined) 'Offline'
 
-    let activity = user.presence?.activities[0].name || "No Activity"
+    let activity = user.presence?.activities[0].name ? user.presence?.activities[0].name : "No Activity"
 
     let embed = new MessageEmbed()
       .setTitle(`${user.user.username}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-      .addField("User", `
+      .addField("User Info", `
       **Username:** ${user.user.username}
       **Tag:** ${user.user.tag}
       **Discriminator:** ${user.user.discriminator}
@@ -51,6 +51,6 @@ module.exports = {
       `)
       .setColor("RANDOM")
       .setFooter({ text: `${new Date().toLocaleDateString()}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
-    return interaction.reply({ embeds: [embed] })
+    interaction.followUp({ embeds: [embed] })
   },
 };
