@@ -43,6 +43,7 @@ const nsfw = require('nsfwjs')
 const starboardSchema = require("./schemas/starboard");
 const fs = require("fs");
 const afk = new Discord.Collection();
+const boostschema = require('./schemas/boostsystem')
 const antiscam = require("./schemas/antiscam");
 const unsafe = require("./unsafe.json");
 const moment = require("moment");
@@ -161,6 +162,7 @@ player
   //Event for When Music Client is Manually Stopped/Destroyed
   .on('clientDisconnect',(queue) =>{
     queue.connection.leave();
+    queue.data.channel.send('Left as no songs were played within the last 10 minutes')
   })
 
   //Event for the First Song in the Queue
@@ -491,22 +493,22 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 
 
 // // Anti-Crash System that I use from time to time
-process.on("unhandledRejection", (reason, p) => {
-    console.log(" [antiCrash] :: Unhandled Rejection/Catch");
-    // console.log(reason, p);
-});
-process.on("uncaughtException", (err, origin) => {
-    console.log(" [antiCrash] :: Uncaught Exception/Catch");
-    // console.log(err, origin);
-});
-process.on("uncaughtExceptionMonitor", (err, origin) => {
-    console.log(" [antiCrash] :: Uncaught Exception/Catch (MONITOR)");
-    // console.log(err, origin);
-});
-process.on("multipleResolves", (type, promise, reason) => {
-    console.log(" [antiCrash] :: Multiple Resolves");
-    // console.log(type, promise, reason);
-});
+// process.on("unhandledRejection", (reason, p) => {
+//     console.log(" [antiCrash] :: Unhandled Rejection/Catch" + reason);
+//     // console.log(reason, p);
+// });
+// process.on("uncaughtException", (err, origin) => {
+//     console.log(" [antiCrash] :: Uncaught Exception/Catch" + err.message);
+//     // console.log(err, origin);
+// });
+// process.on("uncaughtExceptionMonitor", (err, origin) => {
+//     console.log(" [antiCrash] :: Uncaught Exception/Catch (MONITOR)" + err.message);
+//     // console.log(err, origin);
+// });
+// process.on("multipleResolves", (type, promise, reason) => {
+//     console.log(" [antiCrash] :: Multiple Resolves" + reason);
+//     // console.log(type, promise, reason);
+// });
 
 
 //Message Event
@@ -520,7 +522,11 @@ client.on("messageCreate", async (message) => {
 
 
   if(!message.guild.me.permissions.has("ADMINISTRATOR")){
-    return message.channel.send('Must Give me Admin Perms to Use all my functionalities').then(m=>m.delete({timeout:50000}))
+    return message.channel.send('Must Give me Admin Perms to Use all my functionalities').catch(error =>
+      message.channel(
+        `Error: ${error.name} \n Message: ${error.message} \n Stack: ${error.stack}`
+      )
+    );
   }
 
   //Not Quite Nitro System
@@ -574,7 +580,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
 
   //User Message Level System
   const randomXP = Math.floor(Math.random() * 29) + 1; //Random XP Value between 1 and 29 that will be given on each message sent by a user in the server
-  const hasLeveledUp = await Levels.appendXp(
+  await Levels.appendXp(
     message.author.id,
     message.guild.id,
     randomXP
@@ -657,7 +663,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   ) {
     message.delete();
     let str = message.content.replace("https://twitter.com/", "");
-    let newstr = `https://fxtwitter.com/${str}`;
+    let newstr = `https://vxtwitter.com/${str}`;
 
     message.channel.send({ content: newstr });
   }
@@ -668,6 +674,8 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       return;
     }
     else{
+
+    try{
       const antiSpam = new AntiSpam({
         warnThreshold: data.warnThreshold,
         muteThreshold: data.muteThreshold,
@@ -682,7 +690,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
         maxDuplicatesKick: data.maxDuplicatesKick ? data.maxDuplicatesKick : 10,
         maxDuplicatesBan: data.maxDuplicatesBan ? data.maxDuplicatesBan : 12,
         maxDuplicatesMute: data.maxDuplicatesMute ? data.maxDuplicatesMute : 8,
-        ignoredPermissions: ["OWNER"],
+        ignoredPermissions: ["ADMINISTRATOR"],
         ignoreBots: data.ignoreBots ? data.ignoreBots : true,
         verbose: true,
         ignoredMembers: [],
@@ -692,8 +700,12 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
         modLogsChannelName: "mod-logs",
         modLogsMode: "embed",
       });
+    
 
       antiSpam.message(message)
+    }catch(err){
+        console.log(err)
+      }
     }
   })
   //Anti-Scam Link System that uses a Database to Retrieve Punishments Set by Admins for Sending Scam Links
@@ -953,13 +965,12 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
   //Anti-NSFW System
   if (message.attachments.first()) {
 
-    console.log(message.attachments.first().url);
-
     /* 
       Function that uses Neural Networks to determine if an image is NSFW.
       Further classification of image is done via tensorflow using neural networks to determine if an Image is NSFW.
     */
     async function isnsfw(url) {
+    try{
       let r = false;
     const pic = await axios.get(url, {
       responseType: 'arraybuffer',
@@ -974,10 +985,10 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     predictions.map((pr) => {   //Make a probability map to determine if an image is NSFW
       pr.probability = Math.round(pr.probability * 100)
       console.log(pr.className, pr.probability)
-      if(pr.className == "Hentai" && pr.probability > 30) {
+      if(pr.className == "Hentai" && pr.probability > 50) {
         r = true
       }
-      if(pr.className == "Porn"  && pr.probability > 30){
+      if(pr.className == "Porn"  && pr.probability > 50){
         r = true
       }
      if(pr.className == "Sexy"  && pr.probability > 80){
@@ -986,9 +997,14 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
    
     })
 
+
     console.log(r)
     return r;
+    }catch(err){
+      console.log(err)
+    }
   }
+ 
     await nsfwschema.findOne(
       { Server: message.guild.id },
       async (err, data) => {
@@ -1033,7 +1049,9 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
       .then((res) => res.json())
       .then((data) => {
         //Reply with the chatbot API message
-        message.reply(`${data.message}`);
+        message.reply(`${data.message}`).catch(err => {
+          message.reply('API ERROR, Please try sometime later')
+        });
       });
       } catch(err){
         message.reply('API ERROR, Please try again later')
@@ -1084,10 +1102,10 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
             .setDescription(
               `${data.Content} - ${moment(parseInt(data.TimeAgo)).fromNow()}`
             )
-            .setFooter(
-              message.author.tag,
-              message.author.displayAvatarURL({ dynamic: true })
-            )
+            .setFooter({
+              author:message.author.tag,
+              iconURL:message.author.displayAvatarURL({ dynamic: true })
+           })
             .setTimestamp();
 
           message.channel.send({ embeds: [afk] });
@@ -1224,14 +1242,19 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
 });
 
 
-console.log(client.commands.size)
-
 client.on("guildMemberUpdate", async(oldMember, newMember) => {
-  const {guild} = newMember; //destructure guild from newMember
+  
+
+
+await boostschema.findOne({Server:newMember.guild.id}, async (err, data) => {
+
+  if(!data){
+    return;
+  }
 
   const thankbed = new Discord.MessageEmbed()
     .setColor('PURPLE')
-    .setAuthor({name:"Server Boost Increased"}, {iconURL:guild.iconURL()})
+    .setAuthor({name:"Server Boost Increased"}, {iconURL:newMember.guild.iconURL()})
 
   if(!oldMember.premiumSince && newMember.premiumSince){
 
@@ -1258,8 +1281,11 @@ client.on("guildMemberUpdate", async(oldMember, newMember) => {
   thankbed.setDescription('Thank you for boosting the server!')
   thankbed.setImage('attachment://boost.png')
 
-    await guild.systemChannel.send({embeds:[thankbed], files:[attachment]});
+    const channel = client.channels.cache.get(data.Channel)
+
+   await channel.send({embeds:[thankbed], files:[attachment]});
   }
+})
   
 
 
@@ -1578,10 +1604,16 @@ client.on("guildCreate", async (guild) => {
 
   //Send a Welcome Message to the Owner of the Server
   client.users.fetch(id).then((user) => {
+
+  try{
     user.send({
       content: `\`\`\`Greetings ${user.username}, thank you for inviting me to your server, I am NecroAtomicBot a multiple purpose bot built to serve all your Discord needs.\nMy default prefix is !necro to change it simply use **!necro** prefix <custom prefix> to change it. Thanks again for inviting me \`\`\``,
       files: [attachments],
     });
+
+  }catch(e){
+    console.log('Cannot send message to user, as the user\'s DMs are disabled');
+  }
   });
 });
 
@@ -1724,7 +1756,7 @@ client.on("interactionCreate", async (interaction) => {
           interaction.customId == 'yes' ? votes.get(`yes_${interaction.message.id}`).set(interaction.user.id, true) : votes.get(`no_${interaction.message.id}`).set(interaction.user.id, true)
 
         }catch(e){
-          interaction.channel.send(`Interaction timed out please try again later`)
+          // interaction.channel.send(`Interaction timed out please try again later`)
         }
 
 

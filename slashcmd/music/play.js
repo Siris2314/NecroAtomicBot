@@ -34,7 +34,7 @@ module.exports =  {
 
 
 
-        if(query.includes('https://www.youtube.com/watch' ) || query.includes('https://open.spotify.com/track')){
+        if(query.includes('https://www.youtube.com/' ) || query.includes('https://open.spotify.com/track')){
             interaction.followUp(`Queueing your song......`)
             let song = await queue.play(query).catch(_ => {
                 if(!queue)
