@@ -46,7 +46,7 @@ module.exports = {
   ],
 
   run: async (client, interaction) => {
-    const channel = interaction.options.getChannel("channel");
+    const channel = interaction.options.getChannel("welcomechannel");
     const rulesChannel = interaction.options.getChannel("ruleschannel");
     const rolesChannel = interaction.options.getChannel("roleschannel");
     const moderatorTag = interaction.options.getRole("moderatortag");

@@ -4,6 +4,8 @@ module.exports = {
     name : 'amogus',
     description:'Amogus command',
 async execute(message,args,client) {
+
+try{
     const member = message.mentions.members.first() || message.member;
     const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'jpg' }));
     let bg = await Canvas.loadImage("https://github.com/katie07/Imagayes/blob/main/AMOGUS.png?raw=true")
@@ -16,6 +18,8 @@ async execute(message,args,client) {
 
     const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'amogus.jpg');
     message.channel.send({files : [attachment]});
-    console.log(message)
+ }catch(e){
+       message.channel.send(`Error: ${e.message}`);
+    }
    }
 }

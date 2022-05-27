@@ -150,7 +150,6 @@ module.exports = {
                         commands[4].map((cmd) => {
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
-                            console.log(desc.description);
                             return {
                                 name:name,
                                 value:desc.description ? desc.description : 'No Description',

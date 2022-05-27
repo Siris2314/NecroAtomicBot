@@ -27,9 +27,9 @@ module.exports = {
     if (status === "dnd") status = 'Do not Disturb'
     if (status === "idle") status = 'Idle'
     if (status === "online") status = 'Online'
-    if (status === "offline" || status === "invisible" || status === undefined) 'Offline'
+    if (status === "offline" || status === "invisible" || status === 'Null') 'Offline'
 
-    let activity = user.presence?.activities[0].name ? user.presence?.activities[0].name : "No Activity"
+    let activity = user.presence?.activities[0]?.name ? user.presence?.activities[0]?.name : "No Activity"
 
     let embed = new MessageEmbed()
       .setTitle(`${user.user.username}`)
@@ -39,7 +39,7 @@ module.exports = {
       **Tag:** ${user.user.tag}
       **Discriminator:** ${user.user.discriminator}
       **ID:** ${user.id}
-      **Status:** ${status}
+      **Status:** ${status ? status : "Offline"}
       **Activity:** ${activity}
       **Badges:** ${badges}
       **Created At:** <t:${parseInt(user.user.createdTimestamp / 1000)}:R>
