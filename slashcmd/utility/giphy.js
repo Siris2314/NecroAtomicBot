@@ -26,6 +26,7 @@ module.exports = {
 
         try{
             giphy.search(query).then(function(response) {
+                console.log(response)
                 let id = response.data[0].id;
                 let url = `https://media.giphy.com/media/${id}/giphy.gif`
 
