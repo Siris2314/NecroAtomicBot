@@ -5,6 +5,8 @@ module.exports = {
     description: 'Shows the current song playing',
 
     run:async (client, interaction) => {
+
+    try{
         const vc = interaction.member.voice.channel
 
         if(!vc) return interaction.followUp({content:'Must be in VC to use command'})
@@ -113,6 +115,9 @@ module.exports = {
 
         }
 
+    }catch(err){
+        interaction.followUp('An error has occured, please try again later')
+    }
        
 
     }

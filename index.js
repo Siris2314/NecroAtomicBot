@@ -521,9 +521,10 @@ client.on("messageCreate", async (message) => {
   }
 
 
-  if(!message.guild.me.permissions.has("ADMINISTRATOR")){
-    return message.channel.send('Must Give me Admin Perms to Use all my functionalities').catch(error =>
-      message.channel(
+  if(!message.guild.me.permissions.has("SEND_MESSAGES")){
+
+    return message.channel.send('Must Give me Send Message Perms to Use all my functionalities').catch(error =>
+      message.channel.send(
         `Error: ${error.name} \n Message: ${error.message} \n Stack: ${error.stack}`
       )
     );
