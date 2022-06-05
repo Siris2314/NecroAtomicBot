@@ -96,7 +96,6 @@ client.filters = new Discord.Collection()
 client.filtersLog = new Discord.Collection()
 client.voicetemp = new Discord.Collection();
 votes = new Discord.Collection();
-
 //VoiceClient for the Voice Channel Leveling System
 const voiceClient = new VoiceClient({
   allowBots: false, //Bots Will Not Be Counted
@@ -170,9 +169,13 @@ player
   try{
    if(song.isFirst){
 
+    console.log(typeof(song.name))
     //Removes Tags from YouTube Music Videos
-    if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
-      const newname = song.name.replace("(Official Video)", "") || song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
+    if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)")){
+
+      const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "")
+      console.log(newname)
+      
 
         const embed = new Discord.MessageEmbed()
           .setColor(client.color.invis)
@@ -229,8 +232,8 @@ player
 try{
 
   if(!song.isFirst){
-    if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
-      const newname = song.name.replace("(Official Video)", "") ||song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
+    if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)")){
+      const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "")
 
         const embed = new Discord.MessageEmbed()
         .setColor(client.color.invis)
@@ -269,6 +272,7 @@ client.embed = async (message, options) => {
 
 //Ready Event
 client.on("ready", async () => {
+
 
   /* Just a Bunch of Decorative Stuff for my terminal */
   const data = [
@@ -521,13 +525,8 @@ client.on("messageCreate", async (message) => {
   }
 
 
-  if(!message.guild.me.permissions.has("SEND_MESSAGES")){
-
-    return message.channel.send('Must Give me Send Message Perms to Use all my functionalities').catch(error =>
-      message.channel.send(
-        `Error: ${error.name} \n Message: ${error.message} \n Stack: ${error.stack}`
-      )
-    );
+  if(!message.guild.me.permissions.has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
+      return;
   }
 
   //Not Quite Nitro System
@@ -662,7 +661,7 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
     message.content.includes("https://twitter.com/") &&
     message.guild.id === "684462232679219242"
   ) {
-    message.delete();
+    await message.delete();
     let str = message.content.replace("https://twitter.com/", "");
     let newstr = `https://vxtwitter.com/${str}`;
 
@@ -1243,6 +1242,26 @@ if(message.content.startsWith(':') && message.content.endsWith(':')){
 });
 
 
+client.on('rateLimit', (info) => {
+  
+  // The timeout info comes in unix epoch
+ 
+   const HOURS = Math.floor(info.timeout / 3600000);
+   const MINUTES = Math.floor((info.timeout % 3600000) / 60000);
+   const SECONDS = Math.floor(((info.timeout % 3600000) % 60000) / 1000);
+ 
+   console.log(
+     `Rate limit exceeded. You have been rate limited for ${HOURS} hours, ${MINUTES} minutes, and ${SECONDS} seconds.
+ 
+     global: ${info.global},
+     method: ${info.method},
+     path: ${info.path},
+     route: ${info.route}
+     `,
+   );
+ });
+
+
 client.on("guildMemberUpdate", async(oldMember, newMember) => {
   
 
@@ -1608,7 +1627,7 @@ client.on("guildCreate", async (guild) => {
 
   try{
     user.send({
-      content: `\`\`\`Greetings ${user.username}, thank you for inviting me to your server, I am NecroAtomicBot a multiple purpose bot built to serve all your Discord needs.\nMy default prefix is !necro to change it simply use **!necro** prefix <custom prefix> to change it. Thanks again for inviting me \`\`\``,
+      content: `\`\`\`Greetings ${user.username}, thank you for inviting me to your server, I am NecroAtomicBot a multiple purpose bot built to serve all your Discord needs.\nMy default prefix is !necro to change it simply use **!necro** prefix <custom prefix> to change it. Thanks again for inviting me. ALSO IMPORANT PLEASE GIVE ME ADMIN PERMS TO USE ALL MY FUNCTIONALITIES \`\`\``,
       files: [attachments],
     });
 
@@ -2063,7 +2082,7 @@ client.on("messageReactionAdd", async (reaction, user) => {
 });
 
 client.on('error', (err) => {
-  
+  console.log(err)
 })
 
 
