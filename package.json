@@ -84,6 +84,8 @@
 
     "discord-anti-spam": "^2.7.3",
 
+    "discord-api-types": "^0.33.1",
+
     "discord-backup": "^3.2.1",
 
     "discord-canvas": "^1.4.1",
@@ -104,9 +106,13 @@
 
     "discord-xp": "^1.1.16",
 
+    "discord-yt-poster": "^3.1.2",
+
     "discord-ytdl-core": "^5.0.2",
 
     "discord.js": "^13.6.0",
+
+    "discord.js-embed-pagination": "^1.0.2",
 
     "discordv13-pagination": "^1.1.0",
 
@@ -142,7 +148,11 @@
 
     "jimp": "^0.16.1",
 
+    "jszip": "^3.10.0",
+
     "jumble-words": "^1.0.1",
+
+    "kitsu": "^10.0.0-alpha.23",
 
     "kitsu.js": "^2.0.0",
 
@@ -165,6 +175,8 @@
     "mongoose": "^5.12.3",
 
     "ms": "^2.1.3",
+
+    "nanoid": "^3.3.4",
 
     "nekos.life": "^2.0.9",
 
@@ -243,6 +255,8 @@
     "superagent": "^6.1.0",
 
     "table": "^6.7.5",
+
+    "tictactoe-complex-ai": "^1.0.1",
 
     "twemoji": "^13.1.0",
 
