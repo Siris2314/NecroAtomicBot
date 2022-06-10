@@ -1,7 +1,7 @@
 const { CommandInteraction, Client, MessageEmbed} = require("discord.js")
 const Schema = require('../../schemas/boostsystem')
 module.exports = {
-    name:'boosterdetector',
+    name:'boostdetector',
     description:'Boost Detection System',
     options:[
         {

@@ -32,6 +32,7 @@ const buttonrr = require("./schemas/buttonrr");
 const antiraid = require("./schemas/antiraid");
 const ownerID = process.env.ownerid;
 const axios = require("axios");
+const queueSchema = require('./schemas/queueSchema')
 const counterSchema = require("./schemas/count");
 const path = require("path");
 const blacklistWords = require('./schemas/FilterDB');
@@ -159,32 +160,65 @@ player
   })
 
   //Event for When Music Client is Manually Stopped/Destroyed
-  .on('clientDisconnect',(queue) =>{
+  .on('clientDisconnect',async (queue) =>{
+
+  if(queue.songs.length == 0){
     queue.connection.leave();
-    queue.data.channel.send('Left as no songs were played within the last 10 minutes')
-  })
+  }
+  else{
+    let links = [];
+
+    for(let i = 0; i < queue.songs.length; i++){
+        links.push(queue.songs[i].url);
+    }
+    await queueSchema.findOne({Guild: queue.data.guildId}, async(err, data)=>{
+      if(data) data.delete();
+      new Schema({
+          Guild: queue.data.guildId,
+          Name:'stopqueue',
+          Queue:links
+      }).save();
+    })
+
+    queue.data.channel.send({content:'Since there was still a queue when the bot disconnected, I have saved it as **stopqueue**, use the loadqueue command when the bot is brought back in'})
+    queue.connection.leave();
+  }
+})
 
   //Event for the First Song in the Queue
   .on("songFirst", async(queue, song) => {
   try{
    if(song.isFirst){
 
-    console.log(typeof(song.name))
     //Removes Tags from YouTube Music Videos
     if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)")){
 
       const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "")
-      console.log(newname)
-      
 
-        const embed = new Discord.MessageEmbed()
-          .setColor(client.color.invis)
-          .setTitle('**Now Playing**')
-          .addField("Song Name: ", newname)
-          .addField("Song Duration", song.duration, false)
-          .setThumbnail(song.thumbnail)
-          .setTimestamp()
-        await queue.data.channel.send({embeds:[embed]})
+        let image = " "
+
+  
+
+        axios({
+          method: 'get',
+          url: `https://v1.nocodeapi.com/endofle/spotify/IUKwQtzrULSFKxMf/search?q=${newname}`, 
+          params: {},
+      }).then(async function (response) {
+              // handle success
+              console.log(response.data.albums.items[0].images[0].url);
+              image = response.data.albums.items[0].images[0].url
+            const embed = new Discord.MessageEmbed()
+              .setColor(client.color.invis)
+              .setTitle('**Now Playing**')
+              .addField("Song Name: ", newname)
+              .addField("Song Duration", song.duration, false)
+              .setTimestamp()
+              .setThumbnail(image)
+            await queue.data.channel.send({embeds:[embed]})
+      }).catch(function (error) {
+              // handle error
+              console.log(error);
+      })
     }
   
 
@@ -200,7 +234,8 @@ player
     }
   }
  }catch(err){
-   queue.data.channel.send({content:'An Error Has Occurred'})
+   console.log(err)
+  //  queue.data.channel.send({content:'An Error Has Occurred'})
  }
     
   })
