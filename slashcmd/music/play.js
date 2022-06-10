@@ -34,7 +34,7 @@ module.exports =  {
 
 
 
-        if(query.includes('https://www.youtube.com/' ) || query.includes('https://open.spotify.com/track')){
+        if(query.includes('https://www.youtube.com/watch' ) || query.includes('https://open.spotify.com/track')){
             interaction.followUp(`Queueing your song......`)
             let song = await queue.play(query).catch(_ => {
                 if(!queue)
@@ -42,12 +42,11 @@ module.exports =  {
             });
         }
         else if(query.includes('https://open.spotify.com/playlist/') || query.includes('https://www.youtube.com/playlist') || query.includes("https://open.spotify.com/album")){
-            interaction.followUp(`Queueing your playlist......`)
+        interaction.followUp(`Queueing your playlist......`)
         let song = await queue.playlist(query).catch(_ => {
             if(!queue)
                 queue.stop();
         });
-        interaction.followUp({content:'Queueing your songs......'})
         }   
         else {
 
