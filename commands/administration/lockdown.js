@@ -10,6 +10,10 @@ module.exports = {
 
     if(!message.member.permissions.has("ADMINSTRATOR")) return message.channel.send({content:"Only admins can use this"})
 
+  
+        if(!message.guild.me.permissions.has('MANAGE_GUILD') || message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+            return message.channel.send({content:'I must have ADMIN command to run this command'})
+        }
 
     const role = message.guild.roles.everyone;
 
