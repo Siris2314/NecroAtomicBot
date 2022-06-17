@@ -10,6 +10,9 @@ module.exports = {
     async execute(message,args,client){
 
     if(!message.member.permissions.has('ADMINISTRATOR')) return;
+    if(!message.guild.me.permissions.has('MANAGE_GUILD') || message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+        return message.channel.send({content:'I must have ADMIN command to run this command'})
+    }
     let option = args[0]
     if(!option) {
             const embed = new MessageEmbed()

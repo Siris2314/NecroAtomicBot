@@ -10,7 +10,9 @@ module.exports = {
      try{
         if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Perms denied'})
 
-
+        if(!message.guild.me.permissions.has('MANAGE_GUILD') || message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+            return message.channel.send({content:'I must have ADMIN command to run this command'})
+        }
 
         const user = message.mentions.members.first() || message.guild.members.cache.get(args[0])
         if(!user) return message.channel.send({content:'Member not found'})

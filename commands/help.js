@@ -36,7 +36,7 @@ module.exports = {
         if (!args[0]) {
             message.channel.send({embeds:[
                 new MessageEmbed()
-                    .setTitle("📬 Need help? Here are all of my commands:")
+                    .setTitle("📬 Need help? Here are all of my commands(Make Sure to Give the Bot Admin perms to use all features):")
                     .addFields(
                         {
                             name: "⚙ Administration",

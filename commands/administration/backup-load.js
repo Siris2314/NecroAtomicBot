@@ -6,6 +6,9 @@ module.exports = {
     async execute(message, args,client){
         const p = await client.prefix(message)
         if(!message.member.id === message.guild.owner.id) return message.channel.send({content:`Only the owner of ${message.guild.name} Can run that command`})
+        if(!message.guild.me.permissions.has('MANAGE_GUILD') || message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+            return message.channel.send({content:'I must have ADMIN command to run this command'})
+        }
 
         let backUpID = args[0];
         if(!backUpID) return message.channel.send({content:`Please provide the ID, The bot must have dmed you before when you created a backup`})

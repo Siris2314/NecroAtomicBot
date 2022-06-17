@@ -8,6 +8,9 @@ module.exports = {
   async execute(message,args, client){
 
     if(!message.member.permissions.has('BAN_MEMBERS')) return message.channel.send({content:'Perms Denied'})
+    if(!message.guild.me.permissions.has('MANAGE_GUILD') || message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+      return message.channel.send({content:'I must have ADMIN command to run this command'})
+  }
 
     const member = message.mentions.members.first() || message.guild.members.cache.get(args[0])
 

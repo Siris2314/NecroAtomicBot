@@ -162,7 +162,7 @@ player
   //Event for When Music Client is Manually Stopped/Destroyed
   .on('clientDisconnect',async (queue) =>{
 
-  if(queue.songs.length == 0){
+  if(queue.songs.length <= 1){
     queue.connection.leave();
   }
   else{
@@ -213,10 +213,20 @@ player
               .addField("Song Name: ", newname)
               .addField("Song Duration", song.duration, false)
               .setTimestamp()
-              .setThumbnail(image)
+              .setThumbnail(image ? image : song.thumbnail)
             await queue.data.channel.send({embeds:[embed]})
-      }).catch(function (error) {
-              // handle error
+      }).catch(async function (error) {
+
+            const embed = new Discord.MessageEmbed()
+            .setColor(client.color.invis)
+            .setTitle('**Now Playing**')
+            .addField("Song Name: ", newname)
+            .addField("Song Duration", song.duration, false)
+            .setTimestamp()
+            .setThumbnail(song.thumbnail)
+          await queue.data.channel.send({embeds:[embed]})
+              
+                  
               console.log(error);
       })
     }
@@ -560,7 +570,7 @@ client.on("messageCreate", async (message) => {
   }
 
 
-  if(!message.guild.me.permissions.has(Discord.Permissions.FLAGS.SEND_MESSAGES)){
+  if(!message.guild.me.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)){
       return;
   }
 
