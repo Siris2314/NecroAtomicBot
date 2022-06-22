@@ -61,7 +61,7 @@ module.exports = {
         content: "Reason cannot exceed 512 characters",
       });
 
-    Target.ban({ days: Amount, reason: Reason });
+    Target.ban({reason: Reason });
 
     const embed = new MessageEmbed()
       .setColor("RED")
