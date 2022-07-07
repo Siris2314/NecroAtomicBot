@@ -18,7 +18,7 @@ module.exports = {
     const list = new MessageEmbed()
       .setTitle(`Bans in ${interaction.guild.name}`)
       .setDescription(`${bannedMembers}`)
-      .setFooter(`Amount: ${amount - 1}`)
+      .setFooter({text:`Amount: ${amount - 1}`})
       .setTimestamp()
       .setColor("RANDOM");
     return interaction.followUp({ embeds: [list] });

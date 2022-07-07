@@ -50,6 +50,7 @@ const unsafe = require("./unsafe.json");
 const moment = require("moment");
 const Levels = require("discord-xp");
 const glob = require("glob");
+const { GiveawaysManager } = require('discord-giveaways');
 const AntiSpam = require("discord-anti-spam");
 const antispamschema = require('./schemas/antispam')
 const { promisify } = require("util");
@@ -83,6 +84,7 @@ const rpc = new RPC.Client({ transport: "ipc" });
 const customSchema = require("./schemas/custom-welcome");
 const countSchema = require("./schemas/member-count");
 const autoroleschema = require("./schemas/autorole");
+const pollSchema = require("./schemas/poll")
 
 const jointocreate = require('./schemas/jointocreatevc');
 const blacklistserver = require("./schemas/blacklist-server");
@@ -96,6 +98,7 @@ client.slashCommands = new Discord.Collection();
 client.filters = new Discord.Collection()
 client.filtersLog = new Discord.Collection()
 client.voicetemp = new Discord.Collection();
+const giveawayModel = require('./schemas/giveaway')
 votes = new Discord.Collection();
 //VoiceClient for the Voice Channel Leveling System
 const voiceClient = new VoiceClient({
@@ -105,8 +108,40 @@ const voiceClient = new VoiceClient({
   mongooseConnectionString: mongoPath, //Mongo Database Connection
 }) 
 
+//Giveaway System Settings
+const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
+  async getAllGiveaways() {
+      return await giveawayModel.find().lean().exec();
+  }
 
+  // This function is called when a giveaway needs to be saved in the database.
+  async saveGiveaway(messageId, giveawayData) {
+      await giveawayModel.create(giveawayData);
+      return true;
+  }
 
+  // This function is called when a giveaway needs to be edited in the database.
+  async editGiveaway(messageId, giveawayData) {
+      await giveawayModel.updateOne({ messageId }, giveawayData, { omitUndefined: true }).exec();
+      return true;
+  }
+
+  // This function is called when a giveaway needs to be deleted from the database.
+  async deleteGiveaway(messageId) {
+      await giveawayModel.deleteOne({ messageId }).exec();
+      return true;
+  }
+};
+const manager = new GiveawayManagerWithOwnDatabase(client, {
+  default: {
+      botsCanWin: false,
+      embedColor: '#FF0000',
+      embedColorEnd: '#000000',
+      reaction: '🎉'
+  }
+});
+
+client.giveawaysManager = manager;
 
 
 client.vcclient = voiceClient; //Global Voice Leveling System Variable
@@ -191,9 +226,9 @@ player
    if(song.isFirst){
 
     //Removes Tags from YouTube Music Videos
-    if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)")){
+    if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)") || song.name.includes(" (Audio)")){
 
-      const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "")
+      const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "").replaceAll(" (Audio)","")
 
         let image = " "
 
@@ -542,22 +577,22 @@ Canvas.loadImage("./assets/background.jpg").then(async (img) => { //Read the Bac
 
 
 // // Anti-Crash System that I use from time to time
-// process.on("unhandledRejection", (reason, p) => {
-//     console.log(" [antiCrash] :: Unhandled Rejection/Catch" + reason);
-//     // console.log(reason, p);
-// });
-// process.on("uncaughtException", (err, origin) => {
-//     console.log(" [antiCrash] :: Uncaught Exception/Catch" + err.message);
-//     // console.log(err, origin);
-// });
-// process.on("uncaughtExceptionMonitor", (err, origin) => {
-//     console.log(" [antiCrash] :: Uncaught Exception/Catch (MONITOR)" + err.message);
-//     // console.log(err, origin);
-// });
-// process.on("multipleResolves", (type, promise, reason) => {
-//     console.log(" [antiCrash] :: Multiple Resolves" + reason);
-//     // console.log(type, promise, reason);
-// });
+process.on("unhandledRejection", (reason, p) => {
+    console.log(" [antiCrash] :: Unhandled Rejection/Catch" + reason);
+    console.log(reason, p);
+});
+process.on("uncaughtException", (err, origin) => {
+    console.log(" [antiCrash] :: Uncaught Exception/Catch" + err.message);
+    console.log(err, origin);
+});
+process.on("uncaughtExceptionMonitor", (err, origin) => {
+    console.log(" [antiCrash] :: Uncaught Exception/Catch (MONITOR)" + err.message);
+    console.log(err, origin);
+});
+process.on("multipleResolves", (type, promise, reason) => {
+    console.log(" [antiCrash] :: Multiple Resolves" + reason);
+    console.log(type, promise, reason);
+});
 
 
 //Message Event
@@ -574,7 +609,7 @@ client.on("messageCreate", async (message) => {
       return;
   }
 
-  //Not Quite Nitro System
+ 
 
   //Random Function that Helps With Getting Ids of Emojis a lot of easier
   function randomNumber(min, max) {
@@ -583,45 +618,43 @@ client.on("messageCreate", async (message) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }   
 
+   //Not Quite Nitro System
 
-  //Check to see if the message content itself is an emoji, hence starts and ends with a :
-
-if(message.content.startsWith(':') && message.content.endsWith(':')){
-  let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g)
-  if (!emojis) return;
-  emojis.forEach(m => {
-    let emoji = client.emojis.cache.find(x => x.name === m)
-    if (!emoji) return;
-    let temp = emoji.toString()
-    if (new RegExp(temp, "g").test(message.content)) message.content = message.content.replace(new RegExp(temp, "g"), emoji.toString())
-    else message.content = message.content.replace(new RegExp(":" + m + ":", "g"), emoji.toString());
-  })
-
-  if (message.content === message.content) return;
-
-  let webhook = await message.channel.fetchWebhooks();
-  let number = randomNumber(1, 2);
-  webhook = webhook.find(x => x.name === "NQN" + number);
-
-  if (!webhook) {
-    webhook = await message.channel.createWebhook(`NQN` + number, {
+   if(message.content.startsWith(':') && message.content.endsWith(':')){
+    let emojis = message.content.match(/(?<=:)([^:\s]+)(?=:)/g)
+    if (!emojis) return;
+    emojis.forEach(m => {
+      let emoji = client.emojis.cache.find(x => x.name === m)
+      if (!emoji) return;
+      let temp = emoji.toString()
+      if (new RegExp(temp, "g").test(message.content)) message.content = message.content.replace(new RegExp(temp, "g"), emoji.toString())
+      else message.content = message.content.replace(new RegExp(":" + m + ":", "g"), emoji.toString());
+    })
+    
+    let webhook = await message.channel.fetchWebhooks();
+    let number = randomNumber(1, 2);
+    webhook = webhook.find(x => x.name === "NQN" + number);
+  
+    if (!webhook) {
+      webhook = await message.channel.createWebhook(`NQN` + number, {
+        avatar: client.user.displayAvatarURL({ dynamic: true })
+      });
+    }
+  
+    await webhook.edit({
+      name: message.member.nickname ? message.member.nickname : message.author.username,
+      avatar: message.author.displayAvatarURL({ dynamic: true })
+    })
+  
+    message.delete().catch(err => { })
+    webhook.send(message.content).catch(err => { })
+  
+    await webhook.edit({
+      name: `NQN` + number,
       avatar: client.user.displayAvatarURL({ dynamic: true })
-    });
+    })
   }
 
-  await webhook.edit({
-    name: message.member.nickname ? message.member.nickname : message.author.username,
-    avatar: message.author.displayAvatarURL({ dynamic: true })
-  })
-
-  message.delete().catch(err => { })
-  webhook.send(message.content).catch(err => { })
-
-  await webhook.edit({
-    name: `NQN` + number,
-    avatar: client.user.displayAvatarURL({ dynamic: true })
-  })
-}
 
   //User Message Level System
   const randomXP = Math.floor(Math.random() * 29) + 1; //Random XP Value between 1 and 29 that will be given on each message sent by a user in the server
@@ -1320,8 +1353,9 @@ await boostschema.findOne({Server:newMember.guild.id}, async (err, data) => {
   const thankbed = new Discord.MessageEmbed()
     .setColor('PURPLE')
     .setAuthor({name:"Server Boost Increased"}, {iconURL:newMember.guild.iconURL()})
-
-  if(!oldMember.premiumSince && newMember.premiumSince){
+    console.log('lmfao')
+    console.log(data.Channel)
+  if(oldMember.premiumSince && newMember.premiumSince || (!oldMember.premiumSince && newMember.premiumSince) ){
 
   const canvas = Canvas.createCanvas(800,250)
   const ctx = canvas.getContext('2d')
@@ -1347,6 +1381,7 @@ await boostschema.findOne({Server:newMember.guild.id}, async (err, data) => {
   thankbed.setImage('attachment://boost.png')
 
     const channel = client.channels.cache.get(data.Channel)
+  
 
    await channel.send({embeds:[thankbed], files:[attachment]});
   }
@@ -1734,98 +1769,75 @@ client.on("interactionCreate", async (interaction) => {
 
   //Check to see if a command interaction is a Button
   if (interaction.isButton()) {
+    if (interaction.customId.slice(0, 4) === 'poll') {
 
-  try{
+      let pollData = await pollSchema.findOne({ messageId: interaction.message.id })
 
-    if (!votes.has(`yes_${interaction.message.id}`)) votes.set(`yes_${interaction.message.id}`, new Discord.Collection());
-            if (!votes.has(`no_${interaction.message.id}`)) votes.set(`no_${interaction.message.id}`, new Discord.Collection());
-            
-            const embed = interaction.message.embeds[0]
-            const upVotes = parseInt(embed.fields[0].value)
-            const downVotes = parseInt(embed.fields[1].value),
-            totalCasts = upVotes + downVotes,
-            $true = votes.get(`yes_${interaction.message.id}`),
-            $false = votes.get(`no_${interaction.message.id}`)
+      if (!pollData) return
 
-            if (interaction.customId == 'yes') {
+      if (pollData) {
+          var obj = pollData.users;
+          let index = obj?.findIndex((obj => obj.number === interaction.customId.slice(4) && obj.user === interaction.user.id))
 
-                if ($true.has(interaction.user.id)) return;
-                if ($false.has(interaction.user.id)) {
-                    $false.delete(interaction.user.id)
-                    $true.set(interaction.user.id, true)
-                    interaction.update({
-                        embeds: [({
-                            ...embed,
-                            fields: [
-                                {
-                                    'name': embed.fields[0].name,
-                                    'value': `${upVotes + 1} (\`${Math.round((upVotes + 1) / (totalCasts) * 100)}%\`)`,
-                                    'inline': true
-                                },
-                                {
-                                    'name': embed.fields[1].name,
-                                    'value': `${downVotes - 1} (\`${Math.round((downVotes - 1) / (totalCasts) * 100)}%\`)`,
-                                    'inline': true
-                                }
-                            ]
-                        })]
-                    })
+          if (index === -1) {
 
-                }
+              pollData = await pollSchema.findOneAndUpdate({ messageId: interaction.message.id }, {
+                  $push: {
+                      users: { number: interaction.customId.slice(4), user: interaction.user.id },
+                  },
+              })
 
-            }
-            if (interaction.customId == 'no') {
+              let irows = interaction.message.components
 
-              if ($false.has(interaction.user.id)) return;
-              if ($true.has(interaction.user.id)) {
-                  $true.delete(interaction.user.id)
-                  $false.set(interaction.user.id, true)
-                  interaction.update({
-                      embeds: [({
-                          ...embed,
-                          fields: [
-                              {
-                                  'name': embed.fields[0].name,
-                                  'value': `${upVotes - 1} (\`${Math.round((upVotes - 1) / (totalCasts) * 100)}%\`)`,
-                                  'inline': true
-                              },
-                              {
-                                  'name': embed.fields[1].name,
-                                  'value': `${downVotes + 1} (\`${Math.round((downVotes + 1) / (totalCasts) * 100)}%\`)`,
-                                  'inline': true
-                              }
-                          ]
-                      })]
-                  })
+              for (let i = 0; i < irows.length; i++) {
 
+                  let index2 = irows[i].components.findIndex(obj => obj.customId === interaction.customId)
+
+                  if (index2 === -1) {
+                      continue;
+                  } else {
+
+                      let num = Number(irows[i].components[index2].label)
+
+                      irows[i].components[index2].label = num + 1;
+
+                      interaction.update({ components: irows })
+
+                  }
               }
+          } else {
+
+              pollData = await pollSchema.findOneAndUpdate({ messageId: interaction.message.id }, {
+                  $pull: {
+                      users: { number: interaction.customId.slice(4), user: interaction.user.id },
+                  },
+              })
+
+              let irows = interaction.message.components
+
+              for (let i = 0; i < irows.length; i++) {
+
+                  let index2 = irows[i].components.findIndex(obj => obj.customId === interaction.customId)
+
+                  if (index2 === -1) {
+                      continue;
+                  } else {
+
+                      let num = Number(irows[i].components[index2].label)
+
+                      irows[i].components[index2].label = num - 1;
+
+                      interaction.update({ components: irows })
+                  }
+              }
+
           }
+      }
 
-          interaction.update({
-              embeds: [({
-                  ...embed,
-                  fields: [
-                      {
-                          'name': embed.fields[0].name,
-                          'value': interaction.customId == 'yes' ? `${upVotes + 1} (\`${Math.round((upVotes + 1) / (totalCasts + 1) * 100)}%\`)` : `${upVotes} (\`${Math.round((upVotes) / (totalCasts + 1) * 100)}%\`)`,
-                          'inline': true
-                      },
-                      {
-                          'name': embed.fields[1].name,
-                          'value': interaction.customId == 'no' ? `${downVotes + 1} (\`${Math.round((downVotes + 1) / (totalCasts + 1) * 100)}%\`)` : `${downVotes} (\`${Math.round((downVotes) / (totalCasts + 1) * 100)}%\`)`,
-                          'inline': true
-                      }
-                  ]
-              })]
-          })
-          interaction.customId == 'yes' ? votes.get(`yes_${interaction.message.id}`).set(interaction.user.id, true) : votes.get(`no_${interaction.message.id}`).set(interaction.user.id, true)
+  }
 
-        }catch(e){
-          // interaction.channel.send(`Interaction timed out please try again later`)
-        }
-
-
-    if(interaction.customId == "pause"){
+  
+    if(interaction.customId.slice(0, 5) == "pause"){
      let queue = client.player.getQueue(interaction.guild.id);
 
      if(!queue) return interaction.followUp({content:`No Songs Playing`})
@@ -1993,6 +2005,8 @@ client.on("guildDelete", async (guild) => {
 client.on("voiceStateUpdate", async (oldState, newState) => {
   
   //Join to Create VC System
+
+try{
   const schema = await jointocreate.findOne({
     guildId: oldState.guild.id ||newState.guild.id,
   })
@@ -2030,6 +2044,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
   //VC Leveling System, that checks for when a member joins or leaves VC and calculates XP based on that
   voiceClient.startListener(oldState, newState);
+  }catch(err){
+    oldState.guild.systemChannel.send(`An Error Has Occurred, ${err.message}`)
+  }
 });
 
 
@@ -2199,7 +2216,7 @@ client.on("messageReactionRemove", async (reaction, user) => {
 
 
 //Modlogs System
-logger(client);
+// logger(client);
 
 require("./dashboard/server");
 

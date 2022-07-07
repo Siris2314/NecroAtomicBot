@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       name: "messages",
-      description: `Delete banned user's messages`,
+      description: "Delete banned user's messages",
       type: "STRING",
       required: true,
       choices: [
@@ -56,12 +56,14 @@ module.exports = {
 
     const Reason = interaction.options.getString("reason") || "No Reason";
 
-    if (Reason.length > 512)
+    if (Reason.length > 512){
       return interaction.followUp({
         content: "Reason cannot exceed 512 characters",
       });
+    }
+    else{
 
-    Target.ban({reason: Reason });
+    Target.ban({reason: Reason })
 
     const embed = new MessageEmbed()
       .setColor("RED")
@@ -69,5 +71,6 @@ module.exports = {
       .setDescription(`✅ **${Target.user.username}** has been banned`);
 
     interaction.followUp({ embeds: [embed] });
+    }
   },
 };

@@ -494,17 +494,19 @@ module.exports = (c) => {
 
 async function send_log(client, guild, color, title, description, thumb) {
   try {
-    if(!guild) return;
+    if(!guild || !client) return;
     await Schema.findOne({ Guild: guild.id }, async (err, data) => {
+
+      if(!data) return;
       const logembed = new Discord.MessageEmbed()
         .setColor(color ? color : "RANDOM")
-        .setDescription(description ? description.substring(0, 2048) : "\u200b")
+        .setDescription(description ? description.substr(0, 2048) : "\u200b")
         .setTitle(title ? title.substr(0, 256) : "\u200b")
         .setThumbnail(thumb ? thumb : guild.iconURL({ format: "png" }))
         .setTimestamp()
-        .setFooter(guild.name, guild.iconURL({ format: "png" }));
+        .setFooter({text:guild.name, iconURL: guild.iconURL({ format: "png" })});
 
-      if (!data) return;
+
       const logger = await client.channels.cache.get(data.Channel);
 
       if (!logger) {
