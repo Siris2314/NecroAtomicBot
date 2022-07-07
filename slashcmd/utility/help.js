@@ -79,7 +79,7 @@ module.exports = {
                 const catEmbed = new MessageEmbed()
 
                 if(directory === 'administration'){
-                    catEmbed.setTitle(`${directory} :lock:`)
+                    catEmbed.setTitle(`${directory}` + ` ${emojis.categories.moderation}`)
                     catEmbed.setDescription(`List of Commands in ${directory} category`)
                     catEmbed.addFields(
                         commands[0].map((cmd) => {
@@ -109,12 +109,30 @@ module.exports = {
                         })
                     )
 
+
+                }
+                else if(directory === 'giveaway'){
+                    catEmbed.setTitle(`${directory}` + ` ${emojis.categories.giveaways}`)
+                    catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
+                    catEmbed.addFields(
+                        commands[2].map((cmd) => {
+
+                            const name = cmd.split('.').slice(0, -1).join('.')
+                            const desc = client.slashCommands.get(name)
+                            return {
+                                name:name,
+                                value:(desc.description) || 'No Description',
+                                inline:true
+                            }
+                        })
+                    )
+
                 }
                 else if(directory === 'music'){
                     catEmbed.setTitle(`${directory}` + ` ${emojis.categories.music}`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
-                        commands[2].map((cmd) => {
+                        commands[3].map((cmd) => {
 
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
@@ -131,7 +149,7 @@ module.exports = {
                     catEmbed.setTitle(`${directory} :wrench:`)
                     catEmbed.setDescription(`List of Commands in ${directory} category`)
                     catEmbed.addFields(
-                        commands[3].map((cmd) => {
+                        commands[4].map((cmd) => {
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
                             return {
@@ -144,10 +162,10 @@ module.exports = {
                 }
                 
                 else if(directory === 'utility'){
-                    catEmbed.setTitle(`${directory} :tools:`)
+                    catEmbed.setTitle(`${directory}` + ` ${emojis.categories.music}`)
                     catEmbed.setDescription(`List of Commands in ${directory} category, No Description Commands Are Most Likely Context Menus`)
                     catEmbed.addFields(
-                        commands[4].map((cmd) => {
+                        commands[5].map((cmd) => {
                             const name = cmd.split('.').slice(0, -1).join('.')
                             const desc = client.slashCommands.get(name)
                             return {

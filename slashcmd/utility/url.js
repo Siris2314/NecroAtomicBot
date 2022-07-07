@@ -1,5 +1,4 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
-const Schema = require('../../schemas/warn')
 const wrapper = require('popcat-wrapper')
 
 module.exports = {
@@ -27,10 +26,9 @@ module.exports = {
       try{
         const url = interaction.options.getString('url')
         const extension = interaction.options.getString('url')
-        const newurl = wrapper.shorten(url, extension)
-
-        interaction.followUp({content:`Shortened URL: ${newurl}`})
-
+        await wrapper.shorten(url, extension).then(url => {
+          interaction.followUp({content:`Shortened URL: ${url}`})
+        })
       } catch(err) {
         interaction.followUp({content:`An error occurred: ${err}`})
       }

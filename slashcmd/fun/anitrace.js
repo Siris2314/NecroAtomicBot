@@ -2,7 +2,7 @@ const axios = require('axios');
 const { MessageEmbed } = require("discord.js")
 
 module.exports = {
-    name: "anime-trace",
+    name: "anitrace",
     description: "Trace a anime by using a image",
     type: 'CHAT_INPUT',
     options: [

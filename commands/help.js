@@ -13,6 +13,10 @@ module.exports = {
     name: "help",
     description: "Shows all available bot commands.",
     async execute(message, args, client) {
+
+        if(!message.guild.me.permissions.has('SEND_MESSAGES')){
+            return message.channel.send({content:':x: You need to give me the send messages permissions to use this command.'})
+        }
         await schema.findOne(
             { guildID: message.guild.id },
             async (err, data) => {

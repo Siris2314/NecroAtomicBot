@@ -16,7 +16,7 @@ module.exports = {
         },
         {
             name:'size',
-            description:'Select the size of the banner(Default: 2048, Max: 4000)',
+            description:'Select the size of the banner(Default: 1024, Max:2048)',
             type:'NUMBER',
             required:false,
         }
@@ -29,7 +29,7 @@ module.exports = {
 
         let user = interaction.options.getUser('user');
 
-        let size = interaction.options.getNumber('size');
+        let size = interaction.options.getNumber('size') || 2048;
 
         axios.get(`https://discord.com/api/users/${user.id}`, {
             headers: {
