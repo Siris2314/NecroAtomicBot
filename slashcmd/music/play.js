@@ -3,8 +3,7 @@ const {
   Client,
   MessageEmbed,
   MessageButton,
-  MessageActionRow,
-} = require("discord.js");
+  MessageActionRow,} = require("discord.js");
 
 const { Utils } = require("discord-music-player");
 
@@ -24,16 +23,18 @@ module.exports = {
     try {
       const vc = interaction.member.voice.channel;
 
-      if (!vc)
+      if (!vc){
         return interaction.followUp({
           content: "Must be in VC to play command",
         });
+      }
 
       const query = interaction.options.getString("song");
 
       let queue = client.player.createQueue(interaction.guild.id, {
         data: interaction,
       });
+      console.log(queue)
       await queue.join(vc);
 
       if (
