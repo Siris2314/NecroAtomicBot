@@ -4,7 +4,7 @@ const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
 module.exports = {
     name: 'captcha',
     description: 'Sets up Captcha Verification System in Server mode',
-    permission: 'MANAGE_SERVER',
+    permission: 'MANAGE_MEMBERS',
     options:[
         {
             name:'role',

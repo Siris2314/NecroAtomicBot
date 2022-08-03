@@ -170,5 +170,6 @@ module.exports = {
 			}
 			return resolve(lines);
 		});
-	}
+	},
+
 }

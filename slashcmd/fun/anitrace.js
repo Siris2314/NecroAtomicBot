@@ -24,7 +24,7 @@ module.exports = {
                 .catch((err) => {
                     interaction.followUp("Unable to Fetch the image")
                 })
-                if (!traceDetails.result.length) return interaction.reply("No resoult found")
+                if (!traceDetails.result.length) return interaction.followUp("No resoult found")
                 const animeResult = traceDetails.result[0];
                 const animeDetails = await axios
                   .post(`https://graphql.anilist.co`, {

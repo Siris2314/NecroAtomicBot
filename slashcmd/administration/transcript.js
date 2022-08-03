@@ -1,4 +1,4 @@
-const { CommandInteraction, Client, MessageEmbed} = require('discord.js')
+const { CommandInteraction, Client, MessageEmbed, MessageAttachment} = require('discord.js')
 const JSZip = require('jszip')
 const fetch = require('node-fetch')
 

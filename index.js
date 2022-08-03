@@ -39,7 +39,7 @@ const blacklistWords = require('./schemas/FilterDB');
 const nsfwschema = require("./schemas/nsfw");
 const banner = "./assets/bot_long_banner.png";
 require("dotenv").config();
-const tf = require('@tensorflow/tfjs-node')
+const tf = require('@tensorflow/tfjs-node');
 const nsfw = require('nsfwjs')
 const starboardSchema = require("./schemas/starboard");
 const fs = require("fs");
@@ -59,8 +59,10 @@ const welcomeMessage = require('./schemas/welcomeMessage')
 const { VoiceClient } = require("djs-voice");
 const afkschema = require("./schemas/afk");
 const chalkAnimation = require('chalk-animation')
+const { DiscordTogether } = require('discord-together');
 
-const Nuggies = require('nuggies');
+client.discordTogether = new DiscordTogether(client);
+
 
 
 
@@ -73,10 +75,6 @@ const guildSchema = require("./schemas/Guild");
 
 const ms = require("ms");
 const altschema = require("./schemas/anti-alt");
-const { DiscordTogether } = require("discord-together");
-client.discordTogether = new DiscordTogether(client, {
-  token: token,
-});
 const rpctoken = process.env.rpc;
 const RPC = require("discord-rpc");
 const rpc = new RPC.Client({ transport: "ipc" });
@@ -473,6 +471,10 @@ fs.readdirSync("./slashcmd/").forEach((dir) => {
     .then(console.log("Connected to Mongo")); //Prompt when Connection to Mongo is Successful
 
   if (!mongoPath) return; //If Mongo Path is not set, continue
+
+
+
+
 
 
   blacklistWords.find().then((documents)=>{
@@ -1054,7 +1056,10 @@ client.on("messageCreate", async (message) => {
       responseType: 'arraybuffer',
     })
     const model = await nsfw.load() //Load NSFW Classification Model
-    const image = tf.node.decodeImage(pic.data,3) //Decode Image into Multiple Neural Network Nodes
+    const image = tf.node.decodeImage(pic.data,3) || null //Decode Image into Multiple Neural Network Nodes
+    if(!image){
+      return false;
+    }
     const predictions = await model.classify(image)
 
     image.dispose()
@@ -1448,7 +1453,7 @@ client.on("guildMemberAdd", async (member) => {
       files: [attachment],
       content:
         "Please answer the following Captcha to make sure you are not a bot",
-    });
+    }).catch(err => console.log(err))
 
 
     //Retrieves the Role that the Admin had set for Captcha System
@@ -1837,13 +1842,13 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   
-    if(interaction.customId.slice(0, 5) == "pause"){
+    if(interaction.customId == "pause"){
      let queue = client.player.getQueue(interaction.guild.id);
 
      if(!queue) return interaction.followUp({content:`No Songs Playing`})
       queue.setPaused(true);
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.channel.send('Music Paused');
 
       
     }
@@ -1853,7 +1858,7 @@ client.on("interactionCreate", async (interaction) => {
       if(!queue) return interaction.followUp({content:`No Songs Playing`})
       queue.setPaused(false);
 
-      await interaction.deferReply({ ephemeral: true });
+      await interaction.channel.send('Music Resumed');
 
       
     }

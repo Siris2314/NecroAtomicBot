@@ -22,7 +22,9 @@ module.exports = {
 
             const { data: info } = await axios.get(`https://luminabot.xyz/api/json/twitch-info?username=${streamer}`);
 
-            console.log(info);
+            if(!info){
+                return interaction.followUp({content:'Streamer not found'})
+            }
 
             const embed = new Discord.MessageEmbed()
                 .setTitle(`${info.displayname}'s Twitch Info`)

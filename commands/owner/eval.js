@@ -6,7 +6,10 @@ module.exports = {
 	name: 'eval',
 	description: 'Eval Command',
 	async execute(message, args,client){
-		if(!message.author.id == ownerid) (`Owner Only Command`)
+		if(message.author.id != ownerid){
+            
+            message.channel.send(`Owner Only Command`)
+        }
 
         const embed = new MessageEmbed()
         .setTitle('Evaluating...')
