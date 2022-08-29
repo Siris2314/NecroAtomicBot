@@ -49,6 +49,11 @@ module.exports = {
         }
     ],
     run: async (client, interaction) => {
+
+
+        if(interaction.user.id != interaction.guild.ownerID){
+            interaction.followUp(`Only owner of this server can use this command`)
+        }
       
         const SubCommand = interaction.options.getSubcommand();
 
