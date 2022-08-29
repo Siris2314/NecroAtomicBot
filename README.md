@@ -13,7 +13,6 @@
                - Utility: Utility commands for users, i.e. serverinfo, whois(user information)
                - Images: Powerful image manipulation commands
                - Gameinfo: Game information commands,currently only Genshin Impact and League Commands Available
-               - Work In Progress: Work in progress commands, commands not fully implemented into the bot
                
 #### Please contact us if you would like any features you would like added to the bot!               
         
