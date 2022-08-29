@@ -182,10 +182,15 @@ player
     queue.data.channel.send("Left Channel as no one was with me");
   })
 
-  .on('error', async(error,queue) => {
-    console.log(error)
-    queue.data.channel.send('An Error Has Occured, Please Give Us a Few mins to restart and come back')
-  })
+  // .on('error', async(error,queue) => {
+
+  //   try{
+  //   console.log(error)
+  //   queue.data.channel.send('An Error Has Occured, Please Give Us a Few mins to restart and come back')
+  //   }catch(e){
+  //     console.log(e)
+  //   }
+  // })
 
   //Event for when Music Queue is Manually Shut Down
   .on("queueDestroyed", async (queue) => {
@@ -231,13 +236,12 @@ player
         let image = " "
 
   
-
+      
         axios({
           method: 'get',
           url: `https://v1.nocodeapi.com/endofle/spotify/IUKwQtzrULSFKxMf/search?q=${newname}`, 
           params: {},
       }).then(async function (response) {
-              // handle success
               console.log(response.data.albums.items[0].images[0].url);
               image = response.data.albums.items[0].images[0].url
             const embed = new Discord.MessageEmbed()
@@ -278,7 +282,7 @@ player
   }
  }catch(err){
    console.log(err)
-  //  queue.data.channel.send({content:'An Error Has Occurred'})
+   queue.data.channel.send({content:'An Error Has Occurred'})
  }
     
   })
@@ -1056,7 +1060,8 @@ client.on("messageCreate", async (message) => {
       responseType: 'arraybuffer',
     })
     const model = await nsfw.load() //Load NSFW Classification Model
-    const image = tf.node.decodeImage(pic.data,3) || null //Decode Image into Multiple Neural Network Nodes
+    const b = Buffer.from(pic.data, "base64");
+    const image = tf.node.decodeImage(b,3) || null //Decode Image into Multiple Neural Network Nodes
     if(!image){
       return false;
     }
