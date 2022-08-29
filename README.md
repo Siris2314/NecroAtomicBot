@@ -24,7 +24,7 @@
 
 #### Add NecroAtomic to your server: https://dsc.gg/necroatomic
 
-#### If you have any questions about the Bot, feel free to join our support server for help: https://discord.gg/jY8Esuxfh9
+#### If you have any questions about the Bot, feel free to join our support server for help: https://discord.gg/jY8Esuxfh9 (This link does not work)
 
   &nbsp;
 
