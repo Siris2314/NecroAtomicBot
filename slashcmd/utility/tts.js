@@ -59,7 +59,7 @@ module.exports = {
                interaction.channel.send("Audio Player Crashed, Rerun command please")
          
             }
-        }, 10000) 
+        }, 10000000) 
 
       }catch(err){
         interaction.followUp({content:'Request has failed'});
