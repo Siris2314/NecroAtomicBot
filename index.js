@@ -1525,6 +1525,7 @@ client.on("guildMemberAdd", async (member) => {
 
     try {
       const channel = client.channels.cache.get(data.Channel); //Find the channel to send the Welcome Image to
+      console.log(chanel)
       channel.send({ files: [image] });
     } catch (err) {
       console.log(err);
