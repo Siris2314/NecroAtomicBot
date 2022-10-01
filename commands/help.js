@@ -15,6 +15,7 @@ module.exports = {
     async execute(message, args, client) {
 
         if(!message.guild.me.permissions.has('SEND_MESSAGES')){
+            message.channel.send({content:'I must have SEND_MESSAGES command to run this command'})
             throw `Invalid perms, need SEND_MESSAGES`
         }
         await schema.findOne(
