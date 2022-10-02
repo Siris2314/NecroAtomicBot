@@ -53,6 +53,7 @@ module.exports = {
 
         if(interaction.user.id != interaction.guild.ownerID){
             interaction.followUp(`Only owner of this server can use this command`)
+            throw "Perms Error"
         }
       
         const SubCommand = interaction.options.getSubcommand();

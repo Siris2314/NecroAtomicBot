@@ -258,6 +258,8 @@
 
     "table": "^6.7.5",
 
+    "tesseract.js": "^3.0.3",
+
     "twemoji": "^13.1.0",
 
     "twemoji-parser": "^13.0.0",

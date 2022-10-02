@@ -4,5 +4,7 @@
 node_modules
 /images
 /internal
+internal
 /data
 data
+eng.traineddata
