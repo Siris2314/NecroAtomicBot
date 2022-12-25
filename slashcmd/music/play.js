@@ -34,7 +34,6 @@ module.exports = {
       let queue = client.player.createQueue(interaction.guild.id, {
         data: interaction,
       });
-      console.log(queue)
       await queue.join(vc);
 
       if (

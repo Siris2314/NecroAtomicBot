@@ -161,6 +161,7 @@ module.exports = {afk, starboardcollection}; //Exporting Discord Collections for
 const { Player } = require("discord-music-player"); //Import Music Player Client 
 
 const player = new Player(client, {
+  leaveOnStop:true,
   leaveOnEmpty: true,
   deafenOnJoin: true,
   timeout: 600000,
