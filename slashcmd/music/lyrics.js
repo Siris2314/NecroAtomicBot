@@ -1,6 +1,9 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
 const  solenolyrics = require('solenolyrics');
 const reactionMenu = require("discordv13-pagination")
+const Genius = require("genius-lyrics");
+require('dotenv').config()
+const genius = new Genius.Client(process.env.genius)
 
 
 module.exports =  {
@@ -16,22 +19,22 @@ module.exports =  {
         
         const song = queue.songs[0]
 
+        let lyrics = " "
         let songname = ''
 
-        if(song.name.includes("(Official Video)") || song.name.includes("(Official Music Video)") || song.name.includes("(Official Audio)")){
-          songname =  song.name.replace("(Official Video)", "") || song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
-          console.log(songname)
-        }
+        songname = song.name.replace(/ *\([^)]*\) */g, "");
+
 
 
       try{
-        lyrics = await solenolyrics.requestLyricsFor(songname)
-        console.log(lyrics)
+        const queries = await genius.songs.search(songname);
+        lyrics = await queries[0].lyrics();
         if(!lyrics) return interaction.followUp({content: `Could not find lyrics for ${songname} `})
       } catch(err) {
           return interaction.followUp({content:`Could not find lyrics for ${songname}`})
       }
 
+      
       const embed = new MessageEmbed()
         .setTitle(`Lyrics for ${song.name}`)
         .setDescription(lyrics)

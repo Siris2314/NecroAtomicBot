@@ -1,5 +1,6 @@
 const {CommandInteraction, Client, MessageEmbed, MessageActionRow, MessageButton} = require('discord.js')
 const sf = require("seconds-formater");
+const axios = require('axios')
 module.exports = {
     name: 'nowplaying',
     description: 'Shows the current song playing',
@@ -76,46 +77,58 @@ module.exports = {
             time = sf.convert(seconds).format("M:SS");
           }
 
+          const newname = song.name.replace(/ *\([^)]*\) */g, "");
 
+          let image = " "
 
-        if(song.name.includes("Official Video") || song.name.includes("Official Music Video") || song.name.includes("Official Audio")){
-            const newname = song.name.replace("(Official Video)", "") ||song.name.replace("(Official Music Video)", "") || song.name.replace("(Official Audio)", "")
+          axios({
+            method: 'get',
+            url: `https://v1.nocodeapi.com/endofle/spotify/IUKwQtzrULSFKxMf/search?q=${newname}`, 
+            params: {},
+        }).then(async function (response) {
+                console.log(response.data.albums.items[0].images[0].url);
+                image = response.data.albums.items[0].images[0].url
+
+                    const embed = new MessageEmbed()
+                    .setTitle(`**Currently Playing**`)
+                    .setColor(client.color.invis)
+                    .addField('Song Name', newname)
+                    .setDescription(`${progressBar(
+                        total,
+                        stream,
+                        18,
+                        "▬",
+                    )} ${time}/${song.duration}`)
+                    .setThumbnail(image)
+                    .setTimestamp()
+
+                return interaction.followUp({embeds:[embed], components:[row]})
+
+        }).catch(function (error) {
+
+            console.log(error);
+
             const embed = new MessageEmbed()
-                .setTitle(`**Currently Playing**`)
-                .setColor(client.color.invis)
-                .addField('Song Name', newname)
-                .setDescription(`${progressBar(
-                    total,
-                    stream,
-                    18,
-                    "▬",
-                  )} ${time}/${song.duration}`)
-                .setThumbnail(song.thumbnail)
-                .setTimestamp()
+            .setTitle(`**Currently Playing**`)
+            .setColor(client.color.invis)
+            .addField('Song Name', newname)
+            .setDescription(`${progressBar(
+                total,
+                stream,
+                18,
+                "▬",
+            )} ${time}/${song.duration}`)
+            .setThumbnail(song.thumbnail)
+            .setTimestamp()
 
-            return interaction.followUp({embeds:[embed], components:[row]})
+        return interaction.followUp({embeds:[embed], components:[row]})
 
-        }
-        else{
-            const embed = new MessageEmbed()
-                .setTitle(`**Currently Playing**`)
-                .setColor(client.color.invis)
-                .addField('Song Name', song.name)
-                .setDescription( `${progressBar(
-                    total,
-                    stream,
-                    18,
-                    "▬",
-                  )} ${time}/${song.duration}`
-          )
-                .setThumbnail(song.thumbnail)
-                .setTimestamp()
 
-            return interaction.followUp({embeds:[embed], components:[row]})
+        })
 
-        }
 
     }catch(err){
+        console.log(err)
         interaction.followUp('An error has occured, please try again later')
     }
        

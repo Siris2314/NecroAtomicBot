@@ -20,6 +20,7 @@ module.exports = {
 
     run:async(client, interaction) => {
         let channel = interaction.options.getChannel('channel')
+        if(!channel.isText()) return interaction.followUp({content:'You can only get transcripts from text channels!'})
         channel.messages.fetch({ limit: 100 }).then(async fetched => {
             let mapped = fetched.map(msg => `[${msg.createdAt.toLocaleString()}] ${msg.author.tag} (${msg.author.id}): ${msg.embeds[0] ? JSON.stringify(msg.embeds[0]) : msg.content ? msg.content : msg.attachments.map(g => g.url)}`)
             let reversedMapped = [];

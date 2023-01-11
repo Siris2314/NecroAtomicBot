@@ -80,6 +80,7 @@ module.exports = {
             return message.author.id === interaction.member.id;
           };
 
+
           const collector = interaction.channel.createMessageCollector({
             filter: filter,
             max: 1,

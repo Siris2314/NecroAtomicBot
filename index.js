@@ -63,8 +63,14 @@ const { DiscordTogether } = require('discord-together');
 
 client.discordTogether = new DiscordTogether(client);
 
-
-
+//Chatbot system using Chat-GPT3 API
+const { Configuration, OpenAIApi } = require("openai");
+const config = new Configuration({
+  organization:process.env.openai_org,
+  apiKey: process.env.openai,
+})
+const openai = new OpenAIApi(config);
+const  {backOff} = require('exponential-backoff')
 
 
 client.snipes = new Discord.Collection();
@@ -229,15 +235,11 @@ player
   try{
    if(song.isFirst){
 
-    //Removes Tags from YouTube Music Videos
-    if(song.name.includes(" (Official Video)") || song.name.includes(" (Official Music Video)") || song.name.includes(" (Official Audio)") || song.name.includes(" (Audio)")){
-
-      const newname = `${song.name}`.replaceAll(" (Official Video)", "").replaceAll(" (Official Audio)", "").replaceAll(" (Official Music Video)", "").replaceAll(" (Audio)","")
+        //Removes Tags from YouTube Music Videos
+        const newname = song.name.replace(/ *\([^)]*\) */g, "");
 
         let image = " "
 
-  
-      
         axios({
           method: 'get',
           url: `https://v1.nocodeapi.com/endofle/spotify/IUKwQtzrULSFKxMf/search?q=${newname}`, 
@@ -252,7 +254,7 @@ player
               .addField("Song Duration", song.duration, false)
               .setTimestamp()
               .setThumbnail(image ? image : song.thumbnail)
-            await queue.data.channel.send({embeds:[embed]})
+            return  queue.data.channel.send({embeds:[embed]})
       }).catch(async function (error) {
 
             const embed = new Discord.MessageEmbed()
@@ -267,19 +269,8 @@ player
                   
               console.log(error);
       })
-    }
-  
-
-    else{
-      const embed = new Discord.MessageEmbed()
-        .setColor(client.color.invis)
-        .addField("Song Name: ", song.name)
-        .setTitle('**Now Playing**')
-        .addField("Song Duration", song.duration, false)
-        .setThumbnail(song.thumbnail)
-        .setTimestamp()
-      queue.data.channel.send({embeds:[embed]})
-    }
+      
+    
   }
  }catch(err){
    console.log(err)
@@ -1122,30 +1113,52 @@ client.on("messageCreate", async (message) => {
     //If No Chatbot System is Set, Do Nothing
     if (!data) return;
 
+    if(message.guild.id != '912238273785634859'){
+      return message.reply('Chatbot System is currently in beta testing')
+    }
     
     if (message.channel.id !== data.Channel) return;
 
+    const MAX_RETRIES = 5;
+
+async function sendRequest(message, retries = 0) {
+  try {
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt:`ChatGPT is a friendly chatbot. \n\ 
+      ChatGPT: Hello! How are you doing today? \n\
+      ${message.author.username}: ${message.content} \n\
+      ChatGPT:
+      `,
+      temperature: 0.6,
+      stop:['ChatGPT:', 'Arihant Tripathi:']
+    });
+    console.log(response.data.choices[0].text);
+    message.channel.send(`${response.data.choices[0].text}`);
+  } catch (error) {
+    if (error.response && error.response.status === 429) {
+      // Check if the maximum number of retries has been reached
+      if (retries >= MAX_RETRIES) {
+        console.error('Too many requests, giving up');
+        return;
+      }
+      console.log(`Too many requests, retrying in ${2 ** retries} seconds...`);
+      // Increase the number of retries and set a delay before retrying the request
+      const delay = 2 ** retries * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return sendRequest(message, retries + 1);
+    } else {
+      console.error(error);
+    }
+  }
+}
+    
+
     //Method that makes it look like the bot is typing
     message.channel.sendTyping();
+    sendRequest(message);
 
-    //Fetch the Chatbot API
-  try{
-    fetch(
-      `https://api.affiliateplus.xyz/api/chatbot?message=${encodeURIComponent(
-        message.content
-      )}&name=${client.user.username}&user=${message.author.username}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        //Reply with the chatbot API message
-        message.reply(`${data.message}`).catch(err => {
-          message.reply('API ERROR, Please try sometime later')
-        });
-      });
-      } catch(err){
-        message.reply('API ERROR, Please try again later')
-      }
-  });
+});
 
 
 
@@ -1526,7 +1539,9 @@ client.on("guildMemberAdd", async (member) => {
 
     try {
       const channel = client.channels.cache.get(data.Channel); //Find the channel to send the Welcome Image to
-      console.log(chanel)
+      if(!channel){
+        return;
+      }
       channel.send({ files: [image] });
     } catch (err) {
       console.log(err);
