@@ -22,7 +22,7 @@ const youtube = process.env.youtube;
 const botname = process.env.botname;
 const colors = require("colors");
 const fetch = require("node-fetch");
-const logger = require("./logger");
+const logger = require("./classes/logger");
 const { red, green, blue, yellow, cyan } = require('colors');
 const ascii = require("ascii-table");
 const { Captcha } = require("captcha-canvas");
@@ -211,22 +211,7 @@ player
     queue.connection.leave();
   }
   else{
-    let links = [];
-
-    for(let i = 0; i < queue.songs.length; i++){
-        links.push(queue.songs[i].url);
-    }
-    await queueSchema.findOne({Guild: queue.data.guildId}, async(err, data)=>{
-      if(data) data.delete();
-      new Schema({
-          Guild: queue.data.guildId,
-          Name:'stopqueue',
-          Queue:links
-      }).save();
-    })
-
-    queue.data.channel.send({content:'Since there was still a queue when the bot disconnected, I have saved it as **stopqueue**, use the loadqueue command when the bot is brought back in'})
-    queue.connection.leave();
+    
   }
 })
 
@@ -1436,6 +1421,7 @@ client.on("guildMemberAdd", async (member) => {
 
     if(channel != null){
 
+      console.log(welcomemessage)
       await channel.send({content: welcomemessage})
      
     }

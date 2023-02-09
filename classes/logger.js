@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const Schema = require("./schemas/modlogs");
+const Schema = require("../schemas/modlogs");
 const ms = require("ms");
 module.exports = (c) => {
   console.log("Loaded Logger Module".green);
