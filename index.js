@@ -155,7 +155,7 @@ client.commands = new Discord.Collection(); //Message Commands Collection
 
 
 
-client.color = require('./colors.json') //Global Variable for Color JSON for ease of access to multiple colors
+client.color = require('./classes/colors.json') //Global Variable for Color JSON for ease of access to multiple colors
 
 
 Levels.setURL(mongoPath); //Connection to the Mongo Database for Leveling System

@@ -1,7 +1,7 @@
 const {CommandInteraction, Client, MessageEmbed, MessageActionRow, MessageSelectMenu} = require('discord.js')
 const fs = require('fs')
 const image = `https://cdn.discordapp.com/attachments/867151384703795241/867465639262027776/bot_long_banner.png`
-const emojis = require('../../emojis.json')
+const emojis = require('../../classes/emojis.json')
 module.exports = {
     name:'help',
     description:'Slash Help Command',
