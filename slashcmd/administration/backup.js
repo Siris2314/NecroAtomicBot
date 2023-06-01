@@ -50,8 +50,9 @@ module.exports = {
     ],
     run: async (client, interaction) => {
 
+        
+        if(interaction.user.id != interaction.guild.ownerId){
 
-        if(interaction.user.id != interaction.guild.ownerID){
             interaction.followUp(`Only owner of this server can use this command`)
             throw "Perms Error"
         }
@@ -236,7 +237,6 @@ module.exports = {
             });
 
         } else if (SubCommand === "load") {
-            // =====================================================================================
             const backupID = interaction.options.getString('backup-id')
             backup.fetch(backupID).then(async () => {
 
