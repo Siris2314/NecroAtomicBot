@@ -718,16 +718,16 @@ client.on("messageCreate", async (message) => {
 
 
   //FxTwitter System for a Personal Server
-  if (
-    message.content.includes("https://twitter.com/") &&
-    message.guild.id === "684462232679219242"
-  ) {
-    await message.delete();
-    let str = message.content.replace("https://twitter.com/", "");
-    let newstr = `https://vxtwitter.com/${str}`;
+  // if (
+  //   message.content.includes("https://twitter.com/") &&
+  //   message.guild.id === "684462232679219242"
+  // ) {
+  //   await message.delete();
+  //   let str = message.content.replace("https://twitter.com/", "");
+  //   let newstr = `https://vxtwitter.com/${str}`;
 
-    message.channel.send({ content: newstr });
-  }
+  //   message.channel.send({ content: newstr });
+  // }
 
 
   await antispamschema.findOne({Guild:message.guild.id}, async(err, data) =>{
