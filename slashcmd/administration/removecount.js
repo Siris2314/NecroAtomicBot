@@ -3,7 +3,7 @@ const Schema = require('../../schemas/count')
 module.exports = {
     name:'removecount',
     description:'Disables Counting System',
-    category: "Config",
+    category: "administration",
     permissions: ['ADMINISTRATOR'],
 options: [
     {
