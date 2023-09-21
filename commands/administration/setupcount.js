@@ -5,7 +5,7 @@ module.exports = {
     description:'Sets a counting game to a channel',
 
 
-    async execute(message, args,client){
+    async execute(message, args, client){
         if(!message.member.permissions.has('ADMINSTRATOR')) return message.channel.send({content:'Invalid Perms'})
 
         const channel = message.mentions.channels.first() || message.channel
