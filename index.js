@@ -948,7 +948,9 @@ client.on("messageCreate", async (message) => {
       let number = parseInt(message.content); //Convert the current Message from a String to an Integer
 
       let current = parseInt(data.Count); //Convert the Current Number from a String to an Integer
-
+if(isNaN(number)){
+    message.delete() //Deletes the Message if it's not a Number.
+}
       if (!isNaN(number)) { 
 
         if (message.author.id == data.UserID) { //If the next Number sent is by the same user
