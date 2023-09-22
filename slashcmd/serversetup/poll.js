@@ -165,7 +165,7 @@ module.exports = {
         buttons.push({
             emoji: '1️⃣',
             label: '0',
-            style: 'PRIMARY',
+            style: 'SECONDARY',
             custom_id: `poll1`,
             disabled: false,
             type: 2,
@@ -173,7 +173,7 @@ module.exports = {
         buttons.push({
             emoji: '2️⃣',
             label: '0',
-            style: 'PRIMARY',
+            style: 'SECONDARY',
             custom_id: `poll2`,
             disabled: false,
             type: 2,
@@ -183,7 +183,7 @@ module.exports = {
             buttons.push({
                 emoji: '3️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll3`,
                 disabled: false,
                 type: 2,
@@ -193,7 +193,7 @@ module.exports = {
             buttons.push({
                 emoji: '4️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll4`,
                 disabled: false,
                 type: 2,
@@ -203,7 +203,7 @@ module.exports = {
             buttons.push({
                 emoji: '5️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll5`,
                 disabled: false,
                 type: 2,
@@ -213,7 +213,7 @@ module.exports = {
             buttons.push({
                 emoji: '6️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll6`,
                 disabled: false,
                 type: 2,
@@ -223,7 +223,7 @@ module.exports = {
             buttons.push({
                 emoji: '7️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll7`,
                 disabled: false,
                 type: 2,
@@ -233,7 +233,7 @@ module.exports = {
             buttons.push({
                 emoji: '8️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll8`,
                 disabled: false,
                 type: 2,
@@ -243,7 +243,7 @@ module.exports = {
             buttons.push({
                 emoji: '9️⃣',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll9`,
                 disabled: false,
                 type: 2,
@@ -253,7 +253,7 @@ module.exports = {
             buttons.push({
                 emoji: '🔟',
                 label: '0',
-                style: 'PRIMARY',
+                style: 'SECONDARY',
                 custom_id: `poll10`,
                 disabled: false,
                 type: 2,
