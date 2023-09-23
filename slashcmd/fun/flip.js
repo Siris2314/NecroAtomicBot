@@ -13,7 +13,7 @@ module.exports = {
           'Tails'
           ];
           const embed = new MessageEmbed()
-          .setColor("RANDOM)
+          .setColor("RANDOM")
           .setDescription(`It's **${ht}**`)
         interaction.reply({embeds: [embed]})
     }
