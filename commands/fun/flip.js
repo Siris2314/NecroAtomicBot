@@ -9,7 +9,7 @@ module.exports = {
           'Tails'
           ];
           const embed = new MessageEmbed()
-          .setColor(client.config.color)
+            .setColor("RANDOM")
           .setDescription(`It's **${ht}**`)
        message.channel.send({embeds: [embed]})
     }
