@@ -1,286 +1,179 @@
-const { CommandInteraction, Client, MessageEmbed } = require("discord.js");
-require("dotenv").config();
-const token = process.env.token;
-const axios = require("axios");
-const moment = require("moment");
-const fetch = require("node-fetch");
+const { Client, CommandInteraction, MessageActionRow, MessageButton } = require("discord.js");
+const moment = require('moment');
+const Discord = require('discord.js');
 module.exports = {
-  name: "whois",
-  description: "Userinfo Command",
-  options: [
-    {
-      name: "target",
-      description: "Select whose userinfo you want to see",
-      type: "USER",
-      required: true,
-    },
-  ],
 
+    name: 'whois',
+    description: 'Shows Userinfo',
+    options: [
+  {
+    name: "user",
+    description: "Mention that user",
+    type: "USER",
+    required: false
+  }
+],
+    /**
+     * 
+     * @param {Client} client 
+     * @param {CommandInteraction} interaction 
+     */
   run: async (client, interaction) => {
-    const statuses = {
-      online: "Online",
-      offline: "Offline",
-      dnd: "DND",
-      idle: "Idle",
-    };
-
-    const badges = {
-      DISCORD_EMPLOYEE: `<:staff_badge:915024656250044457>`,
-      PARTNERED_SERVER_OWNER: `<:partner_badge:915024655641886790>`,
-      BUGHUNTER_LEVEL_1: `<:discord_bug_hunter_lv1:915024656224886834>`,
-      BUGHUNTER_LEVEL_2: `<:discord_bug_hunter_lv2:915024656346521620>`,
-      HYPESQUAD_EVENTS: `<:badge_hypesquad:915024655776096307>`,
-      HOUSE_BRAVERY: `<:hypesquad_bravery:915024656224911360>`,
-      HOUSE_BRILLIANCE: `<:hypesquad_briliance:915024655880970281>`,
-      HOUSE_BALANCE: `<:hypesquad_balance:915024656245878816>`,
-      EARLY_SUPPORTER: `<:discord_early_supporter:915024655998402590`,
-      TEAM_USER: `Team User`,
-      SYSTEM: `<:verified_system:915024655859990568>`,
-      VERIFIED_BOT: `<:bot_tag:915024656510119936>`,
-      EARLY_VERIFIED_BOT_DEVELOPER: `<:bot_developpeur_verifie:915024656052924536>`,
-      NITRO: "<:nitroclassic:974686101799329832>",
-      BOOSTER_1: "<:serverbooster1:974686102000640060>",
-      BOOSTER_2: "<:serverbooster2:974686102042574929>",
-      BOOSTER_3: "<:serverbooster3:974686102071951390>",
-      BOOSTER_4: "<:serverbooster4:974686102017425428>",
-      BOOSTER_5: "<:serverbooster5:974686102126485554>",
-      BOOSTER_6: "<:serverbooster6:974686102046797854>",
-      BOOSTER_7: "<:serverbooster7:974686102063566898>",
-      BOOSTER_8: "<:serverbooster8:974686101946138674>",
-      BOOSTER_9: "<:serverbooster9:974686101933539358>",
-    };
-
-    function trimArray(arr, maxLen = 10) {
-      if (arr.length > maxLen) {
-        const len = arr.length - maxLen;
-        arr = arr.slice(0, maxLen);
-        arr.push(`${len} more...`);
-      }
-      return arr;
-    }
-
-    function getRoles(rls) {
-      if (!rls.length) return "None";
-      if (rls.length <= 10) return rls.join(", ");
-      return trimArray(rls);
-    }
-
-    let url = "";
-
-    let user = interaction.options.getUser("target", false);
-    if (!user) user = interaction.user;
-    let member = await interaction.guild.members.fetch(user.id).catch(() => {});
-
-    let UserBadges = "";
-
-    const response = await fetch(
-      `https://japi.rest/discord/v1/user/${user.id}`
-    );
-    const data = await response.json();
-
-    let status = member.presence?.status;
-    if (status === "dnd" || status === "idle" || status === "online")
-      status = statuses[status];
-    else if (
-      status === "invisible" ||
-      status === "offline" ||
-      status === undefined
-    )
-      status = statuses["offline"];
-
-    if (data.data.public_flags_array.length == 0) {
-      UserBadges = "No Badges";
-    } else {
-      UserBadges = data.data.public_flags_array
-        ? data.data.public_flags_array.map((flag) => badges[flag]).join(" ")
-        : "No Badges.";
-    }
-
-    const roles = member.roles.cache
-      .sort((a, b) => b.position - a.position)
-      .map((role) => role.toString())
-      .slice(0, -1);
-
-    axios
-      .get(`https://discord.com/api/users/${member.user.id}`, {
-        headers: {
-          Authorization: `Bot ${token}`,
-        },
-      })
-      .then((res) => {
-        const { banner, accent_color } = res.data;
-
-        if (banner) {
-          const extension = banner.startsWith("a_") ? ".gif" : ".png";
-          url = `https://cdn.discordapp.com/banners/${member.user.id}/${banner}${extension}?size=1024`;
-
-          const devices = member.presence?.clientStatus || {};
-
-          const entries = Object.entries(devices)
-            .map(
-              (value, index) =>
-                `${index + 1}) ${value[0][0].toUpperCase()}${value[0].slice(1)}`
-            )
-            .join("\n");
-
-          const embeduserinfo = new MessageEmbed()
-            .setThumbnail(
-              member.user.displayAvatarURL({ dynamic: true, size: 512 })
-            )
-            .setAuthor({
-              name:
-                "Information about: " +
-                member.user.username +
-                "#" +
-                member.user.discriminator,
-            })
-            .setColor("RANDOM")
-            .addField(
-              "**Username:**",
-              `\`${member.user.username}#${member.user.discriminator}\``,
-              true
-            )
-            .addField("**ID:**", `\`${member.id}\``, true)
-            .addField(
-              "**Avatar:**",
-              `[\`Link to avatar\`](${member.user.displayAvatarURL({
-                dynamic: true,
-              })})`,
-              true
-            )
-            .addField(
-              "**Registered Date:**",
-              `\`${moment(member.user.createdTimestamp).format("LL")} ${moment(
-                member.user.createdTimestamp
-              ).format("LT")}, ${moment(
-                member.user.createdTimestamp
-              ).fromNow()} \``,
-              true
-            )
-            .addField(
-              "**Date Joined Server:**",
-              `\`${moment(member.joinedAt).format("LL LTS")}\``,
-              true
-            )
-            .addField("**Flags:**", UserBadges, true)
-            .addField("**Status:**", `\`${status}\``, true)
-            .addField(
-              "Devices Currently Using: ",
-              `${Object.entries(devices).length}`
-            )
-            .addField(
-              "Currently On Device",
-              `\`${Object.entries(devices).length > 0 ? entries : "None"}\``
-            )
-            .addField(
-              "**Game**:",
-              `\`${
-                member.presence?.activities[0]
-                  ? member.presence?.activities[0].name
-                  : "Not Currently Playing a Game."
-              }\``,
-              true
-            )
-            .addField(
-              "**Highest Role:**",
-              `${
-                member.roles.highest.id === interaction.guild.id
-                  ? "None"
-                  : member.roles.highest
-              }`,
-              true
-            )
-            .addField(`\`${roles.length}\` **Roles:**`, `${getRoles(roles)}`)
-            .setColor("RANDOM")
-            .setImage(url)
-            .setTimestamp();
-
-          return interaction.followUp({ embeds: [embeduserinfo] });
-        } else {
-          const devices = member.presence?.clientStatus || {};
-
-          const entries = Object.entries(devices)
-            .map(
-              (value, index) =>
-                `${index + 1}) ${value[0][0].toUpperCase()}${value[0].slice(1)}`
-            )
-            .join("\n");
-          const embeduserinfo = new MessageEmbed()
-            .setThumbnail(
-              member.user.displayAvatarURL({ dynamic: true, size: 512 })
-            )
-            .setAuthor(
-              {
-                name:
-                  "Information about: " +
-                  member.user.username +
-                  "#" +
-                  member.user.discriminator,
-              },
-              { iconURL: member.user.displayAvatarURL({ dynamic: true }) }
-            )
-            .setColor("RANDOM")
-            .addField(
-              "**Username:**",
-              `\`${member.user.username}#${member.user.discriminator}\``,
-              true
-            )
-            .addField("**ID:**", `\`${member.id}\``, true)
-            .addField(
-              "**Avatar:**",
-              `[\`Link to avatar\`](${member.user.displayAvatarURL({
-                dynamic: true,
-              })})`,
-              true
-            )
-            .addField(
-              "**Registered Date:**",
-              `\`${moment(member.user.createdTimestamp).format("LL")} ${moment(
-                member.user.createdTimestamp
-              ).format("LT")}, ${moment(
-                member.user.createdTimestamp
-              ).fromNow()} \``,
-              true
-            )
-            .addField(
-              "**Date Joined Server:**",
-              `\`${moment(member.joinedAt).format("LL LTS")}\``,
-              true
-            )
-            .addField("**Flags:**", UserBadges, true)
-            .addField("**Status:**", `\`${status}\``, true)
-            .addField(
-              "Devices Currently Using: ",
-              `${Object.entries(devices).length}`
-            )
-            .addField(
-              "Currently On Device(s)",
-              `\`${Object.entries(devices).length > 0 ? entries : "None"}\``
-            )
-            .addField(
-              "**Game**:",
-              `\`${
-                member.presence?.activities[0]
-                  ? member.presence?.activities[0].name
-                  : "Not Currently Playing a Game."
-              }\``,
-              true
-            )
-            .addField(
-              "**Highest Role:**",
-              `${
-                member.roles.highest.id === interaction.guild.id
-                  ? "None"
-                  : member.roles.highest
-              }`,
-              true
-            )
-            .addField(`\`${roles.length}\` **Roles:**`, `${getRoles(roles)}`)
-            .setColor(accent_color)
-            .setTimestamp();
-
-          return interaction.followUp({ embeds: [embeduserinfo] });
+   
+        const permissions = {
+            "ADMINISTRATOR": "\`Administrator\`",
+            "MANAGE_GUILD": "\`Manage Server\`",
+            "MANAGE_ROLES": "\`Manage Roles\`",
+            "MANAGE_CHANNELS": "\`Manage Channels\`",
+            "KICK_MEMBERS": "\`Kick Members\`",
+            "BAN_MEMBERS": "\`Ban Members\`",
+            "MANAGE_NICKNAMES": "\`Manage Nicknames\`",
+            "MANAGE_EMOJIS": "\`Manage Emojis\`",
+            "MANAGE_WEBHOOKS": "\`Manage Webhooks\`",
+            "MANAGE_MESSAGES": "\`Manage Messages\`",
+            "MENTION_EVERYONE": "\`Mention Everyone\`"
         }
-      });
-  },
-};
+        const user = interaction.options.getUser("user");
+        let member;
+        if(user) member = interaction.guild.members.cache.get(user.id);
+        else member = interaction.member;
+        const nick = member.nickname === null ? "None" : member.nickname;
+        const roles = member.roles.cache.get === "" ? "None" : member.roles.cache.get;
+          const usericon = member.user.avatarURL;
+        const mentionPermissions = member.permissions.toArray() === null ? "None" : member.permissions.toArray();
+        const finalPermissions = [];
+        for (const permission in permissions) {
+            if (mentionPermissions.includes(permission)) finalPermissions.push(`${permissions[permission]}`);
+            else;
+        }
+        const devices = member.presence?.clientStatus || {};
+
+        const entries = Object.entries(devices)
+          .map(
+            (value, index) =>
+              `${index + 1}) ${value[0][0].toUpperCase()}${value[0].slice(1)}`
+          )
+          .join(", ");
+
+        const response = await fetch(
+          `https://japi.rest/discord/v1/user/${member.user.id}`
+        );
+        const data = await response.json();
+        const badges = {
+          DISCORD_EMPLOYEE: `Discord Employee`,
+          PARTNERED_SERVER_OWNER: `Partnered Server Owner`,
+          BUGHUNTER_LEVEL_1: `Bug Hunter Level 1`,
+          BUGHUNTER_LEVEL_2: `Bug Hunter Level 2`,
+          HYPESQUAD_EVENTS: `HypeSquad Events`,
+          HOUSE_BRAVERY: `House Bravery`,
+          HOUSE_BRILLIANCE: `House Brilliance`,
+          HOUSE_BALANCE: `House Balance`,
+          EARLY_SUPPORTER: `Early Suppoter`,
+          TEAM_USER: `Team User`,
+          SYSTEM: `Sytem`,
+          VERIFIED_BOT: `Verified`,
+          EARLY_VERIFIED_BOT_DEVELOPER: `Early Verified Bot Developer`,
+          NITRO: "Nitro",
+          ACTIVE_DEVELOPER: `Active Developer`,
+        };
+        let UserBadges = "";    
+        if (data.data.public_flags_array.length == 0) {
+          UserBadges = "No Badges";
+        } else {
+          UserBadges = data.data.public_flags_array
+            ? data.data.public_flags_array.map((flag) => badges[flag]).join(" ")
+            : "No Badges.";
+        }
+    
+        var bot = {
+            "true": "Bot",
+            "false": "User"
+        };
+
+ let link = `https://discord.com/users/${member.user.id}`
+   const row = new MessageActionRow().addComponents( new MessageButton().setEmoji("🔎").setStyle("LINK").setURL(link),  new MessageButton().setStyle('LINK').setURL(member.user.displayAvatarURL({ dynamic: true })).setEmoji("🖼"))
+
+   let status = {
+    online: " :green_circle: \`Online\`",
+    idle: " :orange_circle: \`Idle\`",
+    dnd: ":red_circle: \`Do Not Disturb\`",
+    offline: ":black_circle: \`Offline\`"
+  };
+
+
+  let userStatus;
+if (member.presence === null) { 
+
+  userStatus = ':black_circle: \`Offline\`'
+  const whois = new Discord.MessageEmbed()
+  .setAuthor({ name:`User Info`, iconURL: member.user.avatarURL()})
+  .setThumbnail(usericon)
+  .addField(`General Info`, `> Name: \`${member.user.username}\` \n > Id:\`${member.user.id}\` \n> Tag: \`${member.user.discriminator}\` \n> Nickname: \`${nick}\` \n > Status: ${userStatus}\n > Activity: \`None\``, true)
+  .addField(`Overview`, `> Badges: ${UserBadges}\n> User: ${bot[member.user.bot]}`)
+  .addField("Devices Currently Using: ",`\`${Object.entries(devices).length}\``)
+  .addField("Currently On", `\`${Object.entries(devices).length > 0 ? entries : "None"}\``)
+  .addField(`Roles:`,`> <@&${member._roles.join(">  <@&")}>`)
+  .addField(`Permissions:`, `${finalPermissions.join(', ')}`|| " \`No Permissions\`")
+  .addField(`Misc Info`, `> Acc Created on: \n> \`${moment(member.user.createdAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\` \n> Joined This Server on: \n> \`${moment(member.joinedAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\``)
+  .setThumbnail(member.user.avatarURL())
+  .setFooter(`ID: ${member.user.id}`, member.user.avatarURL())
+  .setTimestamp()
+  .setColor(member.displayHexColor);
+
+  if (member.communicationDisabledUntilTimestamp) {
+    whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
+}
+  interaction.reply({ embeds: [whois], components: [row] })
+
+} else {
+status1 = status[member.presence.status]
+
+const pre = member.presence.activities.join(", ");
+if(!pre) {
+  let pre = "None" 
+
+  const whois = new Discord.MessageEmbed()
+  .setAuthor({ name:`User Info`, iconURL: member.user.avatarURL()})
+  .setThumbnail(usericon)
+  .addField(`General Info`, `> Name: \`${member.user.username}\`\n > Id:\`${member.user.id}\` \n> Tag: \`${member.user.discriminator}\` \n> Nickname: \`${nick}\` \n > Status: ${status1} \n > Activity: \`${pre}\``, true)
+  .addField(`Overview`, `> Badges: ${UserBadges}\n> User: ${bot[member.user.bot]}`)
+  .addField("Devices Currently Using: ",`${Object.entries(devices).length}`)
+  .addField("Currently On", `\`${Object.entries(devices).length > 0 ? entries : "None"}\``)
+  .addField(`Roles:`,`> <@&${member._roles.join(">  <@&")}>`)
+  .addField(`Permissions:`, `${finalPermissions.join(', ')}`|| "\`No Permissions\`")
+  .addField(`Misc Info`, `> Acc Created on: \n> \`${moment(member.user.createdAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\` \n> Joined This Server on: \n> \`${moment(member.joinedAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\``)
+  .setThumbnail(member.user.avatarURL())
+  .setFooter(`ID: ${member.user.id}`, member.user.avatarURL())
+  .setTimestamp()
+  .setColor(member.displayHexColor);
+
+
+  if (member.communicationDisabledUntilTimestamp) {
+    whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
+}
+  interaction.reply({ embeds: [whois], components: [row] })
+} else {  
+  const whois = new Discord.MessageEmbed()
+  .setAuthor({ name:`User Info`, iconURL: member.user.avatarURL()})
+  .setThumbnail(usericon)
+  .addField(`General Info`, `> Name: \`${member.user.username}\`\n > Id:\`${member.user.id}\` \n> Tag: \`${member.user.discriminator}\` \n> Nickname: \`${nick}\` \n > Status: ${status1} \n > Activity: \`${pre}\``, true)
+  .addField(`Overview`, `> Badges: ${UserBadges}\n> User: ${bot[member.user.bot]}`)
+  .addField("Devices Currently Using: ",`${Object.entries(devices).length}`)
+  .addField("Currently On)", `\`${Object.entries(devices).length > 0 ? entries : "None"}\``)
+  .addField(`Roles:`,`> <@&${member._roles.join(">  <@&")}>`)
+  .addField(`Permissions:`, `${finalPermissions.join(', ')}`|| "\`No Permissions\`")
+  .addField(`Misc Info`, `> Acc Created on: \n> \`${moment(member.user.createdAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\` \n> Joined This Server on: \n> \`${moment(member.joinedAt).format("dddd, MMMM Do YYYY, h:mm:ss A")}\``)
+  .setThumbnail(member.user.avatarURL())
+  .setFooter(`ID: ${member.user.id}`, member.user.avatarURL())
+  .setTimestamp()
+  .setColor(member.displayHexColor);
+
+
+  if (member.communicationDisabledUntilTimestamp) {
+    whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
+}
+interaction.reply({ embeds: [whois], components: [row] })
+    }
+  } 
+ } 
+}
