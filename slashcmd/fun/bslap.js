@@ -35,7 +35,7 @@ const batman = interaction.options.getString("batman");
 let member;
 if(user) member = interaction.guild.members.cache.get(user.id);
 const Embed = new Discord.MessageEmbed()
-.setColor(client.config.color)
+.setColor("RANDOM")
 .setImage(encodeURI(`https://vacefron.nl/api/batmanslap?text1=${robin}&text2=${batman}&batman=${interaction.user.avatarURL({ format: "png" })}&robin=${member.user.displayAvatarURL({ format: "png" })}`))
 .setFooter(`Requested by ${interaction.user.username}`)
 .setTimestamp()
