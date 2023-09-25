@@ -47,7 +47,7 @@ module.exports = {
             .setTimestamp()
             
 
-        interaction.reply({embeds:[res], components: [row]})
+        interaction.followUp({embeds:[res], components: [row]})
 
     }
 
