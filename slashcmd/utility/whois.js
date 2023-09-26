@@ -123,7 +123,7 @@ if (member.presence === null) {
   if (member.communicationDisabledUntilTimestamp) {
     whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
 }
-  interaction.reply({ embeds: [whois], components: [row] })
+  interaction.followUp({ embeds: [whois], components: [row] })
 
 } else {
 status1 = status[member.presence.status]
@@ -151,7 +151,7 @@ if(!pre) {
   if (member.communicationDisabledUntilTimestamp) {
     whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
 }
-  interaction.reply({ embeds: [whois], components: [row] })
+  interaction.followUp({ embeds: [whois], components: [row] })
 } else {  
   const whois = new Discord.MessageEmbed()
   .setAuthor({ name:`User Info`, iconURL: member.user.avatarURL()})
@@ -172,7 +172,7 @@ if(!pre) {
   if (member.communicationDisabledUntilTimestamp) {
     whois.addField("Timeout Left:", `> \`${member.communicationDisabledUntil.toLocaleString()}\` **<t:${Math.floor(member.communicationDisabledUntilTimestamp / 1000)}:R>**`)
 }
-interaction.reply({ embeds: [whois], components: [row] })
+interaction.followUp({ embeds: [whois], components: [row] })
     }
   } 
  } 
