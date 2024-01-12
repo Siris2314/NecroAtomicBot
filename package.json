@@ -16,6 +16,12 @@
 
     "@distube/spotify": "^1.0.0",
 
+    "@huggingface/agents": "^0.0.5",
+
+    "@huggingface/hub": "^0.12.3-oauth",
+
+    "@huggingface/inference": "^2.6.4",
+
     "@iamtraction/google-translate": "^1.1.2",
 
     "@psibean/discord.js-pagination": "^4.0.2",
@@ -138,7 +144,7 @@
 
     "genshin-data": "^0.14.1",
 
-    "genshin-db": "^4.3.4",
+    "genshin-db": "^5.0.8",
 
     "gif-encoder-2": "^1.0.5",
 
@@ -312,7 +318,7 @@
 
   "engines": {
 
-    "node": "16.x"
+    "node": "18.x"
 
   },
 

@@ -64,12 +64,20 @@ const { DiscordTogether } = require('discord-together');
 client.discordTogether = new DiscordTogether(client);
 
 //Chatbot system using Chat-GPT3 API
-const { Configuration, OpenAIApi } = require("openai");
-const config = new Configuration({
-  organization:process.env.openai_org,
-  apiKey: process.env.openai,
-})
-const openai = new OpenAIApi(config);
+// const { Configuration, OpenAIApi } = require("openai");
+// const config = new Configuration({
+//   organization:process.env.openai_org,
+//   apiKey: process.env.openai,
+// })
+// const openai = new OpenAIApi(config);
+
+//HuggingFace libraries
+const {HfInference} = require('@huggingface/inference')
+const hf_token = process.env.hf
+const inference = new HfInference(hf_token) 
+
+
+
 const  {backOff} = require('exponential-backoff')
 
 
@@ -1071,7 +1079,6 @@ if(isNaN(number)){
     );
   }
 
-
   //Chatbot System with Database Implementation
   await chatschema.findOne({ Guild: message.guild.id }, async (err, data) => {
 
@@ -1084,45 +1091,86 @@ if(isNaN(number)){
     
     if (message.channel.id !== data.Channel) return;
 
-    const MAX_RETRIES = 5;
-
-async function sendRequest(message, retries = 0) {
-  try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt:`ChatGPT is a friendly chatbot. \n\ 
-      ChatGPT: Hello! How are you doing today? \n\
-      ${message.author.username}: ${message.content} \n\
-      ChatGPT:
-      `,
-      temperature: 0.6,
-      stop:['ChatGPT:', 'Arihant Tripathi:']
-    });
-    console.log(response.data.choices[0].text);
-    message.channel.send(`${response.data.choices[0].text}`);
-  } catch (error) {
-    if (error.response && error.response.status === 429) {
-      // Check if the maximum number of retries has been reached
-      if (retries >= MAX_RETRIES) {
-        console.error('Too many requests, giving up');
-        return;
+    if (message.attachments.size === 1 && message.content === '' || message.content.startsWith('https://cdn.discordapp.com/attachments')) {
+      let attachment = " "
+      if(message.content.startsWith('https://cdn.discordapp.com/attachments')){
+        attachment = message.content
       }
-      console.log(`Too many requests, retrying in ${2 ** retries} seconds...`);
-      // Increase the number of retries and set a delay before retrying the request
-      const delay = 2 ** retries * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return sendRequest(message, retries + 1);
-    } else {
-      console.error(error);
+      else{
+        attachment = message.attachments.first().url
+      }
+      const response = await fetch(attachment)
+      const imageBlob = await response.blob()
+
+      const result = await inference.imageToText({
+        data: imageBlob,
+        model: 'nlpconnect/vit-gpt2-image-captioning'
+      }).catch(err => {
+        message.channel.send({content:'Model time out'})
+      })
+
+      message.channel.sendTyping();
+      message.channel.send({content:result['generated_text']})
     }
+    else if(message.content.toLowerCase().includes('draw')){
+      const description = String(message.content.slice('Draw'.length).trim());
+      await inference.textToImage({
+        inputs: description,
+        model: 'stabilityai/stable-diffusion-2',
+        parameters: {
+          negative_prompt: 'blurry',
+        }
+      }).then(async result => {
+        console.log(result)
+        
+        const arrayBuffer = await result.arrayBuffer(); // Awaiting the resolution of the Promise
+        const buffer = Buffer.from(arrayBuffer);
+
+        const filePath = './image.png'
+
+        fs.writeFile(filePath, buffer, (err) => {
+
+          if(err){
+            console.log(err)
+            return;
+          }
+          const attachment = new Discord.MessageAttachment(filePath);
+          message.channel.send({ files: [attachment] })
+              .then(() => {
+                  // Optionally delete the file after sending
+                  fs.unlink(filePath, (err) => {
+                      if (err) console.error('Error deleting the file:', err);
+                  });
+              })
+              .catch(console.error);
+        })
+
+      }).catch(err => {
+        message.channel.send({content:'Model time out'})
+      })
+    }
+    else{
+
+      async function chatWithBot(message) {
+          await inference.conversational({
+            model: 'microsoft/DialoGPT-large',
+            inputs: message.content,
+            parameters:{
+                max_length: 256
+            }
+        }).then(result => {
+            message.channel.send({content:result['generated_text']})
+      }).catch(err => {
+          message.channel.send({content:'Model time out'})
+      });
+    }
+
+      
+
+      //Method that makes it look like the bot is typing
+      message.channel.sendTyping();
+      chatWithBot(message)
   }
-}
-    
-
-    //Method that makes it look like the bot is typing
-    message.channel.sendTyping();
-    sendRequest(message);
-
 });
 
 
