@@ -7,88 +7,52 @@ module.exports = {
     description:'Info On Server',
 
     async execute(message,args,client){
-        const regions = {
-            brazil: '🇧🇷',
-            europe: '🇪🇺',
-            hongkong: '🇭🇰',
-            india: '🇮🇳',
-            japan: '🇯🇵',
-            russia: '🇷🇺',
-            singapore: '🇸🇬',
-            southafrica: '🇿🇦',
-            sydney: '🇦🇺',
-            'us-east': 'US - East 🇺🇸',
-            'us-west': 'US - West 🇺🇸',
-            'us-south': 'US - South 🇺🇸'
-        };
+     
+        const { guild } = message
 
-           const status = {
-            online: "Online",
-            idle: "Idle",
-            dnd: "Do Not Disturb",
-            offline: "Offline/Invisible"
-        };
-
-        const verificationLevels = {
-            NONE: 'None',
-            LOW: 'Low',
-            MEDIUM: 'Medium',
-            HIGH: 'High',
-            VERY_HIGH: 'Very High'
-        };
-
-
-
-        console.log(message.guild.region);
-        const roles = message.guild.roles.cache.sort((a, b) => b.position - a.position).map(role => role.toString());
-        const members = message.guild.members.cache;
-        const channels = message.guild.channels.cache;
-        const emojis = message.guild.channels.cache;
-
-        let txt = '<:txtchannel:869281802395738163> '
-        let ch = '<:voicechannel:869281232201080933> '
-        let mem = '<:members:863637932270551040> '
-        let online = "<:online:869190337216774144>"
-        let idle = "<:idle:869190610635087873>"
-        let dnd = "<:dnd:869190610962247711>"
-        let offline = "<:offline:869190610710581289>"
-
+        const { createdTimestamp, ownerId, memberCount, emojis, roles, stickers, channels } = guild
+        const icon = guild.iconURL() // Icon Of Server
+        const totEmoji = emojis.cache.map(e => e.toString()) // All Emojis Of Server
+        const totRoles = roles.cache.map(e => e.toString()) // All Roles Of Server
 
         const embed = new Discord.MessageEmbed()
-            .setTitle(`Server stats for ${message.guild.name}`)
-            .setThumbnail(message.guild.iconURL({ dynamic: true}))
-            .addFields(
+        .setColor('RED')
+        .setAuthor({
+            name: `${guild.name} Info`,
+            iconURL: icon
+        })
+        .setThumbnail(icon)
+        // Info About Server
+        .addFields(
+            { name: `**Server Name**:`, value: guild.name, inline: true },
+            { name: `**Server ID:**`, value: guild.id, inline: true },
+            { name: `**Server Owner:**`, value: `<@${ownerId}>`, inline: true },
+            { name: `**Server Created:**`, value: `<t:${parseInt(createdTimestamp / 1000)}:R>`, inline: true },
+            { name: `**Members In Server:**`, value: `${memberCount}`, inline: true },
+            { name: `\u200B`, value: `\u200B`, inline: true },
+            { name: `**Boost Count:**`, value: `${guild.premiumSubscriptionCount}`, inline: true },
+            { name: `**Boost Tier:**`, value: `${guild.premiumTier}`, inline: true },
+            { name: `\u200B`, value: `\u200B`, inline: true },
+            { name: `**Emojis In Server:**`, value: `${emojis.cache.size}\nAnimated: ${emojis.cache.filter(emoji => emoji.animated).size}\nNormal: ${emojis.cache.filter(emoji => !emoji.animated).size}`, inline: true },            
+            { name: `**Emojis:**`, value: `${totEmoji}`, inline: true },
+            { name: `Stickers In Server:`, value: `${stickers.cache.size}`, inline: true }, // We Will This As Empty So It Won't Look Messed Up In Embed
+            { name: `**Roles In Server:**`, value: `${roles.cache.size - 1}`, inline: true }, // -1 To Remove @everyone
+            { name: `**Roles:**`, value: `${totRoles}`, inline: true },
+            { name: `**Highest Role:**`, value: `${roles.highest}`, inline: true },
+            { name: `**Server Stats:**`, value: `Total: ${channels.cache.size}\n${channels.cache.filter(channel => channel.type === 'GUILD_TEXT').size} ⌨️\n${channels.cache.filter(channel => channel.type === 'GUILD_VOICE').size} 🔈\n${channels.cache.filter(channel => channel.type === 'GUILD_NEWS').size} 📢\n${channels.cache.filter(channel => channel.type === 'GUILD_CATEGORY').size} 📁`}, // You Can Add More Options
+            // You Can Add More Options
+        )
+        .setFooter({
+            text: guild.name,
+            iconURL: icon
+        })
 
-                {name:'Owner', value:message.guild.owner.user.username, inline: true},
-                {name:'Region', value:regions[message.guild.region], inline: true},
-                {name: 'Boost Level', value:`Tier: ${message.guild.premiumTier ? message.guild.premiumTier : 'None'}`  , inline: true},
-                {name: 'Boosts Count', value:`Count: ${message.guild.premiumSubscriptionCount ? message.guild.premiumSubscriptionCount : 'None'}`  , inline: true},
-                {name:'Verification Level', value: `__${verificationLevels[message.guild.verificationLevel]}__`, inline:true},
-                { name: 'Time Created', value: `${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} [${moment(message.guild.createdTimestamp).fromNow()}]` },
 
 
 
 
-            )
-            .addField(`Member Status`, `Online: ${members.filter(member => member.presence.status === 'online').size} DND: ${members.filter(member => member.presence.status === 'dnd').size}  Idle: ${members.filter(member => member.presence.status === 'idle').size}   Offline : ${members.filter(member => member.presence.status === 'offline').size}`)
-            .addField(
-                'Bot Count',`${members.filter(member => member.user.bot).size}`,true
-            )
-            .addFields(
-                { name: 'Roles', value: `${roles.length}`, inline: true },
-                { name: 'Emoji Count', value: `${emojis.size}`, inline: true },
-            )
-            .addField('Channels', `Text Channels : ${channels.filter(channel => channel.type === 'text').size} 
-            Voice Channels : ${channels.filter(channel => channel.type === 'voice').size}`,
-            )
-            .setTimestamp();
 
-
-            
-
-
-
-            return message.channel.send({embeds:[embed]});
+     return message.channel.send({embeds:[embed]});
 
 
     }

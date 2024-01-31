@@ -17,7 +17,6 @@ module.exports = {
         const currency = args[0];
         const crypto = args[1];
         const url = `http://api.coinlayer.com/live?access_key=${token}&target=${currency}&symbols=${crypto}&expand=1`
-        
 
         const {body} = await request.get(url)
 

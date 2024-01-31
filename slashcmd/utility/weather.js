@@ -1,6 +1,8 @@
 const {CommandInteraction, Client, MessageEmbed} = require('discord.js')
-const weather = require('weather-js')
-const {WeatherImage} = require('weather-builder')
+const { OpenWeatherAPI } = require("openweather-api-node")
+const { getJson } = require("serpapi");
+
+
 
 module.exports = {
     name:'weather',
@@ -13,67 +15,61 @@ module.exports = {
             required:true,
 
         },
-        {
-            name:'degree',
-            description:'Select a Degree Type',
-            type:'STRING',
-            required: true,
-            choices:[
-                {
-                    name:'Celcius',
-                    value:'C'
-                },
-                {
-                    name:'Farenheit',
-                    value:'F'
-
-                }
-
-            ]
-        },
     ],
 
     run: async(client, interaction) => {
         const location = interaction.options.getString('location')
-        let args = interaction.options.data;
-        const degree = args[0]?.value;
 
-        weather.find({search: location, degreeType:degree}, function(error, result){
-
-            if (error) {
-                return interaction.followUp(error);
-            }
-
-            if (result === undefined || result.length === 0) {
-                return interaction.followUp("Location not found....");
-            }
-
-            const current = result[0].current;
-            const location = result[0].location;
-
-
-            const embed = new MessageEmbed()
-                .setDescription(`${current.skytext}`)
-                .setAuthor(`Weather forecast for ${current.observationpoint}`)
-                .setThumbnail(current.imageUrl)
-                .addField("Timezone", `UTC${location.timezone}`, true)
-                .addField("Degree Type", "Farenheit", location.degreetype, true)
-                .addField("Temperature", `${current.temperature}`, true)
-                .addField("Wind", current.winddisplay, true)
-                .addField("Feels like ", `${current.feelslike}`, true)
-                .addField("Humidity", `${current.humidity}`, true)
-                .setColor("#4db1d1");
-
-            interaction.followUp({embeds:[embed]})
-
-
-
-
-
-
-
+        let weather = new OpenWeatherAPI({
+            key: process.env.weather,
+            locationName: String(location),
+            units: "imperial"
         })
 
+        const json = await getJson({
+            q: String(location),
+            engine: "google_images",
+            ijn: "0",
+            api_key: process.env.serpapi
+        });
 
+
+        const image = json["images_results"][0].thumbnail;
+
+
+        
+        weather.getCurrent().then(data => {
+            
+            // console.log(typeof data.dt)
+            // console.log(`Current temperature in New York is: ${data.weather.temp.cur}\u00B0F`)
+
+            const embed = new MessageEmbed()
+                .setTitle(`Weather in ${location}`)
+                .addFields(
+                    {
+                        name:'Temperature', value: String(data.weather.temp.cur)
+                    },
+                    {
+                        name:'Feels Like', value: String(data.weather.feelsLike.cur)
+                    },
+                    {
+                        name: 'Humidity', value: String(data.weather.humidity)
+                    },
+                    {
+                        name: 'Wind Speed', value: String(data.weather.wind.speed)
+                    },
+                    {
+                        name: 'Description', value: String(data.weather.description)
+                    }
+
+                )
+                .setImage(String(image))
+                
+
+            interaction.followUp({embeds:[embed]})
+        }).catch(err => {
+            console.log(err)
+            interaction.followUp({content:'Invalid Location'})
+        })
     }
 }

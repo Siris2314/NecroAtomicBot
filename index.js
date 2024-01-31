@@ -172,7 +172,7 @@ Levels.setURL(mongoPath); //Connection to the Mongo Database for Leveling System
 module.exports = {afk, starboardcollection}; //Exporting Discord Collections for Usage Outside of Main File
 
 
-const { Player } = require("discord-music-player"); //Import Music Player Client 
+const { Player } = require("@jadestudios/discord-music-player"); //Import Music Player Client 
 
 const player = new Player(client, {
   leaveOnStop:true,

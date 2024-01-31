@@ -5,7 +5,7 @@ const {
   MessageButton,
   MessageActionRow,} = require("discord.js");
 
-const { Utils } = require("discord-music-player");
+const { Utils } = require("@jadestudios/discord-music-player");
 
 module.exports = {
   name: "play",

@@ -23,12 +23,15 @@ module.exports = {
     const instagram = await InstaClient.authBySessionId(yourSessionId)
       .catch(err => console.error(err))
 
+    console.log(instagram)
+
     try {
       const insta = await InstaClient.getProfile(Replaced)
-      console.log(insta)
       const profileUrl = `https://www.instagram.com/${Replaced}`;
       const postUrl = 'https://www.instagram.com/p/';
 
+
+      console.log(insta.name)
 
       const embed = new MessageEmbed()
         .setTitle('\*\*Instagram\*\*')
