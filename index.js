@@ -2259,8 +2259,6 @@ client.on("messageReactionRemove", async (reaction, user) => {
 //Modlogs System
 // logger(client);
 
-require("./dashboard/server");
-
 
 //Discord Login System
 client.login(token);
