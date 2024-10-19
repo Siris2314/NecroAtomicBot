@@ -4,6 +4,7 @@
   "description": "Discord bot",
   "main": "webserver.js",
   "dependencies": {
+    "@arthestn/discord-music-player": "^1.0.11",
     "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.14.0",
     "@distube/spotify": "^1.0.0",
@@ -13,6 +14,7 @@
     "@iamtraction/google-translate": "^1.1.2",
     "@jadestudios/discord-music-player": "^9.1.1-az26",
     "@psibean/discord.js-pagination": "^4.0.2",
+    "@rafateoli/discord-music-player": "^9.2.7",
     "@tensorflow/tfjs": "^3.15.0",
     "@tensorflow/tfjs-node": "^3.18.0",
     "aki-api": "^6.0.8",
