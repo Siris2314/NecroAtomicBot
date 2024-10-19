@@ -1085,7 +1085,7 @@ if(isNaN(number)){
     //If No Chatbot System is Set, Do Nothing
     if (!data) return;
 
-    if(message.guild.id != '912238273785634859'){
+    if(message.guild.id != "805214348632129537"){
       return message.reply('Chatbot System is currently in beta testing')
     }
     
@@ -1149,27 +1149,25 @@ if(isNaN(number)){
         message.channel.send({content:'Model time out'})
       })
     }
-    else{
-
+    else {
       async function chatWithBot(message) {
           await inference.conversational({
-            model: 'microsoft/DialoGPT-large',
-            inputs: message.content,
-            parameters:{
-                max_length: 256
-            }
-        }).then(result => {
-            message.channel.send({content:result['generated_text']})
-      }).catch(err => {
-          message.channel.send({content:'Model time out'})
-      });
-    }
-
-      
-
-      //Method that makes it look like the bot is typing
+              model: 'microsoft/DialoGPT-large',
+              inputs: message.content,
+              parameters: {
+                  max_length: 256
+              }
+          }).then(result => {
+              console.log(result)
+          }).catch(err => {
+              console.log(err)
+              message.channel.send({ content: 'Model time out' });
+          });
+      }
+  
+      // Method that makes it look like the bot is typing
       message.channel.sendTyping();
-      chatWithBot(message)
+      chatWithBot(message);
   }
 });
 
